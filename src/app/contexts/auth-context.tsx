@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
-    setIsLoading(true);
+    setAuthState(prev => ({ ...prev, isLoading: true }));
     try {
       // Simular delay de API
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -87,19 +87,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const { password: _, ...userWithoutPassword } = foundUser;
       
-      setUser(userWithoutPassword);
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      setAuthState({
+        user: userWithoutPassword,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+      localStorage.setItem('rentmanager_user', JSON.stringify(userWithoutPassword));
     } catch (error) {
       console.error('Error en login:', error);
+      setAuthState(prev => ({ ...prev, isLoading: false }));
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const logout = (): void => {
-    setUser(null);
-    localStorage.removeItem('user');
+    setAuthState({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+    });
+    localStorage.removeItem('rentmanager_user');
     // Redirigir al login
     window.location.href = '/login';
   };
