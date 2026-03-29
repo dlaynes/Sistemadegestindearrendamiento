@@ -1,15 +1,17 @@
 import { Outlet, Link, useLocation } from 'react-router';
-import { Home, Building2, FileText, DollarSign, MessageSquare } from 'lucide-react';
+import { Home, Building2, FileText, DollarSign, MessageSquare, LogOut, User } from 'lucide-react';
+import { useAuth } from '../contexts/auth-context';
 
 export function Layout() {
   const location = useLocation();
+  const { user, logout, hasRole } = useAuth();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: Home },
-    { name: 'Propiedades', href: '/propiedades', icon: Building2 },
-    { name: 'Contratos', href: '/contratos', icon: FileText },
-    { name: 'Pagos', href: '/pagos', icon: DollarSign },
-    { name: 'Mensajes', href: '/mensajes', icon: MessageSquare },
+    { name: 'Dashboard', href: `/${user?.role}/dashboard`, icon: Home, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Propiedades', href: '/propiedades', icon: Building2, roles: ['administrador', 'arrendador'] },
+    { name: 'Contratos', href: '/contratos', icon: FileText, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Pagos', href: '/pagos', icon: DollarSign, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Mensajes', href: '/mensajes', icon: MessageSquare, roles: ['administrador', 'arrendador', 'inquilino'] },
   ];
 
   const isActive = (href: string) => {
@@ -17,6 +19,37 @@ export function Layout() {
       return location.pathname === '/';
     }
     return location.pathname.startsWith(href);
+  };
+
+  // Filtrar navegación según el rol del usuario
+  const filteredNavigation = navigation.filter((item) =>
+    user ? item.roles.includes(user.role) : false
+  );
+
+  const getRoleBadgeColor = (role: string) => {
+    switch (role) {
+      case 'administrador':
+        return 'bg-purple-100 text-purple-700';
+      case 'arrendador':
+        return 'bg-blue-100 text-blue-700';
+      case 'inquilino':
+        return 'bg-green-100 text-green-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'administrador':
+        return 'Administrador';
+      case 'arrendador':
+        return 'Arrendador';
+      case 'inquilino':
+        return 'Inquilino';
+      default:
+        return role;
+    }
   };
 
   return (
@@ -35,7 +68,7 @@ export function Layout() {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
               return (
@@ -57,15 +90,28 @@ export function Layout() {
 
           {/* User info */}
           <div className="px-4 py-4 border-t border-gray-200">
-            <div className="flex items-center gap-3 px-4 py-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
-                A
+            {user && (
+              <div className="mb-3">
+                <div className="flex items-center gap-3 px-4 py-2">
+                  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                    {user.avatar || user.name.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 truncate">{user.name}</p>
+                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
+                      {getRoleLabel(user.role)}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-gray-900">Admin</p>
-                <p className="text-xs text-gray-500">Administrador</p>
-              </div>
-            </div>
+            )}
+            <button
+              onClick={logout}
+              className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium">Cerrar Sesión</span>
+            </button>
           </div>
         </div>
       </div>
