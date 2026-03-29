@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { User, AuthState, UserRole } from '../types/user';
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   hasRole: (roles: UserRole | UserRole[]) => boolean;
   updateUser: (userData: Partial<User>) => void;
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string): Promise<User> => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     try {
       // Simular delay de API
@@ -93,6 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading: false,
       });
       localStorage.setItem('rentmanager_user', JSON.stringify(userWithoutPassword));
+
+      return userWithoutPassword;
     } catch (error) {
       console.error('Error en login:', error);
       setAuthState(prev => ({ ...prev, isLoading: false }));

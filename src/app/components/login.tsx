@@ -17,11 +17,10 @@ export function Login() {
     setIsLoading(true);
 
     try {
-      await login(email, password);
+      const user = await login(email, password);
       // Redirigir según el rol del usuario
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
+
+      if (user) {
         navigate(`/${user.role}/dashboard`);
       }
     } catch (err) {
