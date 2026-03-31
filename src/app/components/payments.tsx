@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { DollarSign, CheckCircle, Clock, AlertCircle, Calendar, TrendingUp } from 'lucide-react';
 
 const mockPayments = [
@@ -65,6 +66,7 @@ const mockPayments = [
 ];
 
 export function Payments() {
+  const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<'all' | 'pagado' | 'pendiente' | 'vencido'>('all');
 
   const filteredPayments = mockPayments.filter((payment) => {
@@ -278,11 +280,11 @@ export function Payments() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {payment.status !== 'pagado' ? (
-                      <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                      <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/payments/${payment.id}`)}>
                         Registrar Pago
                       </button>
                     ) : (
-                      <button className="text-gray-600 hover:text-gray-800 font-medium text-sm">
+                      <button className="text-gray-600 hover:text-gray-800 font-medium text-sm" onClick={() => navigate(`/payments/${payment.id}`)}>
                         Ver Recibo
                       </button>
                     )}

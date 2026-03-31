@@ -7,6 +7,14 @@ import { ArrendadorLayout } from './components/arrendador/arrendador-layout';
 import { ArrendadorDashboard } from './components/arrendador/arrendador-dashboard';
 import { InquilinoLayout } from './components/inquilino/inquilino-layout';
 import { InquilinoDashboard } from './components/inquilino/inquilino-dashboard';
+import { Properties } from './components/properties';
+import { PropertyDetail } from './components/property-detail';
+import { Contracts } from './components/contracts';
+import { ContractDetail } from './components/contract-detail';
+import { Payments } from './components/payments';
+import { PaymentDetail } from './components/payment-detail';
+import { Messages } from './components/messages';
+import { Layout } from './components/layout';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -73,6 +81,38 @@ export function AppRouter() {
           }
         >
           <Route path="dashboard" element={<InquilinoDashboard />} />
+        </Route>
+
+        {/* Rutas compartidas protegidas */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route 
+            path="propiedades" 
+            element={
+              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
+                <Properties />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="properties/:id" 
+            element={
+              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
+                <PropertyDetail />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="contratos" element={<Contracts />} />
+          <Route path="contracts/:id" element={<ContractDetail />} />
+          <Route path="pagos" element={<Payments />} />
+          <Route path="payments/:id" element={<PaymentDetail />} />
+          <Route path="mensajes" element={<Messages />} />
         </Route>
 
         {/* Ruta raíz */}

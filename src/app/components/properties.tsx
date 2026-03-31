@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Building2, MapPin, DollarSign, Plus, Search, Filter } from 'lucide-react';
 
 const mockProperties = [
@@ -77,6 +78,7 @@ const mockProperties = [
 ];
 
 export function Properties() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'ocupado' | 'disponible'>('all');
 
@@ -172,7 +174,7 @@ export function Properties() {
                 </div>
               )}
 
-              <button className="w-full mt-4 bg-blue-50 text-blue-700 py-2 rounded-lg hover:bg-blue-100 transition-colors font-medium">
+              <button className="w-full mt-4 bg-blue-50 text-blue-700 py-2 rounded-lg hover:bg-blue-100 transition-colors font-medium" onClick={() => navigate(`/properties/${property.id}`)}>
                 Ver Detalles
               </button>
             </div>

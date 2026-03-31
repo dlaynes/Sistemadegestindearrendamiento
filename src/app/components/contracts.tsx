@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { FileText, Calendar, User, Building2, Plus, Clock } from 'lucide-react';
 
 const mockContracts = [
@@ -60,6 +61,7 @@ const mockContracts = [
 ];
 
 export function Contracts() {
+  const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<'all' | 'activo' | 'proximo_vencer'>('all');
 
   const filteredContracts = mockContracts.filter((contract) => {
@@ -235,7 +237,7 @@ export function Contracts() {
               )}
 
               <div className="mt-4 flex gap-2">
-                <button className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium">
+                <button className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium" onClick={() => navigate(`/contracts/${contract.id}`)}>
                   Ver Detalles
                 </button>
                 <button className="px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors font-medium">
