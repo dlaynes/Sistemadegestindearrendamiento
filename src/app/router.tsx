@@ -9,6 +9,7 @@ import { InquilinoLayout } from './components/inquilino/inquilino-layout';
 import { InquilinoDashboard } from './components/inquilino/inquilino-dashboard';
 import { Properties } from './components/properties';
 import { PropertyDetail } from './components/property-detail';
+import { PropertyForm } from './components/property-form';
 import { Contracts } from './components/contracts';
 import { ContractDetail } from './components/contract-detail';
 import { Payments } from './components/payments';
@@ -101,10 +102,26 @@ export function AppRouter() {
             } 
           />
           <Route 
+            path="properties/new" 
+            element={
+              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
+                <PropertyForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="properties/:id" 
             element={
               <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
                 <PropertyDetail />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="properties/:id/edit" 
+            element={
+              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
+                <PropertyForm />
               </ProtectedRoute>
             } 
           />

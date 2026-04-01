@@ -97,7 +97,10 @@ export function Properties() {
           <h1 className="text-3xl font-semibold text-gray-900">Propiedades</h1>
           <p className="text-gray-600 mt-1">Administra tu portafolio de propiedades</p>
         </div>
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+        <button 
+          onClick={() => navigate('/properties/new')}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
           <Plus className="w-5 h-5" />
           Agregar Propiedad
         </button>

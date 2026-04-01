@@ -332,7 +332,10 @@ export function PropertyDetail() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Acciones</h2>
             <div className="space-y-2">
-              <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+              <button 
+                onClick={() => navigate(`/properties/${property.id}/edit`)}
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
                 Editar Propiedad
               </button>
               <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium">

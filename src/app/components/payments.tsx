@@ -279,15 +279,9 @@ export function Payments() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {payment.status !== 'pagado' ? (
-                      <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/payments/${payment.id}`)}>
-                        Registrar Pago
-                      </button>
-                    ) : (
-                      <button className="text-gray-600 hover:text-gray-800 font-medium text-sm" onClick={() => navigate(`/payments/${payment.id}`)}>
-                        Ver Recibo
-                      </button>
-                    )}
+                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/payments/${payment.id}`)}>
+                      Ver Pago
+                    </button>
                   </td>
                 </tr>
               ))}
