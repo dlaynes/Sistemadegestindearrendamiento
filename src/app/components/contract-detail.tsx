@@ -362,7 +362,10 @@ export function ContractDetail() {
               <button className="w-full bg-blue-50 text-blue-700 py-2 rounded-lg hover:bg-blue-100 transition-colors font-medium">
                 Renovar Contrato
               </button>
-              <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+              <button 
+                onClick={() => navigate(`/contracts/${contract.id}/edit`)}
+                className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              >
                 Editar Contrato
               </button>
               <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium">
