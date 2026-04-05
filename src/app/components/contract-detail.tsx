@@ -284,7 +284,16 @@ export function ContractDetail() {
 
           {/* Payment History */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Historial de Pagos</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Historial de Pagos</h2>
+              <button
+                onClick={() => navigate(`/contracts/${contract.id}/payments/new`)}
+                className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+              >
+                <DollarSign className="w-4 h-4" />
+                Registrar Pago
+              </button>
+            </div>
             <div className="space-y-3">
               {contract.paymentHistory.map((payment, index) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
