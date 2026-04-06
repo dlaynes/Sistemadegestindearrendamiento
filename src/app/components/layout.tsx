@@ -8,10 +8,10 @@ export function Layout() {
 
   const navigation = [
     { name: 'Dashboard', href: `/${user?.role}/dashboard`, icon: Home, roles: ['administrador', 'arrendador', 'inquilino'] },
-    { name: 'Propiedades', href: '/propiedades', icon: Building2, roles: ['administrador', 'arrendador'] },
-    { name: 'Contratos', href: '/contratos', icon: FileText, roles: ['administrador', 'arrendador', 'inquilino'] },
-    { name: 'Pagos', href: '/pagos', icon: DollarSign, roles: ['administrador', 'arrendador', 'inquilino'] },
-    { name: 'Mensajes', href: '/mensajes', icon: MessageSquare, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Propiedades', href: `/${user?.role}/propiedades`, icon: Building2, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Contratos', href: `/${user?.role}/contratos`, icon: FileText, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Pagos', href: `/${user?.role}/pagos`, icon: DollarSign, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Mensajes', href: `/${user?.role}/mensajes`, icon: MessageSquare, roles: ['administrador', 'arrendador', 'inquilino'] },
   ];
 
   const isActive = (href: string) => {

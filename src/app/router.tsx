@@ -3,17 +3,23 @@ import { useAuth } from './contexts/auth-context';
 import { Login } from './components/login';
 import { AdminLayout } from './components/admin/admin-layout';
 import { AdminDashboard } from './components/admin/admin-dashboard';
+import { AdminProperties } from './components/admin/admin-properties';
+import { AdminContracts } from './components/admin/admin-contracts';
+import { AdminPayments } from './components/admin/admin-payments';
 import { ArrendadorLayout } from './components/arrendador/arrendador-layout';
 import { ArrendadorDashboard } from './components/arrendador/arrendador-dashboard';
+import { ArrendadorProperties } from './components/arrendador/arrendador-properties';
+import { ArrendadorContracts } from './components/arrendador/arrendador-contracts';
+import { ArrendadorPayments } from './components/arrendador/arrendador-payments';
 import { InquilinoLayout } from './components/inquilino/inquilino-layout';
 import { InquilinoDashboard } from './components/inquilino/inquilino-dashboard';
-import { Properties } from './components/properties';
+import { InquilinoProperties } from './components/inquilino/inquilino-properties';
+import { InquilinoContracts } from './components/inquilino/inquilino-contracts';
+import { InquilinoPayments } from './components/inquilino/inquilino-payments';
 import { PropertyDetail } from './components/property-detail';
 import { PropertyForm } from './components/property-form';
-import { Contracts } from './components/contracts';
 import { ContractDetail } from './components/contract-detail';
 import { ContractWizard } from './components/contract-wizard';
-import { Payments } from './components/payments';
 import { PaymentDetail } from './components/payment-detail';
 import { PaymentForm } from './components/payment-form';
 import { Messages } from './components/messages';
@@ -60,6 +66,18 @@ export function AppRouter() {
           }
         >
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="propiedades" element={<AdminProperties />} />
+          <Route path="properties/new" element={<PropertyForm />} />
+          <Route path="properties/:id" element={<PropertyDetail />} />
+          <Route path="properties/:id/edit" element={<PropertyForm />} />
+          <Route path="contratos" element={<AdminContracts />} />
+          <Route path="contracts/:id" element={<ContractDetail />} />
+          <Route path="contracts/new" element={<ContractWizard />} />
+          <Route path="contracts/:id/edit" element={<ContractWizard />} />
+          <Route path="contracts/:contractId/payments/new" element={<PaymentForm />} />
+          <Route path="pagos" element={<AdminPayments />} />
+          <Route path="payments/:id" element={<PaymentDetail />} />
+          <Route path="mensajes" element={<Messages />} />
         </Route>
 
         {/* Rutas de Arrendador */}
@@ -72,6 +90,18 @@ export function AppRouter() {
           }
         >
           <Route path="dashboard" element={<ArrendadorDashboard />} />
+          <Route path="propiedades" element={<ArrendadorProperties />} />
+          <Route path="properties/new" element={<PropertyForm />} />
+          <Route path="properties/:id" element={<PropertyDetail />} />
+          <Route path="properties/:id/edit" element={<PropertyForm />} />
+          <Route path="contratos" element={<ArrendadorContracts />} />
+          <Route path="contracts/:id" element={<ContractDetail />} />
+          <Route path="contracts/new" element={<ContractWizard />} />
+          <Route path="contracts/:id/edit" element={<ContractWizard />} />
+          <Route path="contracts/:contractId/payments/new" element={<PaymentForm />} />
+          <Route path="pagos" element={<ArrendadorPayments />} />
+          <Route path="payments/:id" element={<PaymentDetail />} />
+          <Route path="mensajes" element={<Messages />} />
         </Route>
 
         {/* Rutas de Inquilino */}
@@ -84,55 +114,16 @@ export function AppRouter() {
           }
         >
           <Route path="dashboard" element={<InquilinoDashboard />} />
-        </Route>
-
-        {/* Rutas compartidas protegidas */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          <Route 
-            path="propiedades" 
-            element={
-              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
-                <Properties />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="properties/new" 
-            element={
-              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
-                <PropertyForm />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="properties/:id" 
-            element={
-              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
-                <PropertyDetail />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="properties/:id/edit" 
-            element={
-              <ProtectedRoute allowedRoles={['administrador', 'arrendador']}>
-                <PropertyForm />
-              </ProtectedRoute>
-            } 
-          />
-          <Route path="contratos" element={<Contracts />} />
+          <Route path="propiedades" element={<InquilinoProperties />} />
+          <Route path="properties/new" element={<PropertyForm />} />
+          <Route path="properties/:id" element={<PropertyDetail />} />
+          <Route path="properties/:id/edit" element={<PropertyForm />} />
+          <Route path="contratos" element={<InquilinoContracts />} />
           <Route path="contracts/:id" element={<ContractDetail />} />
           <Route path="contracts/new" element={<ContractWizard />} />
           <Route path="contracts/:id/edit" element={<ContractWizard />} />
           <Route path="contracts/:contractId/payments/new" element={<PaymentForm />} />
-          <Route path="pagos" element={<Payments />} />
+          <Route path="pagos" element={<InquilinoPayments />} />
           <Route path="payments/:id" element={<PaymentDetail />} />
           <Route path="mensajes" element={<Messages />} />
         </Route>
