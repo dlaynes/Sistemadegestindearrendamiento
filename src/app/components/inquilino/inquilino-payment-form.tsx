@@ -58,7 +58,7 @@ type Attachment = {
   type: string;
 };
 
-export function PaymentForm() {
+export function InquilinoPaymentForm() {
   const { contractId } = useParams();
   const navigate = useNavigate();
 

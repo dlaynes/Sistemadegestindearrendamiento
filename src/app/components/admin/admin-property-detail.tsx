@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { 
   Building2, 
   MapPin, 
@@ -13,6 +13,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Mock data - debería coincidir con el de properties.tsx
 const mockProperties = [
@@ -120,9 +121,9 @@ const mockProperties = [
   },
 ];
 
-export function PropertyDetail() {
+export function AdminPropertyDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   
   const property = mockProperties.find(p => p.id === Number(id));
 
@@ -132,7 +133,7 @@ export function PropertyDetail() {
         <Building2 className="w-16 h-16 text-gray-400" />
         <h2 className="text-2xl font-semibold text-gray-900">Propiedad no encontrada</h2>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/propiedades')}
           className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -146,7 +147,7 @@ export function PropertyDetail() {
     <div className="space-y-6">
       {/* Back Button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/propiedades')}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />

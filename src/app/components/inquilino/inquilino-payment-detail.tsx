@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { 
   DollarSign,
   ArrowLeft,
@@ -14,6 +14,7 @@ import {
   FileText,
   TrendingUp
 } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Mock data - debería coincidir con el de payments.tsx
 const mockPayments = [
@@ -115,9 +116,9 @@ const mockPayments = [
   },
 ];
 
-export function PaymentDetail() {
+export function InquilinoPaymentDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   
   const payment = mockPayments.find(p => p.id === Number(id));
 
@@ -127,7 +128,7 @@ export function PaymentDetail() {
         <DollarSign className="w-16 h-16 text-gray-400" />
         <h2 className="text-2xl font-semibold text-gray-900">Pago no encontrado</h2>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/pagos')}
           className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -191,7 +192,7 @@ export function PaymentDetail() {
     <div className="space-y-6">
       {/* Back Button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/pagos')}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />

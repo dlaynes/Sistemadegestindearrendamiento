@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import {
   FileText,
@@ -15,6 +15,7 @@ import {
   X,
   CheckCircle,
 } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Mock data para propiedades disponibles
 const mockAvailableProperties = [
@@ -80,9 +81,9 @@ const STEPS = [
   { id: 6, name: 'Revisión', icon: CheckCircle },
 ];
 
-export function ContractWizard() {
+export function AdminContractWizard() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   const isEditing = !!id;
 
   const contract = isEditing ? mockContracts.find((c) => c.id === Number(id)) : null;
@@ -200,7 +201,7 @@ export function ContractWizard() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/contratos')}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

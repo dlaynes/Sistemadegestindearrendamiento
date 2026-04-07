@@ -11,7 +11,7 @@ export function Layout() {
     { name: 'Propiedades', href: `/${user?.role}/propiedades`, icon: Building2, roles: ['administrador', 'arrendador', 'inquilino'] },
     { name: 'Contratos', href: `/${user?.role}/contratos`, icon: FileText, roles: ['administrador', 'arrendador', 'inquilino'] },
     { name: 'Pagos', href: `/${user?.role}/pagos`, icon: DollarSign, roles: ['administrador', 'arrendador', 'inquilino'] },
-    { name: 'Mensajes', href: `/${user?.role}/mensajes`, icon: MessageSquare, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Mensajes', href: `/${user?.role}/mensajes`, icon: MessageSquare, roles: ['arrendador', 'inquilino'] },
   ];
 
   const isActive = (href: string) => {

@@ -16,14 +16,24 @@ import { InquilinoDashboard } from './components/inquilino/inquilino-dashboard';
 import { InquilinoProperties } from './components/inquilino/inquilino-properties';
 import { InquilinoContracts } from './components/inquilino/inquilino-contracts';
 import { InquilinoPayments } from './components/inquilino/inquilino-payments';
-import { PropertyDetail } from './components/property-detail';
-import { PropertyForm } from './components/property-form';
-import { ContractDetail } from './components/contract-detail';
-import { ContractWizard } from './components/contract-wizard';
-import { PaymentDetail } from './components/payment-detail';
-import { PaymentForm } from './components/payment-form';
-import { Messages } from './components/messages';
-import { Layout } from './components/layout';
+
+import { AdminContractDetail } from './components/admin/admin-contract-detail';
+import { ArrendadorContractDetail } from './components/arrendador/arrendador-contract-detail';
+import { InquilinoContractDetail } from './components/inquilino/inquilino-contract-detail';
+import { AdminPropertyDetail } from './components/admin/admin-property-detail';
+import { ArrendadorPropertyDetail } from './components/arrendador/arrendador-property-detail';
+import { InquilinoPropertyDetail } from './components/inquilino/inquilino-property-detail';
+import { AdminPaymentDetail } from './components/admin/admin-payment-detail';
+import { ArrendadorPaymentDetail } from './components/arrendador/arrendador-payment-detail';
+import { InquilinoPaymentDetail } from './components/inquilino/inquilino-payment-detail';
+import { AdminPropertyForm } from './components/admin/admin-property-form';
+import { ArrendadorPropertyForm } from './components/arrendador/arrendador-property-form';
+import { InquilinoPropertyForm } from './components/inquilino/inquilino-property-form';
+import { AdminContractWizard } from './components/admin/admin-contract-wizard';
+import { ArrendadorContractWizard } from './components/arrendador/arrendador-contract-wizard'
+import { InquilinoPaymentForm } from './components/inquilino/inquilino-payment-form';
+import { ArrendadorMessages } from './components/arrendador/arrendador-messages';
+import { InquilinoMessages } from './components/inquilino/inquilino-messages';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -67,17 +77,15 @@ export function AppRouter() {
         >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="propiedades" element={<AdminProperties />} />
-          <Route path="properties/new" element={<PropertyForm />} />
-          <Route path="properties/:id" element={<PropertyDetail />} />
-          <Route path="properties/:id/edit" element={<PropertyForm />} />
+          <Route path="properties/new" element={<AdminPropertyForm />} />
+          <Route path="properties/:id" element={<AdminPropertyDetail />} />
+          <Route path="properties/:id/edit" element={<AdminPropertyForm />} />
           <Route path="contratos" element={<AdminContracts />} />
-          <Route path="contracts/:id" element={<ContractDetail />} />
-          <Route path="contracts/new" element={<ContractWizard />} />
-          <Route path="contracts/:id/edit" element={<ContractWizard />} />
-          <Route path="contracts/:contractId/payments/new" element={<PaymentForm />} />
+          <Route path="contracts/:id" element={<AdminContractDetail />} />
+          <Route path="contracts/new" element={<AdminContractWizard />} />
+          <Route path="contracts/:id/edit" element={<AdminContractWizard />} />
           <Route path="pagos" element={<AdminPayments />} />
-          <Route path="payments/:id" element={<PaymentDetail />} />
-          <Route path="mensajes" element={<Messages />} />
+          <Route path="payments/:id" element={<AdminPaymentDetail />} />
         </Route>
 
         {/* Rutas de Arrendador */}
@@ -91,17 +99,16 @@ export function AppRouter() {
         >
           <Route path="dashboard" element={<ArrendadorDashboard />} />
           <Route path="propiedades" element={<ArrendadorProperties />} />
-          <Route path="properties/new" element={<PropertyForm />} />
-          <Route path="properties/:id" element={<PropertyDetail />} />
-          <Route path="properties/:id/edit" element={<PropertyForm />} />
+          <Route path="properties/new" element={<ArrendadorPropertyForm />} />
+          <Route path="properties/:id" element={<ArrendadorPropertyDetail />} />
+          <Route path="properties/:id/edit" element={<ArrendadorPropertyForm />} />
           <Route path="contratos" element={<ArrendadorContracts />} />
-          <Route path="contracts/:id" element={<ContractDetail />} />
-          <Route path="contracts/new" element={<ContractWizard />} />
-          <Route path="contracts/:id/edit" element={<ContractWizard />} />
-          <Route path="contracts/:contractId/payments/new" element={<PaymentForm />} />
+          <Route path="contracts/:id" element={<ArrendadorContractDetail />} />
+          <Route path="contracts/new" element={<ArrendadorContractWizard />} />
+          <Route path="contracts/:id/edit" element={<ArrendadorContractWizard />} />
           <Route path="pagos" element={<ArrendadorPayments />} />
-          <Route path="payments/:id" element={<PaymentDetail />} />
-          <Route path="mensajes" element={<Messages />} />
+          <Route path="payments/:id" element={<ArrendadorPaymentDetail />} />
+          <Route path="mensajes" element={<ArrendadorMessages />} />
         </Route>
 
         {/* Rutas de Inquilino */}
@@ -115,17 +122,15 @@ export function AppRouter() {
         >
           <Route path="dashboard" element={<InquilinoDashboard />} />
           <Route path="propiedades" element={<InquilinoProperties />} />
-          <Route path="properties/new" element={<PropertyForm />} />
-          <Route path="properties/:id" element={<PropertyDetail />} />
-          <Route path="properties/:id/edit" element={<PropertyForm />} />
+          <Route path="properties/new" element={<InquilinoPropertyForm />} />
+          <Route path="properties/:id" element={<InquilinoPropertyDetail />} />
+          <Route path="properties/:id/edit" element={<InquilinoPropertyForm />} />
           <Route path="contratos" element={<InquilinoContracts />} />
-          <Route path="contracts/:id" element={<ContractDetail />} />
-          <Route path="contracts/new" element={<ContractWizard />} />
-          <Route path="contracts/:id/edit" element={<ContractWizard />} />
-          <Route path="contracts/:contractId/payments/new" element={<PaymentForm />} />
+          <Route path="contracts/:id" element={<InquilinoContractDetail />} />
+          <Route path="contracts/:contractId/payments/new" element={<InquilinoPaymentForm />} />
           <Route path="pagos" element={<InquilinoPayments />} />
-          <Route path="payments/:id" element={<PaymentDetail />} />
-          <Route path="mensajes" element={<Messages />} />
+          <Route path="payments/:id" element={<InquilinoPaymentDetail />} />
+          <Route path="mensajes" element={<InquilinoMessages />} />
         </Route>
 
         {/* Ruta raíz */}

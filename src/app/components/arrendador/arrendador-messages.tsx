@@ -82,7 +82,7 @@ const mockMessages = [
   },
 ];
 
-export function Messages() {
+export function ArrendadorMessages() {
   const [selectedConversation, setSelectedConversation] = useState(mockConversations[0]);
   const [newMessage, setNewMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');

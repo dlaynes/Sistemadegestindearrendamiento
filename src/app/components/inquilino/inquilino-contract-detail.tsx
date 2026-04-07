@@ -15,6 +15,7 @@ import {
   CreditCard,
   TrendingUp
 } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Mock data - debería coincidir con el de contracts.tsx
 const mockContracts = [
@@ -101,9 +102,9 @@ const mockContracts = [
   },
 ];
 
-export function ContractDetail() {
+export function InquilinoContractDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   
   const contract = mockContracts.find(c => c.id === Number(id));
 
@@ -113,7 +114,7 @@ export function ContractDetail() {
         <FileText className="w-16 h-16 text-gray-400" />
         <h2 className="text-2xl font-semibold text-gray-900">Contrato no encontrado</h2>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/contratos')}
           className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -138,7 +139,7 @@ export function ContractDetail() {
     <div className="space-y-6">
       {/* Back Button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/contratos')}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />

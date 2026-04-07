@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { FileText, Calendar, Building2, Clock } from 'lucide-react';
+import { FileText, Building2, Clock } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Para inquilinos, solo mostrar su contrato actual

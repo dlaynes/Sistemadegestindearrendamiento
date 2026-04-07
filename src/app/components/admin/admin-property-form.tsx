@@ -9,6 +9,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useState } from 'react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Mock data - debería coincidir con el de properties.tsx
 const mockProperties = [
@@ -46,9 +47,9 @@ type PropertyFormData = {
   furnished: boolean;
 };
 
-export function PropertyForm() {
+export function AdminPropertyForm() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   const isEditing = !!id;
   
   // Buscar la propiedad si estamos editando
@@ -66,7 +67,7 @@ export function PropertyForm() {
       bathrooms: property.bathrooms,
       area: property.area,
       price: property.price,
-      status: property.status,
+      status: property.status as PropertyFormData['status'],
       description: property.description,
       yearBuilt: property.yearBuilt,
       floors: property.floors,
@@ -120,7 +121,7 @@ export function PropertyForm() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/propiedades')}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -412,7 +413,7 @@ export function PropertyForm() {
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/propiedades')}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Cancelar
