@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { Building2, MapPin, DollarSign, Search, Filter } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Para inquilinos, solo mostrarían propiedades disponibles o su propiedad actual
 const mockProperties = [
@@ -43,7 +43,7 @@ const mockProperties = [
 ];
 
 export function InquilinoProperties() {
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'ocupado' | 'disponible'>('all');
 

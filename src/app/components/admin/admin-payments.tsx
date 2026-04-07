@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { DollarSign, CheckCircle, Clock, AlertCircle, Calendar, TrendingUp } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 const mockPayments = [
   {
@@ -66,7 +66,7 @@ const mockPayments = [
 ];
 
 export function AdminPayments() {
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   const [statusFilter, setStatusFilter] = useState<'all' | 'pagado' | 'pendiente' | 'vencido'>('all');
 
   const filteredPayments = mockPayments.filter((payment) => {

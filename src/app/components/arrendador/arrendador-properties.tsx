@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { Building2, MapPin, DollarSign, Plus, Search, Filter } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 const mockProperties = [
   {
@@ -78,7 +78,7 @@ const mockProperties = [
 ];
 
 export function ArrendadorProperties() {
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'ocupado' | 'disponible'>('all');
 

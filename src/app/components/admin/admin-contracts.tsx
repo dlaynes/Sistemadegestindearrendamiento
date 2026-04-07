@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { FileText, Calendar, User, Building2, Plus, Clock } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 const mockContracts = [
   {
@@ -61,7 +61,7 @@ const mockContracts = [
 ];
 
 export function AdminContracts() {
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
   const [statusFilter, setStatusFilter] = useState<'all' | 'activo' | 'proximo_vencer'>('all');
 
   const filteredContracts = mockContracts.filter((contract) => {

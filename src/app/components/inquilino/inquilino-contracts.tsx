@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { FileText, Calendar, Building2, Clock } from 'lucide-react';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 // Para inquilinos, solo mostrar su contrato actual
 const mockContracts = [
@@ -18,7 +18,7 @@ const mockContracts = [
 ];
 
 export function InquilinoContracts() {
-  const navigate = useNavigate();
+  const navigate = useRoleNavigation();
 
   const getDaysUntilExpiration = (endDate: string) => {
     const today = new Date('2026-03-27');
