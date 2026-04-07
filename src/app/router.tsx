@@ -23,6 +23,7 @@ import { InquilinoContractDetail } from './components/inquilino/inquilino-contra
 import { AdminPropertyDetail } from './components/admin/admin-property-detail';
 import { ArrendadorPropertyDetail } from './components/arrendador/arrendador-property-detail';
 import { InquilinoPropertyDetail } from './components/inquilino/inquilino-property-detail';
+import { Welcome } from './components/welcome';
 import { AdminPaymentDetail } from './components/admin/admin-payment-detail';
 import { ArrendadorPaymentDetail } from './components/arrendador/arrendador-payment-detail';
 import { InquilinoPaymentDetail } from './components/inquilino/inquilino-payment-detail';
@@ -133,8 +134,11 @@ export function AppRouter() {
           <Route path="mensajes" element={<InquilinoMessages />} />
         </Route>
 
-        {/* Ruta raíz */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Ruta raíz - Página de bienvenida */}
+        <Route path="/" element={<Welcome />} />
+        
+        {/* Ruta de login */}
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
