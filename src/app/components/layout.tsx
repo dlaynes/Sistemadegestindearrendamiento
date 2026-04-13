@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router';
-import { Home, Building2, FileText, DollarSign, MessageSquare, LogOut, User } from 'lucide-react';
+import { Home, Building2, FileText, FileArchive, DollarSign, MessageSquare, LogOut, Users } from 'lucide-react';
 import { useAuth } from '../contexts/auth-context';
 
 export function Layout() {
@@ -8,10 +8,12 @@ export function Layout() {
 
   const navigation = [
     { name: 'Dashboard', href: `/${user?.role}/dashboard`, icon: Home, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Usuarios', href: `/${user?.role}/users`, icon: Users, roles: ['administrador'] },
     { name: 'Propiedades', href: `/${user?.role}/propiedades`, icon: Building2, roles: ['administrador', 'arrendador', 'inquilino'] },
-    { name: 'Contratos', href: `/${user?.role}/contratos`, icon: FileText, roles: ['administrador', 'arrendador', 'inquilino'] },
+    { name: 'Contratos', href: `/${user?.role}/contratos`, icon: FileArchive, roles: ['administrador', 'arrendador', 'inquilino'] },
     { name: 'Pagos', href: `/${user?.role}/pagos`, icon: DollarSign, roles: ['administrador', 'arrendador', 'inquilino'] },
     { name: 'Mensajes', href: `/${user?.role}/mensajes`, icon: MessageSquare, roles: ['arrendador', 'inquilino'] },
+    { name: 'Reportes', href: `/${user?.role}/reportes`, icon: FileText, roles: ['administrador'] },
   ];
 
   const isActive = (href: string) => {

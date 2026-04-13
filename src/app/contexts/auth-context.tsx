@@ -11,7 +11,7 @@ interface AuthContextType extends AuthState {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Usuarios mock para desarrollo
-const mockUsers: Array<User & { password: string }> = [
+export const mockUsers: Array<User & { password: string }> = [
   {
     id: '1',
     name: 'Admin Principal',
@@ -19,6 +19,8 @@ const mockUsers: Array<User & { password: string }> = [
     password: 'admin123',
     role: 'administrador',
     avatar: 'AP',
+    status: 'activo',
+    lastLogin: '2026-04-12 10:30:00',
   },
   {
     id: '2',
@@ -28,6 +30,8 @@ const mockUsers: Array<User & { password: string }> = [
     role: 'arrendador',
     avatar: 'CR',
     properties: ['1', '2', '5'],
+    status: 'activo',
+    lastLogin: '2026-04-12 10:30:00',
   },
   {
     id: '3',
@@ -37,7 +41,65 @@ const mockUsers: Array<User & { password: string }> = [
     role: 'inquilino',
     avatar: 'JP',
     properties: ['1'],
+    status: 'activo',
+    lastLogin: '2026-04-12 10:30:00',
   },
+  {
+    id: '4',
+    name: 'Carlos Rodríguez',
+    email: 'carlos@rentmanager.com',
+    password: 'arrendador123',
+    role: 'arrendador',
+    status: 'activo',
+    lastLogin: '2026-04-11 16:45:00',
+    avatar: 'CR',
+    properties: ['1', '2', '5'],
+  },
+  {
+    id: '5',
+    name: 'Juan Pérez',
+    email: 'juan@email.com',
+    role: 'inquilino',
+    status: 'activo',
+    lastLogin: '2026-04-10 09:15:00',
+    avatar: 'JP',
+    properties: ['1'],
+    password: 'inquilino123',
+  },
+  {
+    id: '6',
+    name: 'María González',
+    email: 'maria.g@rentmanager.com',
+    role: 'arrendador',
+    password: 'arrendador123',
+    status: 'activo',
+    lastLogin: '2026-04-12 08:20:00',
+    avatar: 'MG',
+    properties: ['3', '4'],
+  },
+  {
+    id: '7',
+    name: 'Roberto Silva',
+    email: 'roberto.s@email.com',
+    role: 'inquilino',
+    status: 'inactivo',
+    lastLogin: '2026-03-15 14:30:00',
+    avatar: 'RS',
+    properties: ['6'],
+    password: 'inquilino123',
+  },
+  {
+    id: '8',
+    name: 'Laura Gómez',
+    email: 'laura.g@email.com',
+    role: 'inquilino',
+    status: 'activo',
+    lastLogin: '2026-04-12 11:00:00',
+    avatar: 'LG',
+    properties: ['5'],
+    password: 'inquilino123',
+  },
+
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {

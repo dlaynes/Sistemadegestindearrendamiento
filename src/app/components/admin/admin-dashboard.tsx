@@ -1,4 +1,6 @@
-import { Users, Building2, FileText, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { Users, Building2, FileText, DollarSign, TrendingUp } from 'lucide-react';
+import { AlertType } from '../../types/alert-type';
+import { AlertBox } from './alert-box';
 
 export function AdminDashboard() {
   const stats = [
@@ -15,9 +17,8 @@ export function AdminDashboard() {
     { type: 'Pago pendiente', description: 'Contrato #CT-004 vence mañana', time: 'Hace 1 día', status: 'warning' },
   ];
 
-  const alerts = [
-    { message: '3 contratos vencen en los próximos 30 días', type: 'warning' },
-    { message: '2 pagos pendientes requieren atención', type: 'error' },
+  const alerts : { message: string; type: AlertType }[] = [
+    { message: '4 arrendatarios nuevos agregados al sistema en la última semana', type: 'success' },
   ];
 
   return (
@@ -32,21 +33,7 @@ export function AdminDashboard() {
       {alerts.length > 0 && (
         <div className="space-y-3">
           {alerts.map((alert, index) => (
-            <div
-              key={index}
-              className={`flex items-start gap-3 p-4 rounded-lg ${
-                alert.type === 'warning' ? 'bg-yellow-50 border border-yellow-200' : 'bg-red-50 border border-red-200'
-              }`}
-            >
-              <AlertCircle className={`w-5 h-5 flex-shrink-0 ${
-                alert.type === 'warning' ? 'text-yellow-600' : 'text-red-600'
-              }`} />
-              <p className={`text-sm font-medium ${
-                alert.type === 'warning' ? 'text-yellow-800' : 'text-red-800'
-              }`}>
-                {alert.message}
-              </p>
-            </div>
+            <AlertBox key={index} {...alert} />
           ))}
         </div>
       )}

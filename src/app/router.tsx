@@ -6,6 +6,7 @@ import { AdminDashboard } from './components/admin/admin-dashboard';
 import { AdminProperties } from './components/admin/admin-properties';
 import { AdminContracts } from './components/admin/admin-contracts';
 import { AdminPayments } from './components/admin/admin-payments';
+import { AdminUsers } from './components/admin/admin-users';
 import { ArrendadorLayout } from './components/arrendador/arrendador-layout';
 import { ArrendadorDashboard } from './components/arrendador/arrendador-dashboard';
 import { ArrendadorProperties } from './components/arrendador/arrendador-properties';
@@ -20,13 +21,13 @@ import { InquilinoPayments } from './components/inquilino/inquilino-payments';
 import { AdminContractDetail } from './components/admin/admin-contract-detail';
 import { ArrendadorContractDetail } from './components/arrendador/arrendador-contract-detail';
 import { InquilinoContractDetail } from './components/inquilino/inquilino-contract-detail';
+import { AdminUserForm } from './components/admin/admin-user-form';
 import { AdminPropertyDetail } from './components/admin/admin-property-detail';
 import { ArrendadorPropertyDetail } from './components/arrendador/arrendador-property-detail';
 import { InquilinoPropertyDetail } from './components/inquilino/inquilino-property-detail';
 import { Welcome } from './components/welcome';
 import { AdminPaymentDetail } from './components/admin/admin-payment-detail';
 import { ArrendadorPaymentDetail } from './components/arrendador/arrendador-payment-detail';
-import { InquilinoPaymentDetail } from './components/inquilino/inquilino-payment-detail';
 import { AdminPropertyForm } from './components/admin/admin-property-form';
 import { ArrendadorPropertyForm } from './components/arrendador/arrendador-property-form';
 import { InquilinoPropertyForm } from './components/inquilino/inquilino-property-form';
@@ -35,6 +36,8 @@ import { ArrendadorContractWizard } from './components/arrendador/arrendador-con
 import { InquilinoPaymentForm } from './components/inquilino/inquilino-payment-form';
 import { ArrendadorMessages } from './components/arrendador/arrendador-messages';
 import { InquilinoMessages } from './components/inquilino/inquilino-messages';
+import { InquilinoPaymentDetail } from './components/inquilino/inquilino-payment-detail';
+import { AdminReports } from './components/admin/admin-reports';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -77,6 +80,10 @@ export function AppRouter() {
           }
         >
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="users/new" element={<AdminUserForm />} />
+          <Route path="users/:id" element={<AdminUserForm />} />
+          <Route path="users/:id/edit" element={<AdminUserForm />} />
           <Route path="propiedades" element={<AdminProperties />} />
           <Route path="properties/new" element={<AdminPropertyForm />} />
           <Route path="properties/:id" element={<AdminPropertyDetail />} />
@@ -87,6 +94,7 @@ export function AppRouter() {
           <Route path="contracts/:id/edit" element={<AdminContractWizard />} />
           <Route path="pagos" element={<AdminPayments />} />
           <Route path="payments/:id" element={<AdminPaymentDetail />} />
+          <Route path="reportes" element={<AdminReports />} />
         </Route>
 
         {/* Rutas de Arrendador */}

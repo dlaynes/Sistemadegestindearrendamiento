@@ -5,6 +5,8 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  status: 'activo' | 'inactivo';
+  lastLogin: string; // Fecha y hora del último inicio de sesión
   avatar?: string;
   properties?: string[]; // IDs de propiedades asociadas
 }
