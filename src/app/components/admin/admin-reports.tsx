@@ -6,8 +6,6 @@ import {
   Building2, 
   DollarSign,
   TrendingUp,
-  Printer,
-  Info
 } from 'lucide-react';
 
 export function AdminReports() {
@@ -67,12 +65,6 @@ export function AdminReports() {
       dataRows: 86,
     },
   ];
-
-  const printReport = (reportId: string) => {
-    console.log(`Imprimiendo reporte: ${reports.find(r => r.id === reportId)?.name}`);
-    // Aquí iría la lógica de impresión
-    window.print();
-  };
 
   const downloadReport = (reportId: string) => {
     console.log(`Descargando reporte: ${reports.find(r => r.id === reportId)?.name}`);
@@ -142,52 +134,12 @@ export function AdminReports() {
                       <Download className="w-4 h-4" />
                       Descargar
                     </button>
-                    
-                    <button
-                      onClick={() => printReport(report.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
-                    >
-                      <Printer className="w-4 h-4" />
-                      Imprimir
-                    </button>
                   </div>
                 </div>
               </div>
             </div>
           );
         })}
-      </div>
-
-      {/* Actions Legend */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start gap-3">
-          <div className="bg-blue-100 p-2 rounded-lg">
-            <Info className="w-5 h-5 text-blue-600" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-blue-900 mb-2">Acciones disponibles</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">•</span>
-                <span>
-                  <strong>Regenerar:</strong> Vuelve a generar el reporte con los datos más actualizados
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">•</span>
-                <span>
-                  <strong>Descargar:</strong> Descarga el reporte en formato PDF o Excel (según configuración)
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-0.5">•</span>
-                <span>
-                  <strong>Imprimir:</strong> Abre el diálogo de impresión del sistema
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useCallback, ReactNode } from 'rea
 import { Contract, ContractFormData } from '../types/contract';
 import { useProperty } from './property-context';
 
+type ContractStatus = 'activo' | 'vencido' | 'terminado' | 'suspendido';
+
 interface ContractContextType {
   contracts: Contract[];
   addContract: (contract: Contract) => void;

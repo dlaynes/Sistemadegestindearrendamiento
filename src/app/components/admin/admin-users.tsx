@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Shield, Plus, Search, Filter, Trash2, Mail as MailIcon } from 'lucide-react';
+import { User, Shield, Plus, Search, Filter, Trash2, Mail as MailIcon, BuildingIcon } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { mockUsers } from '../../contexts/auth-context';
 
@@ -144,6 +144,14 @@ export function AdminUsers() {
                   >
                     <MailIcon className="w-4 h-4" />
                     Ver Detalles
+                  </button>
+
+                  <button 
+                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-2 rounded hover:bg-blue-50 transition-colors"
+                    onClick={() => navigate(`/users/${user.id}/properties`)}
+                  >
+                    <BuildingIcon className="w-4 h-4" />
+                    Ver Propiedades
                   </button>
                   
                   <div className="flex items-center gap-2">

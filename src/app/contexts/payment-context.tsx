@@ -2,6 +2,9 @@ import { createContext, useContext, useState, useCallback, ReactNode } from 'rea
 import { Payment, PaymentFormData } from '../types/payment';
 import { useContract } from './contract-context';
 
+type PaymentStatus = 'pendiente' | 'completado' | 'fallido';
+type PaymentMethod = 'transferencia' | 'tarjeta' | 'efectivo';
+
 interface PaymentContextType {
   payments: Payment[];
   addPayment: (payment: Payment) => void;

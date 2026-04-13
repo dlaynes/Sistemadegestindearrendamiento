@@ -84,7 +84,7 @@ export function AppRouter() {
           <Route path="users/new" element={<AdminUserForm />} />
           <Route path="users/:id" element={<AdminUserForm />} />
           <Route path="users/:id/edit" element={<AdminUserForm />} />
-          <Route path="propiedades" element={<AdminProperties />} />
+          <Route path="users/:id/properties" element={<AdminProperties />} />
           <Route path="properties/new" element={<AdminPropertyForm />} />
           <Route path="properties/:id" element={<AdminPropertyDetail />} />
           <Route path="properties/:id/edit" element={<AdminPropertyForm />} />

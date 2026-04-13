@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Property, PropertyFormData } from '../types/property';
+import { Property } from '../types/property';
+
+type PropertyStatus = 'disponible' | 'ocupado' | 'mantenimiento';
 
 interface PropertyContextType {
   properties: Property[];
