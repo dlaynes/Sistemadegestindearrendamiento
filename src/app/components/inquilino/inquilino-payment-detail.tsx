@@ -239,7 +239,10 @@ export function InquilinoPaymentDetail() {
                 Este pago venció hace {getDaysOverdue()} días. Se están acumulando cargos por mora.
               </p>
             </div>
-            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium whitespace-nowrap">
+            <button 
+              onClick={() => navigate(`/contracts/${payment.id}/payments/new`)}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
+            >
               Registrar Pago
             </button>
           </div>
@@ -254,7 +257,10 @@ export function InquilinoPaymentDetail() {
                 Este pago vence el {payment.dueDate}.
               </p>
             </div>
-            <button className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors font-medium whitespace-nowrap">
+            <button 
+              onClick={() => navigate(`/contracts/${payment.id}/payments/new`)}
+              className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors font-medium whitespace-nowrap"
+            >
               Registrar Pago
             </button>
           </div>

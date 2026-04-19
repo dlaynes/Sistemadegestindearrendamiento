@@ -130,7 +130,9 @@ export function InquilinoPaymentForm() {
     console.log('Registrando pago:', formData);
 
     // Aquí iría la lógica para guardar en el backend
-    navigate(`/contracts/${contractId}`);
+    // Generar ID único para el pago (en prod vendría del backend)
+    const newPaymentId = Number(contractId) + 1000; // Simulado para testing
+    navigate(`/payments/${newPaymentId}`);
   };
 
   const months = [
@@ -456,6 +458,10 @@ export function InquilinoPaymentForm() {
             <button
               type="submit"
               className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              onClick={() => {
+                console.log('Enviando formulario...');
+                onSubmit(watchedData);
+              }}
             >
               <Save className="w-4 h-4" />
               Registrar Pago
