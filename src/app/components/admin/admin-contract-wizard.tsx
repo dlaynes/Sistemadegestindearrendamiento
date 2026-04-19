@@ -9,7 +9,6 @@ import {
   Building2,
   User,
   Calendar,
-  DollarSign,
   FileCheck,
   Upload,
   X,
@@ -36,6 +35,7 @@ const mockContracts = [
     endDate: '2026-12-31',
     duration: 12,
     monthlyRent: 3200,
+    services: 300,
     deposit: 6400,
     contractType: 'fijo',
     paymentDay: 5,
@@ -57,11 +57,11 @@ type ContractFormData = {
   endDate: string;
   duration: number;
   monthlyRent: number;
+  services: number;
   deposit: number;
   contractType: 'fijo' | 'mensual' | 'renovable';
   paymentDay: number;
   specialClauses: string;
-  includeUtilities: boolean;
   includeMaintenance: boolean;
 };
 
@@ -105,6 +105,7 @@ export function AdminContractWizard() {
           tenantEmail: contract.tenantEmail,
           tenantPhone: contract.tenantPhone,
           tenantId: '',
+          services: contract.services,
           startDate: contract.startDate,
           endDate: contract.endDate,
           duration: contract.duration,
@@ -113,14 +114,12 @@ export function AdminContractWizard() {
           contractType: contract.contractType as 'fijo' | 'mensual' | 'renovable',
           paymentDay: contract.paymentDay,
           specialClauses: contract.specialClauses,
-          includeUtilities: false,
           includeMaintenance: false,
         }
       : {
           contractType: 'fijo',
           duration: 12,
           paymentDay: 5,
-          includeUtilities: false,
           includeMaintenance: false,
         },
   });
@@ -487,7 +486,7 @@ export function AdminContractWizard() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Renta mensual ($) *
+                      Renta mensual (S/.) *
                     </label>
                     <input
                       type="number"
@@ -498,7 +497,7 @@ export function AdminContractWizard() {
                         min: { value: 0, message: 'Debe ser mayor a 0' },
                       })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="3200.00"
+                      placeholder="Ej: 3200.00 (solo números)"
                     />
                     {errors.monthlyRent && (
                       <p className="mt-1 text-sm text-red-600">{errors.monthlyRent.message}</p>
@@ -507,7 +506,26 @@ export function AdminContractWizard() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Depósito de garantía ($) *
+                      Servicios (S./)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      {...register('services', {
+                        min: { value: 0, message: 'Debe ser mayor a 0' },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="0.00"
+                    />
+                    {errors.services && (
+                      <p className="mt-1 text-sm text-red-600">{errors.services.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Depósito de garantía (S/.) *
                     </label>
                     <input
                       type="number"
@@ -518,14 +536,14 @@ export function AdminContractWizard() {
                         min: { value: 0, message: 'Debe ser mayor a 0' },
                       })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="6400.00"
+                      placeholder="Ej: 6400.00 (solo números)"
                     />
                     {errors.deposit && (
                       <p className="mt-1 text-sm text-red-600">{errors.deposit.message}</p>
                     )}
                   </div>
 
-                  <div className="md:col-span-2">
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Día de pago mensual *
                     </label>
@@ -573,22 +591,6 @@ export function AdminContractWizard() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        {...register('includeUtilities')}
-                        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                      />
-                      <div>
-                        <span className="text-sm font-medium text-gray-700">
-                          Incluye servicios públicos
-                        </span>
-                        <p className="text-xs text-gray-500">
-                          Agua, luz, gas incluidos en la renta
-                        </p>
-                      </div>
-                    </label>
-
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="checkbox"
@@ -797,7 +799,7 @@ export function AdminContractWizard() {
                   </div>
 
                   {/* Condiciones */}
-                  {(watchedData.specialClauses || watchedData.includeUtilities || watchedData.includeMaintenance) && (
+                  {(watchedData.specialClauses  || watchedData.includeMaintenance) && (
                     <div className="bg-gray-50 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <FileCheck className="w-5 h-5 text-blue-600" />
@@ -809,9 +811,9 @@ export function AdminContractWizard() {
                         </div>
                       )}
                       <div className="flex flex-wrap gap-2">
-                        {watchedData.includeUtilities && (
+                        {!!watchedData.services && (
                           <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                            Servicios incluidos
+                            Servicios cobrados por separado
                           </span>
                         )}
                         {watchedData.includeMaintenance && (

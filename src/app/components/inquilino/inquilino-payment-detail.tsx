@@ -267,29 +267,11 @@ export function InquilinoPaymentDetail() {
         <div className="lg:col-span-2 space-y-6">
           {/* Parties Involved */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Información del Pago</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Información de la Propiedad</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Tenant */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <User className="w-5 h-5 text-gray-600" />
-                  <h3 className="font-semibold text-gray-900">Inquilino</h3>
-                </div>
-                <div className="space-y-2">
-                  <p className="font-medium text-gray-900">{payment.tenant}</p>
-                  <p className="text-sm text-gray-600">{payment.tenantEmail}</p>
-                  <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                    Ver perfil →
-                  </button>
-                </div>
-              </div>
 
               {/* Property */}
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Building2 className="w-5 h-5 text-gray-600" />
-                  <h3 className="font-semibold text-gray-900">Propiedad</h3>
-                </div>
                 <div className="space-y-2">
                   <p className="font-medium text-gray-900">{payment.property}</p>
                   <p className="text-sm text-gray-600">{payment.propertyAddress}</p>
@@ -429,12 +411,6 @@ export function InquilinoPaymentDetail() {
                 <>
                   <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                     Registrar Pago
-                  </button>
-                  <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                    Enviar Recordatorio
-                  </button>
-                  <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                    Ajustar Monto
                   </button>
                 </>
               )}

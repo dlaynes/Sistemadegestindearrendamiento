@@ -44,14 +44,6 @@ const mockUsers: UserType[] = [
   },
 ];
 
-type UserFormData = {
-  name: string;
-  email: string;
-  role: 'administrador' | 'arrendador' | 'inquilino';
-  status: 'activo' | 'inactivo';
-  properties: string[];
-};
-
 export function AdminUserForm() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
@@ -60,7 +52,7 @@ export function AdminUserForm() {
   // Buscar el usuario si estamos editando
   const user = isEditing ? mockUsers.find(u => u.id === id) : null;
 
-  const { register, handleSubmit, formState: { errors } } = useForm<UserFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<UserType>({
     defaultValues: isEditing && user ? {
       name: user.name,
       email: user.email,
@@ -73,7 +65,7 @@ export function AdminUserForm() {
     }
   });
 
-  const onSubmit = (data: UserFormData) => {
+  const onSubmit = (data: UserType) => {
     const formData = {
       ...data,
       avatar: data.name.substring(0, 2).toUpperCase(),
@@ -236,7 +228,7 @@ export function AdminUserForm() {
               ) : (
                 // Modo creación: mostrar propiedades existentes disponibles pero deshabilitadas
                 <div className="text-sm text-gray-600">
-                  <p className="mb-2">Propiedades disponibles en el sistema:</p>
+                  {/*<p className="mb-2">Propiedades disponibles en el sistema:</p>
                   <div className="flex flex-wrap gap-2">
                     {allProperties.map((propId) => (
                       <div
@@ -247,7 +239,7 @@ export function AdminUserForm() {
                         <span className="font-medium">#{propId}</span>
                       </div>
                     ))}
-                  </div>
+                  </div>*/}
                   <p className="mt-2 text-xs text-gray-500">
                     Nota: Para asignar propiedades a nuevos usuarios, ingresa al panel de arrendador y crea las propiedades desde allí.
                   </p>
