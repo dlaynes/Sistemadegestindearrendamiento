@@ -945,6 +945,12 @@ export function AdminContractWizard() {
                         </span>
                       </div>
                       <div>
+                        <span className="text-gray-600">Servicios:</span>{' '}
+                        <span className="font-medium text-gray-900">
+                          ${watchedData.services?.toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
                         <span className="text-gray-600">Depósito:</span>{' '}
                         <span className="font-medium text-gray-900">
                           ${watchedData.deposit?.toLocaleString()}
@@ -958,11 +964,7 @@ export function AdminContractWizard() {
                   </div>
 
                   {/* Condiciones */}
-<<<<<<< HEAD
-                  {(watchedData.specialClauses  || watchedData.includeMaintenance) && (
-=======
                   {(watchedData.terms || watchedData.includeUtilities || watchedData.includeMaintenance) && (
->>>>>>> bd4e9b23d9e77b05413353cc26162e369850d7e0
                     <div className="bg-gray-50 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <FileCheck className="w-5 h-5 text-blue-600" />
