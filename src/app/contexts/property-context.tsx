@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Property } from '../types/property';
-
-type PropertyStatus = 'disponible' | 'ocupado' | 'mantenimiento';
+import type { Property, PropertyStatus } from '../types';
 
 interface PropertyContextType {
   properties: Property[];
@@ -21,11 +19,11 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
       id: '1',
       name: 'Apartamento Centro',
       address: 'Calle Principal 123, Centro',
-      type: 'Apartamento',
+      type: 'apartamento',
       bedrooms: 2,
       bathrooms: 1,
       area: '80 m²',
-      price: 85000,
+      rent: '$850',
       status: 'disponible',
       description: 'Apartamento moderno en el centro de la ciudad, cerca de todo.',
       yearBuilt: 2018,
@@ -39,11 +37,11 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
       id: '2',
       name: 'Casa Residencial',
       address: 'Av. Los Pinos 456, Jardines',
-      type: 'Casa',
+      type: 'casa',
       bedrooms: 3,
       bathrooms: 2,
       area: '120 m²',
-      price: 120000,
+      rent: '$1,200',
       status: 'ocupado',
       description: 'Casa tranquila en zona residencial, jardín amplio.',
       yearBuilt: 2020,
@@ -57,11 +55,11 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
       id: '3',
       name: 'Loft Industrial',
       address: 'Calle Artesanos 789, Zona Norte',
-      type: 'Loft',
+      type: 'loft',
       bedrooms: 1,
       bathrooms: 1,
       area: '60 m²',
-      price: 65000,
+      rent: '$650',
       status: 'mantenimiento',
       description: 'Loft estilo industrial con acabados de alta calidad.',
       yearBuilt: 2022,
@@ -79,24 +77,24 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
 
   const updateProperty = useCallback((id: string, property: Property) => {
     setProperties((prev) =>
-      prev.map((prop) => (prop.id === id ? property : prop))
+      prev.map((p) => (p.id === id ? property : p))
     );
   }, []);
 
   const deleteProperty = useCallback((id: string) => {
-    setProperties((prev) => prev.filter((prop) => prop.id !== id));
+    setProperties((prev) => prev.filter((p) => p.id !== id));
   }, []);
 
   const getPropertyById = useCallback((id: string) => {
-    return properties.find((prop) => prop.id === id);
+    return properties.find((p) => p.id === id);
   }, [properties]);
 
   const getPropertiesByStatus = useCallback((status: PropertyStatus) => {
-    return properties.filter((prop) => prop.status === status);
+    return properties.filter((p) => p.status === status);
   }, [properties]);
 
   const getAvailableProperties = useCallback(() => {
-    return properties.filter((prop) => prop.status === 'disponible');
+    return properties.filter((p) => p.status === 'disponible');
   }, [properties]);
 
   return (

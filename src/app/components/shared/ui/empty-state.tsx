@@ -1,34 +1,15 @@
-import * as React from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
-interface EmptyStateProps {
-  /**
-   * Icon to display
-   */
+export interface EmptyStateProps {
   icon: LucideIcon;
-  /**
-   * Title text
-   */
   title: string;
-  /**
-   * Description text
-   */
   description?: string;
-  /**
-   * Optional action button
-   */
   action?: {
     label: string;
     onClick: () => void;
   };
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Icon size variant
-   */
   iconSize?: 'sm' | 'md' | 'lg';
 }
 
@@ -44,19 +25,6 @@ const containerPaddingClasses = {
   lg: 'py-16',
 };
 
-/**
- * EmptyState - A reusable empty state component for lists and grids
- * 
- * Usage:
- * ```tsx
- * <EmptyState
- *   icon={Building2}
- *   title="No hay propiedades"
- *   description="Comienza agregando una nueva propiedad"
- *   action={{ label: "Agregar Propiedad", onClick: handleAdd }}
- * />
- * ```
- */
 export function EmptyState({
   icon: Icon,
   title,

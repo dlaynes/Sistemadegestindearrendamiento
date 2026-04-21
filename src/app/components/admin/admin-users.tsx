@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Plus, Trash2, Mail as MailIcon, Building2, Edit2Icon } from 'lucide-react';
+import { Plus, Trash2, Building2, Edit2Icon } from 'lucide-react';
 import { mockUsers } from '../../contexts/auth-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader } from '../shared/dashboard/page-header';
 
 export function AdminUsers() {
   const navigate = useRoleNavigation();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState<'all' | 'administrador' | 'arrendador' | 'inquilino'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'activo' | 'inactivo'>('all');
+  const [searchTerm] = useState('');
+  const [roleFilter] = useState<'all' | 'administrador' | 'arrendador' | 'inquilino'>('all');
+  const [statusFilter] = useState<'all' | 'activo' | 'inactivo'>('all');
 
   const filteredUsers = mockUsers.filter((user) => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -107,7 +107,7 @@ export function AdminUsers() {
                                         <div className="flex flex-wrap gap-1">
                                             {user.properties?.map((propId) => (
                                                 <span key={propId} className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full">
-                                                    #{Math.abs(parseInt(propId))}
+                                                    #{typeof propId === 'number' ? propId : parseInt(propId)}
                                                 </span>
                                             ))}
                                         </div>

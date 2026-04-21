@@ -1,69 +1,22 @@
-import * as React from 'react';
 import { FileText, Download, Eye } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
-interface Document {
-  /**
-   * Document name
-   */
+export interface Document {
   name: string;
-  /**
-   * Document size (e.g., "2.5 MB")
-   */
   size: string;
-  /**
-   * Document type icon
-   */
   icon?: React.ElementType;
-  /**
-   * Document type (pdf, doc, etc.)
-   */
   type?: string;
 }
 
 interface DocumentListProps {
-  /**
-   * Section title
-   */
   title: string;
-  /**
-   * Array of documents
-   */
   documents: Document[];
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Handler for viewing a document
-   */
   onView?: (doc: Document) => void;
-  /**
-   * Handler for downloading a document
-   */
   onDownload?: (doc: Document) => void;
-  /**
-   * Empty state message
-   */
   emptyMessage?: string;
 }
 
-/**
- * DocumentList - A reusable document list component for detail views
- * 
- * Usage:
- * ```tsx
- * <DocumentList
- *   title="Documentos"
- *   documents={[
- *     { name: 'Contrato.pdf', size: '2.5 MB', type: 'pdf' },
- *     { name: 'Recibo.pdf', size: '1.2 MB', type: 'pdf' },
- *   ]}
- *   onView={handleView}
- *   onDownload={handleDownload}
- * />
- * ```
- */
 export function DocumentList({
   title,
   documents,

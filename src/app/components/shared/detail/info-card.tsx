@@ -1,65 +1,21 @@
-import * as React from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
-interface InfoItem {
-  /**
-   * Item label
-   */
+export interface InfoItem {
   label: string;
-  /**
-   * Item value
-   */
   value: React.ReactNode;
-  /**
-   * Optional icon
-   */
   icon?: LucideIcon;
 }
 
 interface InfoCardProps {
-  /**
-   * Card title
-   */
   title: string;
-  /**
-   * Array of info items to display
-   */
-  items: InfoItem[];
-  /**
-   * Optional icon for the title
-   */
+  items?: InfoItem[];
   icon?: LucideIcon;
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Number of columns for the grid
-   */
   columns?: 1 | 2 | 3;
-  /**
-   * Optional children for custom content
-   */
   children?: React.ReactNode;
 }
 
-/**
- * InfoCard - A reusable info card component for detail views
- * 
- * Usage:
- * ```tsx
- * <InfoCard
- *   title="Información del Contrato"
- *   icon={FileText}
- *   columns={2}
- *   items={[
- *     { label: 'Inquilino', value: 'Juan Pérez', icon: User },
- *     { label: 'Propiedad', value: 'Apartamento #101', icon: Building2 },
- *   ]}
- * />
- * ```
- */
 export function InfoCard({
   title,
   items,
@@ -88,7 +44,7 @@ export function InfoCard({
       </div>
       
       <div className={cn('p-6 grid gap-6', gridCols[columns])}>
-        {items.map((item, index) => (
+        {items?.map((item, index) => (
           <div key={index} className="flex items-start gap-3">
             {item.icon && (
               <item.icon className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />

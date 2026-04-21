@@ -9,8 +9,9 @@ import {
   EmptyState, 
   ActionButton 
 } from '../shared';
+import type { ContractListItem } from '../../types';
 
-const mockContracts = [
+const mockContracts: ContractListItem[] = [
   {
     id: 1,
     code: 'CT-0001',
@@ -20,7 +21,7 @@ const mockContracts = [
     endDate: '2026-06-01',
     monthlyRent: '$3,200',
     deposit: '$6,400',
-    status: 'activo' as const,
+    status: 'activo',
   },
   {
     id: 2,
@@ -31,7 +32,7 @@ const mockContracts = [
     endDate: '2027-08-15',
     monthlyRent: '$4,500',
     deposit: '$9,000',
-    status: 'activo' as const,
+    status: 'activo',
   },
   {
     id: 3,
@@ -42,7 +43,7 @@ const mockContracts = [
     endDate: '2026-03-01',
     monthlyRent: '$2,800',
     deposit: '$5,600',
-    status: 'activo' as const,
+    status: 'proximo_vencer',
   },
   {
     id: 4,
@@ -53,7 +54,7 @@ const mockContracts = [
     endDate: '2026-12-01',
     monthlyRent: '$5,500',
     deposit: '$11,000',
-    status: 'activo' as const,
+    status: 'activo',
   },
   {
     id: 5,
@@ -64,7 +65,7 @@ const mockContracts = [
     endDate: '2025-12-15',
     monthlyRent: '$2,200',
     deposit: '$4,400',
-    status: 'proximo_vencer' as const,
+    status: 'proximo_vencer',
   },
 ];
 
@@ -76,11 +77,11 @@ export function AdminContracts() {
     return statusFilter === 'all' || contract.status === statusFilter;
   });
 
-  const handleViewContract = (contract: typeof mockContracts[0]) => {
+  const handleViewContract = (contract: ContractListItem) => {
     navigate(`/contracts/${contract.id}`);
   };
 
-  const handleEditContract = (contract: typeof mockContracts[0]) => {
+  const handleEditContract = (contract: ContractListItem) => {
     navigate(`/contracts/${contract.id}/edit`);
   };
 
@@ -119,7 +120,6 @@ export function AdminContracts() {
         onChange={setStatusFilter}
       />
 
-      {/* Contracts List */}
       {filteredContracts.length > 0 ? (
         <div className="space-y-4">
           {filteredContracts.map((contract) => (

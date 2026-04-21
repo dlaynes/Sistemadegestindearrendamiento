@@ -1,4 +1,5 @@
 import { useParams } from 'react-router';
+import type { Property, PropertyStatus } from '../../types';
 import { 
   Building2, 
   MapPin, 
@@ -26,17 +27,17 @@ import {
 } from '../shared';
 
 // Mock data
-const mockProperties = [
+const mockProperties: Property[] = [
   {
     id: 1,
     name: 'Apartamento Centro #101',
     address: 'Calle Principal 123, Centro',
-    type: 'Apartamento',
+    type: 'apartamento',
     bedrooms: 2,
     bathrooms: 2,
     area: '85 m²',
     rent: '$3,200',
-    status: 'ocupado' as const,
+    status: 'ocupado' as PropertyStatus,
     tenant: 'Juan Pérez',
     description: 'Moderno apartamento en el corazón del centro, con excelente iluminación natural y vistas panorámicas.',
     amenities: ['Estacionamiento', 'Balcón', 'Cocina equipada', 'Aire acondicionado', 'Internet incluido'],
@@ -48,12 +49,12 @@ const mockProperties = [
     id: 2,
     name: 'Casa Residencial #102',
     address: 'Av. Los Pinos 456, Zona Norte',
-    type: 'Casa',
+    type: 'casa',
     bedrooms: 3,
     bathrooms: 2,
     area: '120 m²',
     rent: '$4,500',
-    status: 'ocupado' as const,
+    status: 'ocupado' as PropertyStatus,
     tenant: 'Ana Martínez',
     description: 'Amplia casa en zona residencial tranquila y segura. Ideal para familias.',
     amenities: ['Jardín', 'Garaje 2 autos', 'Cuarto de lavado', 'Terraza', 'Sistema de seguridad'],
@@ -65,12 +66,12 @@ const mockProperties = [
     id: 3,
     name: 'Apartamento Vista Mar #103',
     address: 'Malecón 789, Playa',
-    type: 'Apartamento',
+    type: 'apartamento',
     bedrooms: 1,
     bathrooms: 1,
     area: '55 m²',
     rent: '$2,800',
-    status: 'ocupado' as const,
+    status: 'ocupado' as PropertyStatus,
     tenant: 'María García',
     description: 'Acogedor apartamento con vista directa al mar.',
     amenities: ['Vista al mar', 'Piscina compartida', 'Gimnasio', 'Seguridad 24/7', 'Estacionamiento'],
@@ -82,12 +83,12 @@ const mockProperties = [
     id: 4,
     name: 'Estudio Moderno #104',
     address: 'Calle Comercial 321, Centro',
-    type: 'Estudio',
+    type: 'estudio',
     bedrooms: 1,
     bathrooms: 1,
     area: '45 m²',
     rent: '$2,200',
-    status: 'disponible' as const,
+    status: 'disponible' as PropertyStatus,
     description: 'Estudio completamente renovado con diseño minimalista.',
     amenities: ['Cocina americana', 'Internet fibra óptica', 'Lavandería compartida', 'Espacio de coworking'],
     yearBuilt: 2022,
@@ -116,7 +117,7 @@ export function AdminPropertyDetail() {
         description="La propiedad que buscas no existe"
         action={{
           label: "Volver a Propiedades",
-          onClick: () => navigate('/propiedades')
+          onClick: () => navigate('/properties')
         }}
       />
     );
@@ -175,9 +176,10 @@ export function AdminPropertyDetail() {
             title="Amenidades"
             icon={CheckCircle}
             columns={2}
+            items={[]}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {property.amenities.map((amenity, index) => (
+              {property.amenities?.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <CheckCircle className="w-5 h-5 text-green-600" />
                   <span className="text-gray-700">{amenity}</span>

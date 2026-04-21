@@ -7,15 +7,15 @@ import {
   SearchFilter, 
   EmptyState 
 } from '../shared';
-import { Property } from '../../types/property';
+import type { PropertyListItem } from '../../types';
 
 // Para inquilinos, solo mostrarían propiedades disponibles o su propiedad actual
-const mockProperties = [
+const mockProperties: PropertyListItem[] = [
   {
     id: 3,
     name: 'Apartamento Vista Mar #103',
     address: 'Malecón 789, Playa',
-    status: 'ocupado' as const,
+    status: 'ocupado',
     rent: '$2,800',
     bedrooms: 1,
     bathrooms: 1,
@@ -26,7 +26,7 @@ const mockProperties = [
     id: 4,
     name: 'Estudio Moderno #104',
     address: 'Calle Comercial 321, Centro',
-    status: 'disponible' as const,
+    status: 'disponible',
     rent: '$2,200',
     bedrooms: 1,
     bathrooms: 1,
@@ -36,7 +36,7 @@ const mockProperties = [
     id: 6,
     name: 'Loft Industrial #205',
     address: 'Zona Industrial 234',
-    status: 'disponible' as const,
+    status: 'disponible',
     rent: '$3,800',
     bedrooms: 2,
     bathrooms: 1,
@@ -56,7 +56,7 @@ export function InquilinoProperties() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleViewProperty = (property: Partial<Property>) => {
+  const handleViewProperty = (property: PropertyListItem) => {
     navigate(`/properties/${property.id}`);
   };
 

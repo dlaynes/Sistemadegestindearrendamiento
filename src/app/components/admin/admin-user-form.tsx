@@ -1,18 +1,17 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { 
   User, 
   ArrowLeft,
   Save,
-  Mail,
   Building2
 } from 'lucide-react';
+import type { User as UserType } from '../../types';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
-import { User as UserType } from '../../types/user';
 import { PageHeader } from '../shared/dashboard/page-header';
 
 // Mock data - debería coincidir con el de users.tsx
-const mockUsers: UserType[] = [
+const mockUsers: (UserType & { properties?: string[] })[] = [
   {
     id: '1',
     name: 'Admin Principal',

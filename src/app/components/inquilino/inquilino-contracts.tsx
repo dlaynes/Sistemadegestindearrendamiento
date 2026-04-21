@@ -1,9 +1,10 @@
-import { FileText, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader, ContractCard, InfoCard } from '../shared';
+import type { ContractListItem } from '../../types';
 
 // Para inquilinos, solo mostrar su contrato actual
-const mockContracts = [
+const mockContracts: ContractListItem[] = [
   {
     id: 3,
     code: 'CT-0003',
@@ -13,14 +14,14 @@ const mockContracts = [
     endDate: '2026-03-01',
     monthlyRent: '$2,800',
     deposit: '$5,600',
-    status: 'activo' as const,
+    status: 'activo',
   },
 ];
 
 export function InquilinoContracts() {
   const navigate = useRoleNavigation();
 
-  const handleViewContract = (contract: typeof mockContracts[0]) => {
+  const handleViewContract = (contract: ContractListItem) => {
     navigate(`/contracts/${contract.id}`);
   };
 

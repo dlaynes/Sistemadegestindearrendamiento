@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { useAuth } from './contexts/auth-context';
 import { Login } from './components/login';
 import { Layout } from './components/layout';

@@ -1,35 +1,13 @@
-import * as React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
-interface BackButtonProps {
-  /**
-   * Click handler for the button
-   */
+export interface BackButtonProps {
   onClick?: () => void;
-  /**
-   * Optional label text (defaults to "Volver")
-   */
   label?: string;
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Optional icon size
-   */
   iconSize?: number;
 }
 
-/**
- * BackButton - A reusable back navigation button
- * 
- * Usage:
- * ```tsx
- * <BackButton onClick={() => navigate(-1)} />
- * <BackButton onClick={handleBack} label="Regresar" />
- * ```
- */
 export function BackButton({
   onClick,
   label = 'Volver',

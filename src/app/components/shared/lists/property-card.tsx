@@ -1,83 +1,16 @@
-import * as React from 'react';
 import { Building2, MapPin, Bed, Bath, Square, Eye } from 'lucide-react';
 import { cn } from '../../ui/utils';
 import { StatusBadge } from '../ui/status-badge';
+import type { PropertyListItem } from '../../../types';
 
-export interface PropertyCardData {
-  /**
-   * Property ID
-   */
-  id: string | number;
-  /**
-   * Property name
-   */
-  name: string;
-  /**
-   * Property address
-   */
-  address: string;
-  /**
-   * Property status
-   */
-  status: 'ocupado' | 'disponible' | 'mantenimiento';
-  /**
-   * Monthly rent
-   */
-  rent: string;
-  /**
-   * Number of bedrooms
-   */
-  bedrooms: number;
-  /**
-   * Number of bathrooms
-   */
-  bathrooms: number;
-  /**
-   * Property area in m²
-   */
-  area: string;
-  /**
-   * Current tenant name (if occupied)
-   */
-  tenant?: string;
-}
+export type { PropertyListItem };
 
 interface PropertyCardProps {
-  /**
-   * Property data
-   */
-  property: PropertyCardData;
-  /**
-   * Click handler for view details
-   */
-  onView?: (property: PropertyCardData) => void;
-  /**
-   * Optional additional class names
-   */
+  property: PropertyListItem;
+  onView?: (property: PropertyListItem) => void;
   className?: string;
 }
 
-/**
- * PropertyCard - A reusable property card component for lists
- * 
- * Usage:
- * ```tsx
- * <PropertyCard
- *   property={{
- *     id: 1,
- *     name: 'Apartamento Centro',
- *     address: 'Calle Principal 123',
- *     status: 'ocupado',
- *     rent: '$1,200',
- *     bedrooms: 2,
- *     bathrooms: 1,
- *     area: '75 m²',
- *     tenant: 'Juan Pérez',
- *   }}
- *   onView={handleView}
- * />
- * ```
- */
 export function PropertyCard({
   property,
   onView,
@@ -91,7 +24,6 @@ export function PropertyCard({
         className
       )}
     >
-      {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-white/20 rounded-lg">
@@ -104,30 +36,29 @@ export function PropertyCard({
         </div>
       </div>
       
-      {/* Content */}
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <StatusBadge status={property.status} type="property" />
           <span className="text-lg font-bold text-gray-900">{property.rent}</span>
         </div>
         
-        {/* Details */}
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="flex items-center gap-2">
             <Bed className="w-4 h-4 text-gray-400" />
             <span className="text-sm text-gray-600">{property.bedrooms} Habs</span>
           </div>
+          
           <div className="flex items-center gap-2">
             <Bath className="w-4 h-4 text-gray-400" />
             <span className="text-sm text-gray-600">{property.bathrooms} Baños</span>
           </div>
+          
           <div className="flex items-center gap-2">
             <Square className="w-4 h-4 text-gray-400" />
             <span className="text-sm text-gray-600">{property.area}</span>
           </div>
         </div>
         
-        {/* Tenant info */}
         {property.tenant && (
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
             <MapPin className="w-4 h-4" />
@@ -135,7 +66,6 @@ export function PropertyCard({
           </div>
         )}
         
-        {/* Actions */}
         {onView && (
           <button
             onClick={() => onView(property)}

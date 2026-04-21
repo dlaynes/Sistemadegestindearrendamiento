@@ -1,4 +1,3 @@
-import { RouterProvider } from 'react-router';
 import { AuthProvider } from './contexts/auth-context';
 import { AppRouter } from './router';
 

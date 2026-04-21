@@ -9,7 +9,6 @@ import {
   Building2,
   User,
   Calendar,
-  DollarSign,
   FileCheck,
   Upload,
   X,

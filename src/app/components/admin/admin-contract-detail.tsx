@@ -1,4 +1,5 @@
 import { useParams } from 'react-router';
+import type { Contract, ContractStatus } from '../../types';
 import { 
   FileText, 
   User,
@@ -25,7 +26,7 @@ import {
   getDaysUntilExpiration
 } from '../shared';
 
-const mockContracts = [
+const mockContracts: Contract[] = [
   {
     id: 1,
     code: 'CT-0001',
@@ -38,7 +39,7 @@ const mockContracts = [
     endDate: '2026-06-01',
     monthlyRent: '$3,200',
     deposit: '$6,400',
-    status: 'activo' as const,
+    status: 'activo' as ContractStatus,
     paymentDay: 5,
     terms: [
       'El arrendatario se compromete a pagar la renta mensual puntualmente.',
@@ -58,7 +59,7 @@ const mockContracts = [
     endDate: '2027-08-15',
     monthlyRent: '$4,500',
     deposit: '$9,000',
-    status: 'activo' as const,
+    status: 'activo' as ContractStatus,
     paymentDay: 15,
     terms: [
       'El arrendatario se compromete a pagar la renta mensual puntualmente.',
@@ -77,7 +78,7 @@ const mockContracts = [
     endDate: '2026-03-01',
     monthlyRent: '$2,800',
     deposit: '$5,600',
-    status: 'proximo_vencer' as const,
+    status: 'proximo_vencer' as ContractStatus,
     paymentDay: 1,
     terms: [
       'El arrendatario se compromete a pagar la renta mensual puntualmente.',
@@ -182,9 +183,10 @@ export function AdminContractDetail() {
             title="Términos y Condiciones"
             icon={FileText}
             columns={1}
+            items={[]}
           >
             <ul className="space-y-2">
-              {contract.terms.map((term, index) => (
+              {contract.terms?.map((term, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <span className="text-gray-900">• {term}</span>
                 </li>
@@ -196,6 +198,7 @@ export function AdminContractDetail() {
             title="Historial de Pagos"
             icon={DollarSign}
             columns={1}
+            items={[]}
           >
             <div className="space-y-3">
               {mockPaymentHistory.map((payment, index) => (

@@ -1,54 +1,17 @@
-import * as React from 'react';
 import { cn } from '../../ui/utils';
 
 export interface FilterOption {
-  /**
-   * Option value
-   */
   value: string;
-  /**
-   * Option label
-   */
   label: string;
 }
 
 interface FilterButtonsProps {
-  /**
-   * Array of filter options
-   */
   options: FilterOption[];
-  /**
-   * Currently selected value
-   */
   activeValue: string;
-  /**
-   * Callback when selection changes
-   */
   onChange: (value: string) => void;
-  /**
-   * Optional additional class names
-   */
   className?: string;
 }
 
-/**
- * FilterButtons - A reusable filter buttons component for lists
- * 
- * Usage:
- * ```tsx
- * const [filter, setFilter] = useState('all');
- * 
- * <FilterButtons
- *   options={[
- *     { value: 'all', label: 'Todos' },
- *     { value: 'activo', label: 'Activos' },
- *     { value: 'proximo_vencer', label: 'Próximos' },
- *   ]}
- *   activeValue={filter}
- *   onChange={setFilter}
- * />
- * ```
- */
 export function FilterButtons({
   options,
   activeValue,

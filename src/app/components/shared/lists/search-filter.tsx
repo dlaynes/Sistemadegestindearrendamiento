@@ -1,73 +1,22 @@
-import * as React from 'react';
 import { Search } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 export interface SelectOption {
-  /**
-   * Option value
-   */
   value: string;
-  /**
-   * Option label
-   */
   label: string;
 }
 
 interface SearchFilterProps {
-  /**
-   * Search input value
-   */
   searchValue: string;
-  /**
-   * Search placeholder text
-   */
   searchPlaceholder?: string;
-  /**
-   * Callback when search changes
-   */
   onSearchChange: (value: string) => void;
-  /**
-   * Optional select filter value
-   */
   selectValue?: string;
-  /**
-   * Optional select options
-   */
   selectOptions?: SelectOption[];
-  /**
-   * Optional select placeholder
-   */
   selectPlaceholder?: string;
-  /**
-   * Callback when select changes
-   */
   onSelectChange?: (value: string) => void;
-  /**
-   * Optional additional class names
-   */
   className?: string;
 }
 
-/**
- * SearchFilter - A reusable search and filter component for lists
- * 
- * Usage:
- * ```tsx
- * <SearchFilter
- *   searchValue={searchTerm}
- *   onSearchChange={setSearchTerm}
- *   searchPlaceholder="Buscar propiedades..."
- *   selectValue={statusFilter}
- *   onSelectChange={setStatusFilter}
- *   selectOptions={[
- *     { value: 'all', label: 'Todos' },
- *     { value: 'ocupado', label: 'Ocupado' },
- *     { value: 'disponible', label: 'Disponible' },
- *   ]}
- *   selectPlaceholder="Filtrar por estado"
- * />
- * ```
- */
 export function SearchFilter({
   searchValue,
   searchPlaceholder = 'Buscar...',

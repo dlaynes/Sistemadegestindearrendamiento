@@ -1,51 +1,19 @@
-import * as React from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
-
 type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface ActionButtonProps {
-  /**
-   * Button content
-   */
+export interface ActionButtonProps {
   children: React.ReactNode;
-  /**
-   * Click handler
-   */
   onClick?: () => void;
-  /**
-   * Visual variant
-   */
   variant?: ButtonVariant;
-  /**
-   * Button size
-   */
   size?: ButtonSize;
-  /**
-   * Optional icon to display before text
-   */
   icon?: LucideIcon;
-  /**
-   * Optional icon to display after text
-   */
   iconAfter?: LucideIcon;
-  /**
-   * Full width button
-   */
   fullWidth?: boolean;
-  /**
-   * Disabled state
-   */
   disabled?: boolean;
-  /**
-   * Additional class names
-   */
   className?: string;
-  /**
-   * Button type attribute
-   */
   type?: 'button' | 'submit' | 'reset';
 }
 
@@ -68,20 +36,6 @@ const sizeClasses: Record<ButtonSize, string> = {
   lg: 'px-6 py-3 text-lg',
 };
 
-/**
- * ActionButton - A reusable action button with consistent styling
- * 
- * Usage:
- * ```tsx
- * <ActionButton variant="primary" icon={Plus} onClick={handleAdd}>
- *   Agregar
- * </ActionButton>
- * 
- * <ActionButton variant="danger" icon={Trash2} size="sm">
- *   Eliminar
- * </ActionButton>
- * ```
- */
 export function ActionButton({
   children,
   onClick,

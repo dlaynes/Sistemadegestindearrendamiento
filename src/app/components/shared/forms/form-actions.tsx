@@ -1,65 +1,19 @@
-import * as React from 'react';
 import { cn } from '../../ui/utils';
 import { ActionButton } from '../ui/action-button';
 
 interface FormActionsProps {
-  /**
-   * Cancel button handler
-   */
   onCancel: () => void;
-  /**
-   * Submit button handler
-   */
   onSubmit?: () => void;
-  /**
-   * Submit button label
-   */
   submitLabel?: string;
-  /**
-   * Cancel button label
-   */
   cancelLabel?: string;
-  /**
-   * Whether the form is being edited (shows "Guardar Cambios" vs "Crear")
-   */
   isEditing?: boolean;
-  /**
-   * Loading state
-   */
   isLoading?: boolean;
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Show delete button
-   */
   showDelete?: boolean;
-  /**
-   * Delete button handler
-   */
   onDelete?: () => void;
-  /**
-   * Delete button label
-   */
   deleteLabel?: string;
 }
 
-/**
- * FormActions - A reusable form action buttons component
- * 
- * Usage:
- * ```tsx
- * <FormActions
- *   onCancel={() => navigate(-1)}
- *   submitLabel={isEditing ? "Guardar Cambios" : "Crear Propiedad"}
- *   isEditing={isEditing}
- *   isLoading={isSubmitting}
- *   showDelete={isEditing}
- *   onDelete={handleDelete}
- * />
- * ```
- */
 export function FormActions({
   onCancel,
   onSubmit,

@@ -1,29 +1,36 @@
-export type ContractStatus = 'activo' | 'vencido' | 'cancelado' | 'terminado';
+// Unified Contract Types
+
+export type ContractStatus = 'activo' | 'proximo_vencer' | 'vencido' | 'cancelado' | 'terminado';
 
 export interface Contract {
-  id: string;
-  propertyId: string;
-  tenantId: string;
-  landlordId: string;
+  id: string | number;
+  code: string;
+  tenant: string;
+  tenantEmail?: string;
+  tenantPhone?: string;
+  property: string;
+  propertyAddress?: string;
   startDate: string;
   endDate: string;
-  monthlyRent: number;
-  deposit: number;
+  monthlyRent: string;
+  deposit: string;
   status: ContractStatus;
-  terms?: string;
+  paymentDay?: number;
+  terms?: string[];
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface ContractFormData {
-  propertyId: string;
-  tenantId: string;
-  landlordId: string;
+// For list views - simplified contract
+export interface ContractListItem {
+  id: string | number;
+  code: string;
+  tenant: string;
+  property: string;
   startDate: string;
   endDate: string;
-  monthlyRent: number;
-  deposit: number;
-  terms?: string;
-  notes?: string;
+  monthlyRent: string;
+  deposit: string;
+  status: ContractStatus;
 }

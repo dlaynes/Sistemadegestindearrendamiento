@@ -98,7 +98,7 @@ export function ArrendadorPropertyDetail() {
         description="La propiedad que buscas no existe"
         action={{
           label: "Volver a Propiedades",
-          onClick: () => navigate('/propiedades')
+          onClick: () => navigate('/properties')
         }}
       />
     );

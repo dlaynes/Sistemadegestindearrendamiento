@@ -1,10 +1,9 @@
-import * as React from 'react';
 import { cn } from '../../ui/utils';
 import {
-  ContractStatus,
-  PaymentStatus,
-  PropertyStatus,
-  UserStatus,
+  type ContractStatus,
+  type PaymentStatus,
+  type PropertyStatus,
+  type UserStatus,
   getContractStatusColor,
   getContractStatusLabel,
   getPaymentStatusColor,
@@ -17,26 +16,11 @@ import {
 
 type StatusType = 'contract' | 'payment' | 'property' | 'user';
 
-interface StatusBadgeProps {
-  /**
-   * The status value to display
-   */
+export interface StatusBadgeProps {
   status: ContractStatus | PaymentStatus | PropertyStatus | UserStatus | string;
-  /**
-   * The type of status (determines styling and label mapping)
-   */
   type: StatusType;
-  /**
-   * Optional custom label to override the default
-   */
   label?: string;
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Size variant
-   */
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -46,16 +30,6 @@ const sizeClasses = {
   lg: 'px-4 py-2 text-sm',
 };
 
-/**
- * StatusBadge - A reusable badge component for displaying status
- * 
- * Usage:
- * ```tsx
- * <StatusBadge status="activo" type="contract" />
- * <StatusBadge status="pagado" type="payment" size="lg" />
- * <StatusBadge status="ocupado" type="property" />
- * ```
- */
 export function StatusBadge({
   status,
   type,

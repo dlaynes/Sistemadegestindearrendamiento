@@ -1,42 +1,17 @@
-import * as React from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 interface SidebarAction {
-  /**
-   * Action label
-   */
   label: string;
-  /**
-   * Action icon
-   */
   icon: LucideIcon;
-  /**
-   * Click handler
-   */
   onClick: () => void;
-  /**
-   * Visual variant
-   */
   variant?: 'primary' | 'secondary' | 'danger';
-  /**
-   * Disabled state
-   */
   disabled?: boolean;
 }
 
 interface SidebarActionsProps {
-  /**
-   * Section title
-   */
   title: string;
-  /**
-   * Array of actions
-   */
   actions: SidebarAction[];
-  /**
-   * Optional additional class names
-   */
   className?: string;
 }
 
@@ -46,20 +21,6 @@ const variantClasses = {
   danger: 'bg-red-50 text-red-700 hover:bg-red-100',
 };
 
-/**
- * SidebarActions - A reusable sidebar actions component for detail views
- * 
- * Usage:
- * ```tsx
- * <SidebarActions
- *   title="Acciones"
- *   actions={[
- *     { label: 'Editar', icon: Edit, onClick: handleEdit, variant: 'primary' },
- *     { label: 'Eliminar', icon: Trash2, onClick: handleDelete, variant: 'danger' },
- *   ]}
- * />
- * ```
- */
 export function SidebarActions({
   title,
   actions,
@@ -70,6 +31,7 @@ export function SidebarActions({
       <div className="p-4 border-b border-gray-200">
         <h3 className="font-semibold text-gray-900">{title}</h3>
       </div>
+      
       <div className="p-4 space-y-2">
         {actions.map((action, index) => (
           <button

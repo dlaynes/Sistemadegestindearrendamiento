@@ -1,52 +1,17 @@
-import * as React from 'react';
-import { LucideIcon, TrendingUp } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 interface StatsCardProps {
-  /**
-   * Card label
-   */
   label: string;
-  /**
-   * Card value
-   */
   value: string | number;
-  /**
-   * Icon component
-   */
   icon: LucideIcon;
-  /**
-   * Icon background color class (e.g., 'bg-blue-500', 'bg-green-500')
-   */
   color: string;
-  /**
-   * Optional change indicator text (e.g., "+12% este mes", "+3 este mes")
-   */
   change?: string;
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Show trending up icon
-   */
   showTrend?: boolean;
 }
 
-/**
- * StatsCard - A dashboard statistic card with icon and change indicator
- * 
- * Usage:
- * ```tsx
- * <StatsCard
- *   label="Total Propiedades"
- *   value="24"
- *   icon={Building2}
- *   color="bg-blue-500"
- *   change="+3 este mes"
- * />
- * ```
- */
 export function StatsCard({
   label,
   value,

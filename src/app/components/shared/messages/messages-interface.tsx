@@ -1,123 +1,37 @@
-import * as React from 'react';
 import { MessageSquare, Send, Search } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 export interface Conversation {
-  /**
-   * Conversation ID
-   */
   id: string | number;
-  /**
-   * Contact name
-   */
   name: string;
-  /**
-   * Property reference
-   */
   property: string;
-  /**
-   * Last message preview
-   */
   lastMessage: string;
-  /**
-   * Last message timestamp
-   */
   timestamp: string;
-  /**
-   * Number of unread messages
-   */
   unread: number;
-  /**
-   * Avatar initials
-   */
   avatar: string;
 }
 
 export interface Message {
-  /**
-   * Message ID
-   */
   id: string | number;
-  /**
-   * Message sender type
-   */
   sender: 'tenant' | 'owner' | 'me';
-  /**
-   * Message content
-   */
   content: string;
-  /**
-   * Message timestamp
-   */
   timestamp: string;
 }
 
 interface MessagesInterfaceProps {
-  /**
-   * User role (affects labels)
-   */
   role: 'arrendador' | 'inquilino';
-  /**
-   * Array of conversations
-   */
   conversations: Conversation[];
-  /**
-   * Array of messages for the selected conversation
-   */
   messages: Message[];
-  /**
-   * Currently selected conversation ID
-   */
   selectedConversationId: string | number;
-  /**
-   * Callback when conversation is selected
-   */
   onSelectConversation: (conversation: Conversation) => void;
-  /**
-   * New message input value
-   */
   newMessage: string;
-  /**
-   * Callback when new message changes
-   */
   onNewMessageChange: (value: string) => void;
-  /**
-   * Callback when message is sent
-   */
   onSendMessage: () => void;
-  /**
-   * Search value
-   */
   searchValue: string;
-  /**
-   * Callback when search changes
-   */
   onSearchChange: (value: string) => void;
-  /**
-   * Optional additional class names
-   */
   className?: string;
 }
 
-/**
- * MessagesInterface - A reusable messages interface component
- * 
- * Usage:
- * ```tsx
- * <MessagesInterface
- *   role="arrendador"
- *   conversations={conversations}
- *   messages={messages}
- *   selectedConversationId={selectedId}
- *   onSelectConversation={setSelected}
- *   newMessage={newMessage}
- *   onNewMessageChange={setNewMessage}
- *   onSendMessage={handleSend}
- *   searchValue={search}
- *   onSearchChange={setSearch}
- * />
- * ```
- */
 export function MessagesInterface({
   role,
   conversations,
@@ -131,11 +45,14 @@ export function MessagesInterface({
   onSearchChange,
   className,
 }: MessagesInterfaceProps) {
-  const subtitle = role === 'arrendador'
-    ? 'Comunicación con inquilinos'
-    : 'Comunicación con arrendatarios';
+  const subtitle =
+    role === 'arrendador'
+      ? 'Comunicación con inquilinos'
+      : 'Comunicación con arrendatarios';
 
-  const selectedConversation = conversations.find(c => c.id === selectedConversationId);
+  const selectedConversation = conversations.find(
+    (c) => String(c.id) === String(selectedConversationId)
+  );
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -144,24 +61,21 @@ export function MessagesInterface({
     }
   };
 
-  const filteredConversations = conversations.filter((conv) =>
-    conv.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-    conv.property.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredConversations = conversations.filter(
+    (conv) =>
+      conv.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      conv.property.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   return (
     <div className={cn('space-y-6', className)}>
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-semibold text-gray-900">Mensajes</h1>
         <p className="text-gray-600 mt-1">{subtitle}</p>
       </div>
 
-      {/* Messages Interface */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden h-[700px] flex">
-        {/* Conversations List */}
         <div className="w-1/3 border-r border-gray-200 flex flex-col">
-          {/* Search */}
           <div className="p-4 border-b border-gray-200">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -175,7 +89,6 @@ export function MessagesInterface({
             </div>
           </div>
 
-          {/* Conversations */}
           <div className="flex-1 overflow-y-auto">
             {filteredConversations.map((conversation) => (
               <div
@@ -194,15 +107,21 @@ export function MessagesInterface({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-gray-900 truncate">{conversation.name}</h3>
+                      <h3 className="font-semibold text-gray-900 truncate">
+                        {conversation.name}
+                      </h3>
                       {conversation.unread > 0 && (
                         <span className="bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
                           {conversation.unread}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500 truncate">{conversation.property}</p>
-                    <p className="text-sm text-gray-600 truncate mt-1">{conversation.lastMessage}</p>
+                    <p className="text-sm text-gray-500 truncate">
+                      {conversation.property}
+                    </p>
+                    <p className="text-sm text-gray-600 truncate mt-1">
+                      {conversation.lastMessage}
+                    </p>
                     <p className="text-xs text-gray-400 mt-1">{conversation.timestamp}</p>
                   </div>
                 </div>
@@ -211,11 +130,9 @@ export function MessagesInterface({
           </div>
         </div>
 
-        {/* Messages Area */}
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
             <>
-              {/* Messages Header */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
@@ -228,7 +145,6 @@ export function MessagesInterface({
                 </div>
               </div>
 
-              {/* Messages List */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((message) => (
                   <div
@@ -264,7 +180,6 @@ export function MessagesInterface({
                 ))}
               </div>
 
-              {/* Message Input */}
               <div className="p-4 border-t border-gray-200">
                 <div className="flex gap-2">
                   <input

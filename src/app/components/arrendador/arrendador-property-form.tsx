@@ -104,7 +104,7 @@ export function ArrendadorPropertyForm() {
 
   return (
     <div className="space-y-6">
-      <BackButton onClick={() => navigate('/propiedades')} />
+      <BackButton onClick={() => navigate('/properties')} />
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center gap-3 mb-6">
@@ -265,7 +265,7 @@ export function ArrendadorPropertyForm() {
           </FormSection>
 
           <FormActions
-            onCancel={() => navigate('/propiedades')}
+            onCancel={() => navigate('/properties')}
             isEditing={isEditing}
             submitLabel={isEditing ? 'Guardar Cambios' : 'Crear Propiedad'}
             showDelete={isEditing}

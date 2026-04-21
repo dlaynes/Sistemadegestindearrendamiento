@@ -1,55 +1,19 @@
-import * as React from 'react';
-import { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 interface SummaryCard {
-  /**
-   * Card label
-   */
   label: string;
-  /**
-   * Card value
-   */
   value: string | number;
-  /**
-   * Icon component
-   */
   icon: LucideIcon;
-  /**
-   * Icon background color class
-   */
   color: string;
 }
 
-interface SummaryCardsProps {
-  /**
-   * Array of summary cards to display
-   */
+export interface SummaryCardsProps {
   cards: SummaryCard[];
-  /**
-   * Optional additional class names for the grid
-   */
   className?: string;
-  /**
-   * Number of columns on large screens
-   */
   columns?: 2 | 3 | 4;
 }
 
-/**
- * SummaryCards - A grid of summary statistic cards
- * 
- * Usage:
- * ```tsx
- * <SummaryCards
- *   cards={[
- *     { label: 'Total Contratos', value: '24', icon: FileText, color: 'bg-blue-500' },
- *     { label: 'Activos', value: '18', icon: CheckCircle, color: 'bg-green-500' },
- *   ]}
- *   columns={4}
- * />
- * ```
- */
 export function SummaryCards({
   cards,
   className,

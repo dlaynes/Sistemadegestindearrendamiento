@@ -5,8 +5,6 @@ import {
   DollarSign,
   ArrowLeft,
   Save,
-  CreditCard,
-  Calendar,
   FileText,
   Upload,
   X,
@@ -69,7 +67,7 @@ export function InquilinoPaymentForm() {
     register,
     handleSubmit,
     watch,
-    setValue,
+
     formState: { errors },
   } = useForm<PaymentFormData>({
     defaultValues: {
