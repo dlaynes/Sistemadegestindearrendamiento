@@ -1,7 +1,7 @@
 export type PropertyStatus = 'disponible' | 'ocupado' | 'mantenimiento' | 'vender';
 
 export interface Property {
-  id: string;
+  id: string | number;
   name: string;
   address: string;
   type: string;

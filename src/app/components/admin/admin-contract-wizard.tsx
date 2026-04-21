@@ -16,6 +16,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 // Mock data para propiedades disponibles
 const mockAvailableProperties = [
@@ -215,12 +216,8 @@ export function AdminContractWizard() {
             <FileText className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
-              {isEditing ? 'Editar Contrato' : 'Nuevo Contrato de Arrendamiento'}
-            </h1>
-            <p className="text-gray-600">
-              Paso {currentStep} de {STEPS.length}: {STEPS[currentStep - 1].name}
-            </p>
+            <PageHeader title={isEditing ? 'Editar Contrato' : 'Nuevo Contrato de Arrendamiento'}
+              subtitle={ `Paso ${currentStep} de ${STEPS.length}: ${STEPS[currentStep - 1].name}`} size='sm' />
           </div>
         </div>
 

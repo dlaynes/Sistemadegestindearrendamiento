@@ -7,6 +7,7 @@ import {
   DollarSign,
   TrendingUp,
 } from 'lucide-react';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 export function AdminReports() {
   const reports = [
@@ -79,10 +80,7 @@ export function AdminReports() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-semibold text-gray-900">Reportes</h1>
-        <p className="text-gray-600 mt-1">Genera y descarga reportes del sistema</p>
-      </div>
+      <PageHeader title="Reportes" subtitle="Genera y descarga reportes del sistema" size="md" />
 
       {/* Reports Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

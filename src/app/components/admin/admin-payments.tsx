@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DollarSign, CheckCircle, Clock, AlertCircle, Calendar, TrendingUp } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 const mockPayments = [
   {
@@ -119,10 +120,7 @@ export function AdminPayments() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-semibold text-gray-900">Pagos</h1>
-        <p className="text-gray-600 mt-1">Gestiona y monitorea los pagos de renta</p>
-      </div>
+      <PageHeader title='Pagos' subtitle='Gestiona y monitorea los pagos de renta' />
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

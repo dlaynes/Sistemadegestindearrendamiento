@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { User as UserType } from '../../types/user';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 // Mock data - debería coincidir con el de users.tsx
 const mockUsers: UserType[] = [
@@ -113,14 +114,8 @@ export function AdminUserForm() {
           <div className="bg-blue-100 p-3 rounded-lg">
             <User className="w-6 h-6 text-blue-600" />
           </div>
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
-              {isEditing ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
-            </h1>
-            <p className="text-gray-600">
-              {isEditing ? 'Modifica la información del usuario' : 'Completa los datos del nuevo usuario'}
-            </p>
-          </div>
+          <PageHeader title={isEditing ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
+            subtitle={isEditing ? 'Modifica la información del usuario' : 'Completa los datos del nuevo usuario'} size="sm" />
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

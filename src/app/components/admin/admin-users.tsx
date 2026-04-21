@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, Trash2, Mail as MailIcon, Building2, Edit2Icon } from 'lucide-react';
 import { mockUsers } from '../../contexts/auth-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 export function AdminUsers() {
   const navigate = useRoleNavigation();
@@ -30,10 +31,7 @@ export function AdminUsers() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-900">Usuarios</h1>
-          <p className="text-gray-600 mt-1">Administra los usuarios del sistema</p>
-        </div>
+        <PageHeader title='Usuarios' subtitle='Administra los usuarios del sistema' size='md' />
         <button 
           onClick={() => navigate('/users/new')}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"

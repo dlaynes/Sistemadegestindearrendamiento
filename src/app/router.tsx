@@ -1,18 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router';
 import { useAuth } from './contexts/auth-context';
 import { Login } from './components/login';
-import { AdminLayout } from './components/admin/admin-layout';
+import { Layout } from './components/layout';
 import { AdminDashboard } from './components/admin/admin-dashboard';
 import { AdminProperties } from './components/admin/admin-properties';
 import { AdminContracts } from './components/admin/admin-contracts';
 import { AdminPayments } from './components/admin/admin-payments';
 import { AdminUsers } from './components/admin/admin-users';
-import { ArrendadorLayout } from './components/arrendador/arrendador-layout';
 import { ArrendadorDashboard } from './components/arrendador/arrendador-dashboard';
 import { ArrendadorProperties } from './components/arrendador/arrendador-properties';
 import { ArrendadorContracts } from './components/arrendador/arrendador-contracts';
 import { ArrendadorPayments } from './components/arrendador/arrendador-payments';
-import { InquilinoLayout } from './components/inquilino/inquilino-layout';
 import { InquilinoDashboard } from './components/inquilino/inquilino-dashboard';
 import { InquilinoProperties } from './components/inquilino/inquilino-properties';
 import { InquilinoContracts } from './components/inquilino/inquilino-contracts';
@@ -32,7 +30,7 @@ import { AdminPropertyForm } from './components/admin/admin-property-form';
 import { ArrendadorPropertyForm } from './components/arrendador/arrendador-property-form';
 import { InquilinoPropertyForm } from './components/inquilino/inquilino-property-form';
 import { AdminContractWizard } from './components/admin/admin-contract-wizard';
-import { ArrendadorContractWizard } from './components/arrendador/arrendador-contract-wizard'
+import { ArrendadorContractWizard } from './components/arrendador/arrendador-contract-wizard';
 import { InquilinoPaymentForm } from './components/inquilino/inquilino-payment-form';
 import { ArrendadorMessages } from './components/arrendador/arrendador-messages';
 import { InquilinoMessages } from './components/inquilino/inquilino-messages';
@@ -64,6 +62,14 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
   return <>{children}</>;
 }
 
+function RoleLayout({ allowedRoles }: { allowedRoles: string[] }) {
+  return (
+    <ProtectedRoute allowedRoles={allowedRoles}>
+      <Layout />
+    </ProtectedRoute>
+  );
+}
+
 export function AppRouter() {
   return (
     <BrowserRouter>
@@ -73,11 +79,7 @@ export function AppRouter() {
         {/* Rutas de Administrador */}
         <Route
           path="/administrador"
-          element={
-            <ProtectedRoute allowedRoles={['administrador']}>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
+          element={<RoleLayout allowedRoles={['administrador']} />}
         >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
@@ -100,11 +102,7 @@ export function AppRouter() {
         {/* Rutas de Arrendador */}
         <Route
           path="/arrendador"
-          element={
-            <ProtectedRoute allowedRoles={['arrendador']}>
-              <ArrendadorLayout />
-            </ProtectedRoute>
-          }
+          element={<RoleLayout allowedRoles={['arrendador']} />}
         >
           <Route path="dashboard" element={<ArrendadorDashboard />} />
           <Route path="propiedades" element={<ArrendadorProperties />} />
@@ -123,11 +121,7 @@ export function AppRouter() {
         {/* Rutas de Inquilino */}
         <Route
           path="/inquilino"
-          element={
-            <ProtectedRoute allowedRoles={['inquilino']}>
-              <InquilinoLayout />
-            </ProtectedRoute>
-          }
+          element={<RoleLayout allowedRoles={['inquilino']} />}
         >
           <Route path="dashboard" element={<InquilinoDashboard />} />
           <Route path="propiedades" element={<InquilinoProperties />} />
