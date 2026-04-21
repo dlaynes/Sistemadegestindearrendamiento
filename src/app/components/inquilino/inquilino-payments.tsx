@@ -6,33 +6,36 @@ import { useRoleNavigation } from '../../hooks/use-role-navigation';
 const mockPayments = [
   {
     id: 3,
+    contractId: 3,
     tenant: 'Yo (María García)',
     property: 'Apartamento Vista Mar #103',
-    amount: 2800,
+    amount: '2800',
     dueDate: '2026-03-20',
-    paidDate: null,
+    
     status: 'vencido',
-    method: null,
+    method: 'transferencia',
   },
   {
     id: 7,
+    contractId: 7,
     tenant: 'Yo (María García)',
     property: 'Apartamento Vista Mar #103',
-    amount: 2800,
+    amount: '2800',
     dueDate: '2026-02-01',
     paidDate: '2026-02-01',
     status: 'pagado',
-    method: 'Transferencia',
+    method: 'transferencia',
   },
   {
     id: 8,
+    contractId: 8,
     tenant: 'Yo (María García)',
     property: 'Apartamento Vista Mar #103',
-    amount: 2800,
+    amount: '2800',
     dueDate: '2026-01-01',
     paidDate: '2025-12-30',
     status: 'pagado',
-    method: 'Transferencia',
+    method: 'transferencia',
   },
 ];
 
@@ -44,8 +47,8 @@ export function InquilinoPayments() {
     return statusFilter === 'all' || payment.status === statusFilter;
   });
 
-  const totalPaid = mockPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + p.amount, 0);
-  const totalOverdue = mockPayments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + p.amount, 0);
+  const totalPaid = mockPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalOverdue = mockPayments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -219,7 +222,7 @@ export function InquilinoPayments() {
                     <div className="text-gray-600">{payment.property}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-semibold text-gray-900">${payment.amount.toLocaleString()}</div>
+                    <div className="font-semibold text-gray-900">${Number(payment.amount).toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-gray-600">

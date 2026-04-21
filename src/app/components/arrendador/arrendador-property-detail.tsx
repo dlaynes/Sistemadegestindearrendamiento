@@ -24,14 +24,15 @@ import {
   DocumentList,
   EmptyState 
 } from '../shared';
+import { Property } from '@/app/types';
 
 // Mock data
-const mockProperties = [
+const mockProperties : Property[] = [
   {
     id: 1,
     name: 'Apartamento Centro #101',
     address: 'Calle Principal 123, Centro',
-    type: 'Apartamento',
+    type: 'apartamento',
     bedrooms: 2,
     bathrooms: 2,
     area: '85 m²',
@@ -48,7 +49,7 @@ const mockProperties = [
     id: 2,
     name: 'Casa Residencial #102',
     address: 'Av. Los Pinos 456, Zona Norte',
-    type: 'Casa',
+    type: 'casa',
     bedrooms: 3,
     bathrooms: 2,
     area: '120 m²',
@@ -65,7 +66,7 @@ const mockProperties = [
     id: 4,
     name: 'Estudio Moderno #104',
     address: 'Calle Comercial 321, Centro',
-    type: 'Estudio',
+    type: 'estudio',
     bedrooms: 1,
     bathrooms: 1,
     area: '45 m²',

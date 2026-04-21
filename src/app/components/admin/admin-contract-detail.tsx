@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import type { Contract, ContractStatus } from '../../types';
+import type { Contract } from '../../types';
 import { 
   FileText, 
   User,
@@ -39,7 +39,7 @@ const mockContracts: Contract[] = [
     endDate: '2026-06-01',
     monthlyRent: '$3,200',
     deposit: '$6,400',
-    status: 'activo' as ContractStatus,
+    status: 'activo',
     paymentDay: 5,
     terms: [
       'El arrendatario se compromete a pagar la renta mensual puntualmente.',
@@ -59,7 +59,7 @@ const mockContracts: Contract[] = [
     endDate: '2027-08-15',
     monthlyRent: '$4,500',
     deposit: '$9,000',
-    status: 'activo' as ContractStatus,
+    status: 'activo',
     paymentDay: 15,
     terms: [
       'El arrendatario se compromete a pagar la renta mensual puntualmente.',
@@ -78,7 +78,7 @@ const mockContracts: Contract[] = [
     endDate: '2026-03-01',
     monthlyRent: '$2,800',
     deposit: '$5,600',
-    status: 'proximo_vencer' as ContractStatus,
+    status: 'proximo_vencer',
     paymentDay: 1,
     terms: [
       'El arrendatario se compromete a pagar la renta mensual puntualmente.',

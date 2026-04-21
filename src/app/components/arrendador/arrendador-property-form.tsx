@@ -17,7 +17,7 @@ const mockProperties = [
     id: 1,
     name: 'Apartamento Centro #101',
     address: 'Calle Principal 123, Centro',
-    type: 'Apartamento',
+    type: 'apartamento',
     bedrooms: 2,
     bathrooms: 2,
     area: '85',

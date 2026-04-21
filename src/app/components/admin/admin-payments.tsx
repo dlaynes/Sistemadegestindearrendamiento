@@ -6,63 +6,69 @@ import { PageHeader } from '../shared/dashboard/page-header';
 const mockPayments = [
   {
     id: 1,
+    contractId: 1,
     tenant: 'Juan Pérez',
     property: 'Apartamento Centro #101',
-    amount: 3200,
+    amount: '3200',
     dueDate: '2026-03-05',
     paidDate: '2026-03-04',
     status: 'pagado',
-    method: 'Transferencia',
+    method: 'transferencia',
   },
   {
     id: 2,
+    contractId: 2,
     tenant: 'Ana Martínez',
     property: 'Casa Residencial #102',
-    amount: 4500,
+    amount: '4500',
     dueDate: '2026-03-15',
     paidDate: '2026-03-14',
     status: 'pagado',
-    method: 'Efectivo',
+    method: 'efectivo',
   },
   {
     id: 3,
+    contractId: 3,
     tenant: 'María García',
     property: 'Apartamento Vista Mar #103',
-    amount: 2800,
+    amount: '2800',
     dueDate: '2026-03-20',
-    paidDate: null,
+    
     status: 'vencido',
-    method: null,
+    method: 'transferencia',
   },
   {
     id: 4,
+    contractId: 4,
     tenant: 'Laura Gómez',
     property: 'Casa Familiar #201',
-    amount: 5500,
+    amount: '5500',
     dueDate: '2026-04-10',
-    paidDate: null,
+    
     status: 'pendiente',
-    method: null,
+    method: 'transferencia',
   },
   {
     id: 5,
+    contractId: 5,
     tenant: 'Roberto Silva',
     property: 'Estudio Moderno #104',
-    amount: 2200,
+    amount: '2200',
     dueDate: '2026-04-08',
-    paidDate: null,
+    
     status: 'pendiente',
-    method: null,
+    method: 'transferencia',
   },
   {
     id: 6,
+    contractId: 6,
     tenant: 'Carlos López',
     property: 'Loft Industrial #205',
-    amount: 3800,
+    amount: '3800',
     dueDate: '2026-04-05',
-    paidDate: null,
+    
     status: 'pendiente',
-    method: null,
+    method: 'transferencia',
   },
 ];
 
@@ -74,9 +80,9 @@ export function AdminPayments() {
     return statusFilter === 'all' || payment.status === statusFilter;
   });
 
-  const totalPaid = mockPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + p.amount, 0);
-  const totalPending = mockPayments.filter(p => p.status === 'pendiente').reduce((sum, p) => sum + p.amount, 0);
-  const totalOverdue = mockPayments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + p.amount, 0);
+  const totalPaid = mockPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalPending = mockPayments.filter(p => p.status === 'pendiente').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalOverdue = mockPayments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -255,7 +261,7 @@ export function AdminPayments() {
                     <div className="text-gray-600">{payment.property}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-semibold text-gray-900">${payment.amount.toLocaleString()}</div>
+                    <div className="font-semibold text-gray-900">${Number(payment.amount).toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-gray-600">

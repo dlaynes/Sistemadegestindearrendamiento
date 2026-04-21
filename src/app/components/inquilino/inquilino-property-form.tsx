@@ -13,7 +13,7 @@ const mockProperties = [
     id: 3,
     name: 'Apartamento Vista Mar #103',
     address: 'Malecón 789, Playa',
-    type: 'Apartamento',
+    type: 'apartamento',
     bedrooms: 1,
     bathrooms: 1,
     area: '55',
