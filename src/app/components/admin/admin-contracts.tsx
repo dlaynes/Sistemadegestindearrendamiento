@@ -78,11 +78,11 @@ export function AdminContracts() {
   });
 
   const handleViewContract = (contract: ContractListItem) => {
-    navigate(`/contracts/${contract.id}`);
+    navigate(`/contratos/${contract.id}`);
   };
 
   const handleEditContract = (contract: ContractListItem) => {
-    navigate(`/contracts/${contract.id}/edit`);
+    navigate(`/contratos/${contract.id}/editar`);
   };
 
   return (
@@ -94,7 +94,7 @@ export function AdminContracts() {
           <ActionButton 
             variant="primary" 
             icon={Plus}
-            onClick={() => navigate('/contracts/new')}
+            onClick={() => navigate('/contratos/nuevo')}
           >
             Agregar Contrato
           </ActionButton>

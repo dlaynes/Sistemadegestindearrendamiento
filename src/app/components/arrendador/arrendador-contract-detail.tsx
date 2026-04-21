@@ -24,8 +24,9 @@ import {
   EmptyState,
   getDaysUntilExpiration
 } from '../shared';
+import { Contract } from '@/app/types';
 
-const mockContracts = [
+const mockContracts : Contract[] = [
   {
     id: 1,
     code: 'CT-0001',
@@ -163,7 +164,7 @@ export function ArrendadorContractDetail() {
             icon={FileText}
             columns={1} items={[]}          >
             <ul className="space-y-2">
-              {contract.terms.map((term, index) => (
+              {contract.terms?.map((term, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <span className="text-gray-900">• {term}</span>
                 </li>
@@ -209,7 +210,7 @@ export function ArrendadorContractDetail() {
               { 
                 label: 'Editar Contrato', 
                 icon: Edit, 
-                onClick: () => navigate(`/contracts/${contract.id}/edit`), 
+                onClick: () => navigate(`/contratos/${contract.id}/editar`), 
                 variant: 'primary' 
               },
               { 

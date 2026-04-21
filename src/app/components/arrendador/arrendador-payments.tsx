@@ -279,7 +279,7 @@ export function ArrendadorPayments() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/payments/${payment.id}`)}>
+                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/pagos/${payment.id}`)}>
                       Ver Pago
                     </button>
                   </td>

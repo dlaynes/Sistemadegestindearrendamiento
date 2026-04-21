@@ -130,7 +130,7 @@ export function InquilinoPaymentForm() {
     // Aquí iría la lógica para guardar en el backend
     // Generar ID único para el pago (en prod vendría del backend)
     const newPaymentId = Number(contractId) + 1000; // Simulado para testing
-    navigate(`/payments/${newPaymentId}`);
+    navigate(`/pagos/${newPaymentId}`);
   };
 
   const months = [

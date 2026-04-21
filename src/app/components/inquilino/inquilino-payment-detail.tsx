@@ -186,7 +186,7 @@ export function InquilinoPaymentDetail() {
     return diffDays;
   };
 
-  const registrarPago = () => navigate(`/contracts/${payment.id}/payments/new`);
+  const registrarPago = () => navigate(`/contratos/${payment.id}/pagos/nuevo`);
 
   const totalAmount = payment.breakdown.reduce((sum, item) => sum + item.amount, 0);
 
@@ -260,7 +260,7 @@ export function InquilinoPaymentDetail() {
               </p>
             </div>
             <button 
-              onClick={() => navigate(`/contracts/${payment.id}/payments/new`)}
+              onClick={() => navigate(`/contratos/${payment.id}/pagos/nuevo`)}
               className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors font-medium whitespace-nowrap"
             >
               Registrar Pago

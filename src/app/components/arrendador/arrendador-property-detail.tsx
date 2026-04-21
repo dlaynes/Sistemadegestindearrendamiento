@@ -98,7 +98,7 @@ export function ArrendadorPropertyDetail() {
         description="La propiedad que buscas no existe"
         action={{
           label: "Volver a Propiedades",
-          onClick: () => navigate('/properties')
+          onClick: () => navigate('/propiedades')
         }}
       />
     );
@@ -199,7 +199,7 @@ export function ArrendadorPropertyDetail() {
               ]}
             >
               <button 
-                onClick={() => navigate(`/contracts/new`)}
+                onClick={() => navigate(`/contratos/nuevo`)}
                 className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 Crear Contrato
@@ -220,7 +220,7 @@ export function ArrendadorPropertyDetail() {
               { 
                 label: 'Editar Propiedad', 
                 icon: Edit, 
-                onClick: () => navigate(`/properties/${property.id}/edit`), 
+                onClick: () => navigate(`/propiedades/${property.id}/editar`), 
                 variant: 'primary' 
               },
               { 

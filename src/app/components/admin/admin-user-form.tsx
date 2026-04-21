@@ -83,7 +83,7 @@ export function AdminUserForm() {
     
     // Aquí iría la lógica para guardar en el backend
     // Por ahora solo simulamos y redirigimos
-    navigate('/users');
+    navigate('/usuarios');
   };
 
   const userRoles = [
@@ -100,7 +100,7 @@ export function AdminUserForm() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => navigate('/users')}
+          onClick={() => navigate('/usuarios')}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -254,7 +254,7 @@ export function AdminUserForm() {
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => navigate('/users')}
+              onClick={() => navigate('/usuarios')}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Cancelar

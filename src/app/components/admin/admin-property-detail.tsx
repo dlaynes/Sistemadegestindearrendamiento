@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import type { Property, PropertyStatus } from '../../types';
 import { 
   Building2, 
@@ -105,6 +105,8 @@ const mockDocuments = [
 
 export function AdminPropertyDetail() {
   const { id } = useParams();
+  const navBack = useNavigate();
+
   const navigate = useRoleNavigation();
   
   const property = mockProperties.find(p => p.id === Number(id));
@@ -117,7 +119,7 @@ export function AdminPropertyDetail() {
         description="La propiedad que buscas no existe"
         action={{
           label: "Volver a Propiedades",
-          onClick: () => navigate('/properties')
+          onClick: () => navigate('/propiedades')
         }}
       />
     );
@@ -141,7 +143,7 @@ export function AdminPropertyDetail() {
 
   return (
     <div className="space-y-6">
-      <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
+      <BackButton onClick={() => navBack(-1)} label="Volver a propiedades" />
 
       {/* Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -222,7 +224,7 @@ export function AdminPropertyDetail() {
               ]}
             >
               <button 
-                onClick={() => navigate(`/contracts/new`)}
+                onClick={() => navigate(`/contratos/nuevo`)}
                 className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 Crear Contrato
@@ -243,7 +245,7 @@ export function AdminPropertyDetail() {
               { 
                 label: 'Editar Propiedad', 
                 icon: Edit, 
-                onClick: () => navigate(`/properties/${property.id}/edit`), 
+                onClick: () => navigate(`/propiedades/${property.id}/editar`), 
                 variant: 'primary' 
               },
               { 

@@ -22,7 +22,7 @@ export function InquilinoContracts() {
   const navigate = useRoleNavigation();
 
   const handleViewContract = (contract: ContractListItem) => {
-    navigate(`/contracts/${contract.id}`);
+    navigate(`/contratos/${contract.id}`);
   };
 
   return (

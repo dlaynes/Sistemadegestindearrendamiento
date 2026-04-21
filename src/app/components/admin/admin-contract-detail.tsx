@@ -234,7 +234,7 @@ export function AdminContractDetail() {
               { 
                 label: 'Editar Contrato', 
                 icon: Edit, 
-                onClick: () => navigate(`/contracts/${contract.id}/edit`), 
+                onClick: () => navigate(`/contratos/${contract.id}/editar`), 
                 variant: 'primary' 
               },
               { 

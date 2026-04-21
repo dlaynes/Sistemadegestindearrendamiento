@@ -24,7 +24,7 @@ export function Layout() {
 
   const navigation = [
     { name: 'Dashboard', href: `/${user?.role}/dashboard`, icon: Home, roles: ['administrador', 'arrendador', 'inquilino'] },
-    { name: 'Usuarios', href: `/${user?.role}/users`, icon: Users, roles: ['administrador'] },
+    { name: 'Usuarios', href: `/${user?.role}/usuarios`, icon: Users, roles: ['administrador'] },
     { name: 'Propiedades', href: `/${user?.role}/propiedades`, icon: Building2, roles: ['arrendador', 'inquilino'] },
     { name: 'Contratos', href: `/${user?.role}/contratos`, icon: FileArchive, roles: ['arrendador', 'inquilino'] },
     { name: 'Pagos', href: `/${user?.role}/pagos`, icon: DollarSign, roles: ['arrendador', 'inquilino'] },

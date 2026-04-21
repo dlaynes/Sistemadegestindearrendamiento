@@ -33,7 +33,7 @@ export function AdminUsers() {
       <div className="flex items-center justify-between">
         <PageHeader title='Usuarios' subtitle='Administra los usuarios del sistema' size='md' />
         <button 
-          onClick={() => navigate('/users/new')}
+          onClick={() => navigate('/usuarios/nuevo')}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
         >
           <Plus className="w-5 h-5" />
@@ -118,14 +118,14 @@ export function AdminUsers() {
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div className="flex justify-end gap-3">
                                         <button 
-                                            onClick={() => navigate(`/users/${user.id}`)}
+                                            onClick={() => navigate(`/usuarios/${user.id}`)}
                                             className="text-blue-600 hover:text-blue-900 transition-colors"
                                             title="Ver detalles"
                                         >
                                             <Edit2Icon className="w-5 h-5" />
                                         </button>
                                         {user.role !== 'administrador' ? <button 
-                                            onClick={() => navigate(`/users/${user.id}/properties`)}
+                                            onClick={() => navigate(`/usuarios/${user.id}/propiedades`)}
                                             className="text-indigo-600 hover:text-indigo-900 transition-colors"
                                             title="Ver propiedades"
                                         >

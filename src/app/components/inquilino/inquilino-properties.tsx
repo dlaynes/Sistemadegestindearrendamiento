@@ -57,7 +57,7 @@ export function InquilinoProperties() {
   });
 
   const handleViewProperty = (property: PropertyListItem) => {
-    navigate(`/properties/${property.id}`);
+    navigate(`/propiedades/${property.id}`);
   };
 
   return (

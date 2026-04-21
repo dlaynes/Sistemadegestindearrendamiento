@@ -90,7 +90,7 @@ export function ArrendadorProperties() {
   });
 
   const handleViewProperty = (property: PropertyListItem) => {
-    navigate(`/properties/${property.id}`);
+    navigate(`/propiedades/${property.id}`);
   };
 
   return (
@@ -102,7 +102,7 @@ export function ArrendadorProperties() {
           <ActionButton 
             variant="primary" 
             icon={Plus}
-            onClick={() => navigate('/properties/new')}
+            onClick={() => navigate('/propiedades/nueva')}
           >
             Agregar Propiedad
           </ActionButton>

@@ -1,8 +1,7 @@
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Building2 } from 'lucide-react';
 import { useState } from 'react';
-import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader, BackButton, FormField, FormSection, TagInput, FormActions } from '../shared';
 import type { Property, PropertyType } from '../../types';
 
@@ -27,7 +26,7 @@ const mockProperties: Property[] = [
 
 export function AdminPropertyForm() {
   const { id } = useParams();
-  const navigate = useRoleNavigation();
+  const navBack = useNavigate();
   const isEditing = !!id;
 
   const property = isEditing ? mockProperties.find((p) => p.id === id) : null;
@@ -62,13 +61,13 @@ export function AdminPropertyForm() {
   const onSubmit = (data: Partial<Property>) => {
     const formData = { ...data, amenities };
     console.log(isEditing ? 'Actualizando:' : 'Creando:', formData);
-    navigate('/propiedades');
+    navBack(-1);
   };
 
   const handleDelete = () => {
     if (confirm('¿Estás seguro de eliminar esta propiedad?')) {
       console.log('Eliminando propiedad:', id);
-      navigate('/propiedades');
+      navBack(-1);
     }
   };
 
@@ -84,7 +83,7 @@ export function AdminPropertyForm() {
 
   return (
     <div className="space-y-6">
-      <BackButton onClick={() => navigate('/properties')} />
+      <BackButton onClick={() => navBack(-1)} />
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center gap-3 mb-6">
@@ -242,7 +241,7 @@ export function AdminPropertyForm() {
           </FormSection>
 
           <FormActions
-            onCancel={() => navigate('/properties')}
+            onCancel={() => navBack(-1)}
             isEditing={isEditing}
             submitLabel={isEditing ? 'Guardar Cambios' : 'Crear Propiedad'}
             showDelete={isEditing}
