@@ -1,14 +1,18 @@
+// Unified User Types
+
 export type UserRole = 'administrador' | 'arrendador' | 'inquilino';
 
+export type UserStatus = 'activo' | 'inactivo'  | 'suspendido' ;
+
 export interface User {
-  id: string;
+  id: string | number;
   name: string;
   email: string;
   role: UserRole;
-  status: 'activo' | 'inactivo' | 'suspendido';
-  lastLogin: string; // Fecha y hora del último inicio de sesión
+  status: UserStatus;
+  lastLogin: string;
   avatar?: string;
-  properties?: string[]; // IDs de propiedades asociadas
+  properties?: (string | number)[];
 }
 
 export interface AuthState {

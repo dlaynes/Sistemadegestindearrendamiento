@@ -1,17 +1,17 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { 
   User, 
   ArrowLeft,
   Save,
-  Mail,
   Building2
 } from 'lucide-react';
+import type { User as UserType } from '../../types';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
-import { User as UserType } from '../../types/user';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 // Mock data - debería coincidir con el de users.tsx
-const mockUsers: UserType[] = [
+const mockUsers: (UserType & { properties?: string[] })[] = [
   {
     id: '1',
     name: 'Admin Principal',
@@ -75,7 +75,7 @@ export function AdminUserForm() {
     
     // Aquí iría la lógica para guardar en el backend
     // Por ahora solo simulamos y redirigimos
-    navigate('/users');
+    navigate('/usuarios');
   };
 
   const userRoles = [
@@ -92,7 +92,7 @@ export function AdminUserForm() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => navigate('/users')}
+          onClick={() => navigate('/usuarios')}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -105,14 +105,8 @@ export function AdminUserForm() {
           <div className="bg-blue-100 p-3 rounded-lg">
             <User className="w-6 h-6 text-blue-600" />
           </div>
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
-              {isEditing ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
-            </h1>
-            <p className="text-gray-600">
-              {isEditing ? 'Modifica la información del usuario' : 'Completa los datos del nuevo usuario'}
-            </p>
-          </div>
+          <PageHeader title={isEditing ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
+            subtitle={isEditing ? 'Modifica la información del usuario' : 'Completa los datos del nuevo usuario'} size="sm" />
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -252,7 +246,7 @@ export function AdminUserForm() {
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => navigate('/users')}
+              onClick={() => navigate('/usuarios')}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Cancelar

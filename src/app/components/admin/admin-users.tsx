@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { Plus, Trash2, Mail as MailIcon, Building2, Edit2Icon } from 'lucide-react';
+import { Plus, Trash2, Building2, Edit2Icon } from 'lucide-react';
 import { mockUsers } from '../../contexts/auth-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { PageHeader } from '../shared/dashboard/page-header';
 
 export function AdminUsers() {
   const navigate = useRoleNavigation();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState<'all' | 'administrador' | 'arrendador' | 'inquilino'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'activo' | 'inactivo'>('all');
+  const [searchTerm] = useState('');
+  const [roleFilter] = useState<'all' | 'administrador' | 'arrendador' | 'inquilino'>('all');
+  const [statusFilter] = useState<'all' | 'activo' | 'inactivo'>('all');
 
   const filteredUsers = mockUsers.filter((user) => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -30,12 +31,9 @@ export function AdminUsers() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-900">Usuarios</h1>
-          <p className="text-gray-600 mt-1">Administra los usuarios del sistema</p>
-        </div>
+        <PageHeader title='Usuarios' subtitle='Administra los usuarios del sistema' size='md' />
         <button 
-          onClick={() => navigate('/users/new')}
+          onClick={() => navigate('/usuarios/nuevo')}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
         >
           <Plus className="w-5 h-5" />
@@ -109,7 +107,7 @@ export function AdminUsers() {
                                         <div className="flex flex-wrap gap-1">
                                             {user.properties?.map((propId) => (
                                                 <span key={propId} className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full">
-                                                    #{Math.abs(parseInt(propId))}
+                                                    #{typeof propId === 'number' ? propId : parseInt(propId)}
                                                 </span>
                                             ))}
                                         </div>
@@ -120,14 +118,14 @@ export function AdminUsers() {
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div className="flex justify-end gap-3">
                                         <button 
-                                            onClick={() => navigate(`/users/${user.id}`)}
+                                            onClick={() => navigate(`/usuarios/${user.id}`)}
                                             className="text-blue-600 hover:text-blue-900 transition-colors"
                                             title="Ver detalles"
                                         >
                                             <Edit2Icon className="w-5 h-5" />
                                         </button>
                                         {user.role !== 'administrador' ? <button 
-                                            onClick={() => navigate(`/users/${user.id}/properties`)}
+                                            onClick={() => navigate(`/usuarios/${user.id}/propiedades`)}
                                             className="text-indigo-600 hover:text-indigo-900 transition-colors"
                                             title="Ver propiedades"
                                         >

@@ -1,9 +1,21 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Payment, PaymentFormData } from '../types/payment';
-import { useContract } from './contract-context';
 
 type PaymentStatus = 'pendiente' | 'completado' | 'fallido';
 type PaymentMethod = 'transferencia' | 'tarjeta' | 'efectivo';
+
+interface Payment {
+  id: string;
+  contractId: string;
+  amount: number;
+  status: PaymentStatus;
+  method: PaymentMethod;
+  dueDate: string;
+  paidDate?: string;
+  transactionId?: string;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 interface PaymentContextType {
   payments: Payment[];
@@ -20,13 +32,6 @@ interface PaymentContextType {
 
 interface PaymentContextProps {
   children: ReactNode;
-}
-
-interface ContractPayments {
-  id: string;
-  payments: Payment[];
-  addPayment: (payment: Payment) => void;
-  getPaymentById: (id: string) => Payment | undefined;
 }
 
 const PaymentContext = createContext<PaymentContextType | undefined>(undefined);
@@ -70,72 +75,66 @@ export function PaymentProvider({ children }: PaymentContextProps) {
       createdAt: '2026-04-03T14:30:00Z',
       updatedAt: '2026-04-03T14:30:00Z',
     },
-    {
-      id: 'P-004',
-      contractId: 'CT-002',
-      amount: 1200,
-      status: 'pendiente',
-      method: 'tarjeta',
-      dueDate: '2026-05-05',
-      notes: 'Pago de mayo 2026',
-      createdAt: '2026-05-05T00:00:00Z',
-      updatedAt: '2026-05-05T00:00:00Z',
-    },
-    {
-      id: 'P-005',
-      contractId: 'CT-003',
-      amount: 650,
-      status: 'fallido',
-      method: 'transferencia',
-      dueDate: '2025-03-01',
-      notes: 'Intento de pago fallido',
-      createdAt: '2025-03-01T00:00:00Z',
-      updatedAt: '2025-03-01T00:00:00Z',
-    },
   ]);
 
-  const { contracts } = useContract();
-
   const addPayment = useCallback((payment: Payment) => {
-    setPayments((prev) => [...prev, payment]);
+    setPayments((prevPayments) => [...prevPayments, payment]);
   }, []);
 
   const updatePayment = useCallback((id: string, payment: Payment) => {
-    setPayments((prev) =>
-      prev.map((payment) => (payment.id === id ? payment : payment))
+    setPayments((prevPayments) =>
+      prevPayments.map((p) => (p.id === id ? payment : p))
     );
   }, []);
 
   const deletePayment = useCallback((id: string) => {
-    setPayments((prev) => prev.filter((payment) => payment.id !== id));
+    setPayments((prevPayments) =>
+      prevPayments.filter((p) => p.id !== id)
+    );
   }, []);
 
-  const getPaymentById = useCallback((id: string) => {
-    return payments.find((payment) => payment.id === id);
-  }, [payments]);
+  const getPaymentById = useCallback(
+    (id: string) => {
+      return payments.find((p) => p.id === id);
+    },
+    [payments]
+  );
 
-  const getPaymentsByContract = useCallback((contractId: string) => {
-    return payments.filter((payment) => payment.contractId === contractId);
-  }, [payments]);
+  const getPaymentsByContract = useCallback(
+    (contractId: string) => {
+      return payments.filter((p) => p.contractId === contractId);
+    },
+    [payments]
+  );
 
-  const getPaymentsByStatus = useCallback((status: PaymentStatus) => {
-    return payments.filter((payment) => payment.status === status);
-  }, [payments]);
+  const getPaymentsByStatus = useCallback(
+    (status: PaymentStatus) => {
+      return payments.filter((p) => p.status === status);
+    },
+    [payments]
+  );
 
-  const getPaymentsByMethod = useCallback((method: PaymentMethod) => {
-    return payments.filter((payment) => payment.method === method);
-  }, [payments]);
+  const getPaymentsByMethod = useCallback(
+    (method: PaymentMethod) => {
+      return payments.filter((p) => p.method === method);
+    },
+    [payments]
+  );
 
   const getPendingPayments = useCallback(() => {
-    return payments.filter((payment) => payment.status === 'pendiente');
+    return payments.filter((p) => p.status === 'pendiente');
   }, [payments]);
 
-  const getTotalPendingByContract = useCallback((contractId: string) => {
-    const contractPayments = payments.filter(
-      (payment) => payment.contractId === contractId && payment.status === 'pendiente'
-    );
-    return contractPayments.reduce((sum, payment) => sum + payment.amount, 0);
-  }, [payments]);
+  const getTotalPendingByContract = useCallback(
+    (contractId: string) => {
+      return payments
+        .filter(
+          (p) => p.contractId === contractId && p.status === 'pendiente'
+        )
+        .reduce((total, p) => total + p.amount, 0);
+    },
+    [payments]
+  );
 
   return (
     <PaymentContext.Provider

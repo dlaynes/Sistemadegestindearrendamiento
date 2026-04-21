@@ -1,10 +1,13 @@
-export type PaymentStatus = 'pendiente' | 'procesado' | 'completado' | 'cancelado' | 'fallido';
+// Unified Payment Types
+
+export type PaymentStatus = 'pendiente' | 'pagado' | 'vencido' | 'procesando';
+
 export type PaymentMethod = 'transferencia' | 'cheque' | 'tarjeta' | 'efectivo' | 'digital';
 
 export interface Payment {
-  id: string;
-  contractId: string;
-  amount: number;
+  id: string | number;
+  contractId: string | number;
+  amount: string;
   status: PaymentStatus;
   method: PaymentMethod;
   dueDate: string;
@@ -15,11 +18,10 @@ export interface Payment {
   updatedAt?: string;
 }
 
-export interface PaymentFormData {
-  contractId: string;
-  amount: number;
+// For list/history views
+export interface PaymentHistoryItem {
+  month: string;
+  amount: string;
   status: PaymentStatus;
-  method: PaymentMethod;
-  dueDate: string;
-  notes?: string;
+  date: string;
 }

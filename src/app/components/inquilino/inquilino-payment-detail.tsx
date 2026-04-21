@@ -20,15 +20,16 @@ import { useRoleNavigation } from '../../hooks/use-role-navigation';
 const mockPayments = [
   {
     id: 1,
+    contractId: 1,
     tenant: 'Juan Pérez',
     tenantEmail: 'juan.perez@email.com',
     property: 'Apartamento Centro #101',
     propertyAddress: 'Calle Principal 123, Centro',
-    amount: 3200,
+    amount: '3200',
     dueDate: '2026-03-05',
     paidDate: '2026-03-04',
     status: 'pagado',
-    method: 'Transferencia',
+    method: 'transferencia',
     referenceNumber: 'TRF-20260304-001',
     notes: 'Pago realizado un día antes del vencimiento.',
     breakdown: [
@@ -44,15 +45,16 @@ const mockPayments = [
   },
   {
     id: 2,
+    contractId: 2,
     tenant: 'Ana Martínez',
     tenantEmail: 'ana.martinez@email.com',
     property: 'Casa Residencial #102',
     propertyAddress: 'Av. Los Pinos 456, Zona Norte',
-    amount: 4500,
+    amount: '4500',
     dueDate: '2026-03-15',
     paidDate: '2026-03-14',
     status: 'pagado',
-    method: 'Efectivo',
+    method: 'efectivo',
     referenceNumber: 'EFE-20260314-002',
     notes: 'Pago recibido en efectivo en oficina.',
     breakdown: [
@@ -68,15 +70,16 @@ const mockPayments = [
   },
   {
     id: 3,
+    contractId: 3,
     tenant: 'María García',
     tenantEmail: 'maria.garcia@email.com',
     property: 'Apartamento Vista Mar #103',
     propertyAddress: 'Malecón 789, Playa',
-    amount: 2800,
+    amount: '2800',
     dueDate: '2026-03-20',
-    paidDate: null,
+    
     status: 'vencido',
-    method: null,
+    method: 'transferencia',
     referenceNumber: null,
     notes: 'Pago vencido. Se ha enviado recordatorio al inquilino.',
     breakdown: [
@@ -92,15 +95,16 @@ const mockPayments = [
   },
   {
     id: 4,
+    contractId: 4,
     tenant: 'Laura Gómez',
     tenantEmail: 'laura.gomez@email.com',
     property: 'Casa Familiar #201',
     propertyAddress: 'Residencial Las Flores 555',
-    amount: 5500,
+    amount: '5500',
     dueDate: '2026-04-10',
-    paidDate: null,
+    
     status: 'pendiente',
-    method: null,
+    method: 'transferencia',
     referenceNumber: null,
     notes: 'Pago programado para abril 2026.',
     breakdown: [
@@ -186,6 +190,8 @@ export function InquilinoPaymentDetail() {
     return diffDays;
   };
 
+  const registrarPago = () => navigate(`/contratos/${payment.id}/pagos/nuevo`);
+
   const totalAmount = payment.breakdown.reduce((sum, item) => sum + item.amount, 0);
 
   return (
@@ -240,7 +246,7 @@ export function InquilinoPaymentDetail() {
               </p>
             </div>
             <button 
-              onClick={() => navigate(`/contracts/${payment.id}/payments/new`)}
+              onClick={registrarPago}
               className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
             >
               Registrar Pago
@@ -258,7 +264,7 @@ export function InquilinoPaymentDetail() {
               </p>
             </div>
             <button 
-              onClick={() => navigate(`/contracts/${payment.id}/payments/new`)}
+              onClick={() => navigate(`/contratos/${payment.id}/pagos/nuevo`)}
               className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors font-medium whitespace-nowrap"
             >
               Registrar Pago
@@ -370,14 +376,14 @@ export function InquilinoPaymentDetail() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Monto original</p>
-                <p className="text-2xl font-bold text-gray-900">${payment.amount.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-gray-900">${Number(payment.amount).toLocaleString()}</p>
               </div>
               {payment.status === 'vencido' && (
                 <>
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Mora acumulada</p>
                     <p className="text-lg font-semibold text-red-600">
-                      ${(totalAmount - payment.amount).toLocaleString()}
+                      ${(totalAmount - Number(payment.amount)).toLocaleString()}
                     </p>
                   </div>
                   <div className="pt-3 border-t border-gray-200">
@@ -415,7 +421,9 @@ export function InquilinoPaymentDetail() {
                 </>
               ) : (
                 <>
-                  <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                  <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    onClick={registrarPago}
+                    >
                     Registrar Pago
                   </button>
                 </>
@@ -442,7 +450,7 @@ export function InquilinoPaymentDetail() {
               <div>
                 <p className="text-sm text-gray-600 mb-1">Total pagado este año</p>
                 <p className="text-lg font-semibold text-gray-900">
-                  ${(payment.relatedPayments.length * payment.amount).toLocaleString()}
+                  ${(payment.relatedPayments.length * Number(payment.amount)).toLocaleString()}
                 </p>
               </div>
             </div>

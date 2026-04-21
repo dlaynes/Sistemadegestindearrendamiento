@@ -1,4 +1,5 @@
-import { Home, FileText, DollarSign, Calendar, MessageSquare, AlertCircle } from 'lucide-react';
+import { Home, FileText, DollarSign, Calendar, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
+import { PageHeader, StatusBadge } from '../shared';
 
 export function InquilinoDashboard() {
   const myProperty = {
@@ -11,23 +12,22 @@ export function InquilinoDashboard() {
   };
 
   const paymentHistory = [
-    { month: 'Marzo 2026', amount: '$1,200', date: '2026-03-05', status: 'paid' },
-    { month: 'Febrero 2026', amount: '$1,200', date: '2026-02-05', status: 'paid' },
-    { month: 'Enero 2026', amount: '$1,200', date: '2026-01-05', status: 'paid' },
+    { month: 'Marzo 2026', amount: '$1,200', date: '2026-03-05', status: 'pagado' as const },
+    { month: 'Febrero 2026', amount: '$1,200', date: '2026-02-05', status: 'pagado' as const },
+    { month: 'Enero 2026', amount: '$1,200', date: '2026-01-05', status: 'pagado' as const },
   ];
 
   const notifications = [
-    { message: 'Tu próximo pago vence el 5 de Abril', type: 'warning', icon: AlertCircle },
-    { message: 'Nuevo mensaje del arrendador', type: 'info', icon: MessageSquare },
+    { message: 'Tu próximo pago vence el 5 de Abril', type: 'warning' as const, icon: AlertCircle },
+    { message: 'Nuevo mensaje del arrendador', type: 'info' as const, icon: MessageSquare },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard - Inquilino</h1>
-        <p className="text-gray-600 mt-2">Información de tu arrendamiento</p>
-      </div>
+      <PageHeader 
+        title="Dashboard - Inquilino" 
+        subtitle="Información de tu arrendamiento" 
+      />
 
       {/* Notificaciones */}
       {notifications.length > 0 && (
@@ -144,7 +144,7 @@ export function InquilinoDashboard() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="bg-green-100 p-2 rounded-lg">
-                    <DollarSign className="w-5 h-5 text-green-600" />
+                    <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">{payment.month}</h3>
@@ -153,9 +153,7 @@ export function InquilinoDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-lg font-bold text-gray-900">{payment.amount}</p>
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                    Pagado
-                  </span>
+                  <StatusBadge status={payment.status} type="payment" />
                 </div>
               </div>
             </div>

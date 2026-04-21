@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import {
@@ -13,8 +13,12 @@ import {
   Upload,
   X,
   CheckCircle,
+  Search,
+  ChevronDown,
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { Attachment, ContractFormData } from '@/app/types/contract';
+import { mockContracts } from '@/app/data/mocks';
 
 // Mock data para propiedades disponibles
 const mockAvailableProperties = [
@@ -23,54 +27,14 @@ const mockAvailableProperties = [
   { id: 5, name: 'Estudio Moderno #104', address: 'Calle Comercial 789, Centro', price: 2200 },
 ];
 
-// Mock data para contratos existentes (para edición)
-const mockContracts = [
-  {
-    id: 1,
-    propertyId: 1,
-    tenantName: 'Juan Pérez',
-    tenantEmail: 'juan.perez@email.com',
-    tenantPhone: '+1234567890',
-    startDate: '2026-01-01',
-    endDate: '2026-12-31',
-    duration: 12,
-    monthlyRent: 3200,
-    services: 300,
-    deposit: 6400,
-    contractType: 'fijo',
-    paymentDay: 5,
-    specialClauses: 'No se permiten mascotas. Mantenimiento incluye jardinería.',
-    attachments: [
-      { id: 1, name: 'Contrato firmado.pdf', size: '2.4 MB', type: 'application/pdf' },
-      { id: 2, name: 'Identificación inquilino.pdf', size: '1.1 MB', type: 'application/pdf' },
-    ],
-  },
+// Mock data para inquilinos existentes
+const mockTenants = [
+  { id: 1, name: 'Juan Pérez', email: 'juan.perez@email.com', phone: '+51 999 888 777' },
+  { id: 2, name: 'Ana Martínez', email: 'ana.martinez@email.com', phone: '+51 999 777 666' },
+  { id: 3, name: 'María García', email: 'maria.garcia@email.com', phone: '+51 999 666 555' },
+  { id: 4, name: 'Laura Gómez', email: 'laura.gomez@email.com', phone: '+51 999 555 444' },
+  { id: 5, name: 'Roberto Silva', email: 'roberto.silva@email.com', phone: '+51 999 444 333' },
 ];
-
-type ContractFormData = {
-  propertyId: number;
-  tenantName: string;
-  tenantEmail: string;
-  tenantPhone: string;
-  tenantId: string;
-  startDate: string;
-  endDate: string;
-  duration: number;
-  monthlyRent: number;
-  services: number;
-  deposit: number;
-  contractType: 'fijo' | 'mensual' | 'renovable';
-  paymentDay: number;
-  specialClauses: string;
-  includeMaintenance: boolean;
-};
-
-type Attachment = {
-  id: number;
-  name: string;
-  size: string;
-  type: string;
-};
 
 const STEPS = [
   { id: 1, name: 'Propiedad', icon: Building2 },
@@ -91,6 +55,34 @@ export function AdminContractWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [attachments, setAttachments] = useState<Attachment[]>(contract?.attachments || []);
 
+  // Autocomplete state for property selection
+  const [propertyQuery, setPropertyQuery] = useState('');
+  const [propertyDropdownOpen, setPropertyDropdownOpen] = useState(false);
+  const [propertyHighlighted, setPropertyHighlighted] = useState(0);
+  const propertyListRef = React.useRef<HTMLDivElement>(null);
+
+  // Autocomplete state for tenant selection
+  const [tenantQuery, setTenantQuery] = useState('');
+  const [tenantDropdownOpen, setTenantDropdownOpen] = useState(false);
+  const [tenantHighlighted, setTenantHighlighted] = useState(0);
+  const tenantListRef = React.useRef<HTMLDivElement>(null);
+
+  const filteredProperties = propertyQuery.trim() === ''
+    ? mockAvailableProperties
+    : mockAvailableProperties.filter(
+        (p) =>
+          p.name.toLowerCase().includes(propertyQuery.toLowerCase()) ||
+          p.address.toLowerCase().includes(propertyQuery.toLowerCase())
+      );
+
+  const filteredTenants = tenantQuery.trim() === ''
+    ? mockTenants
+    : mockTenants.filter(
+        (t) =>
+          t.name.toLowerCase().includes(tenantQuery.toLowerCase()) ||
+          t.email.toLowerCase().includes(tenantQuery.toLowerCase())
+      );
+
   const {
     register,
     handleSubmit,
@@ -101,7 +93,7 @@ export function AdminContractWizard() {
     defaultValues: isEditing && contract
       ? {
           propertyId: contract.propertyId,
-          tenantName: contract.tenantName,
+          tenant: contract.tenant,
           tenantEmail: contract.tenantEmail,
           tenantPhone: contract.tenantPhone,
           tenantId: '',
@@ -113,7 +105,8 @@ export function AdminContractWizard() {
           deposit: contract.deposit,
           contractType: contract.contractType as 'fijo' | 'mensual' | 'renovable',
           paymentDay: contract.paymentDay,
-          specialClauses: contract.specialClauses,
+          terms: contract.terms,
+          includeUtilities: false,
           includeMaintenance: false,
         }
       : {
@@ -184,7 +177,7 @@ export function AdminContractWizard() {
       case 1:
         return watchedData.propertyId;
       case 2:
-        return watchedData.tenantName && watchedData.tenantEmail && watchedData.tenantPhone;
+        return watchedData.tenant && watchedData.tenantEmail && watchedData.tenantPhone;
       case 3:
         return watchedData.startDate && watchedData.endDate && watchedData.monthlyRent && watchedData.deposit;
       case 4:
@@ -286,33 +279,116 @@ export function AdminContractWizard() {
                   Elige la propiedad que será objeto del contrato de arrendamiento
                 </p>
 
-                <div className="space-y-3">
-                  {mockAvailableProperties.map((property) => (
-                    <label
-                      key={property.id}
-                      className={`flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                        Number(watchedData.propertyId) === property.id
-                          ? 'border-blue-600 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                {/* Autocomplete */}
+                <div className="relative">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={propertyQuery}
+                      onChange={(e) => {
+                        setPropertyQuery(e.target.value);
+                        setPropertyDropdownOpen(true);
+                        setPropertyHighlighted(0);
+                      }}
+                      onFocus={() => setPropertyDropdownOpen(true)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          e.preventDefault();
+                          setPropertyHighlighted((prev) =>
+                            prev < filteredProperties.length - 1 ? prev + 1 : prev
+                          );
+                        } else if (e.key === 'ArrowUp') {
+                          e.preventDefault();
+                          setPropertyHighlighted((prev) => (prev > 0 ? prev - 1 : 0));
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const prop = filteredProperties[propertyHighlighted];
+                          if (prop) {
+                            setValue('propertyId', prop.id, { shouldValidate: true });
+                            setPropertyQuery(prop.name);
+                            setPropertyDropdownOpen(false);
+                          }
+                        } else if (e.key === 'Escape') {
+                          setPropertyDropdownOpen(false);
+                        }
+                      }}
+                      placeholder="Buscar propiedad por nombre o dirección..."
+                      className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPropertyDropdownOpen((open) => !open)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
                     >
-                      <input
-                        type="radio"
-                        value={property.id}
-                        {...register('propertyId', { required: 'Debes seleccionar una propiedad' })}
-                        className="w-5 h-5 text-blue-600"
-                      />
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900">{property.name}</div>
-                        <div className="text-sm text-gray-600">{property.address}</div>
-                        <div className="text-sm font-semibold text-blue-600 mt-1">
-                          ${property.price.toLocaleString()}/mes
+                      <ChevronDown className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {propertyDropdownOpen && (
+                    <div
+                      ref={propertyListRef}
+                      className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+                    >
+                      {filteredProperties.length === 0 ? (
+                        <div className="px-4 py-3 text-sm text-gray-500">
+                          No se encontraron propiedades
                         </div>
-                      </div>
-                      <Building2 className="w-8 h-8 text-gray-400" />
-                    </label>
-                  ))}
+                      ) : (
+                        filteredProperties.map((property, index) => (
+                          <button
+                            key={property.id}
+                            type="button"
+                            onClick={() => {
+                              setValue('propertyId', property.id, { shouldValidate: true });
+                              setPropertyQuery(property.name);
+                              setPropertyDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
+                              index === propertyHighlighted
+                                ? 'bg-blue-50'
+                                : 'hover:bg-gray-50'
+                            } ${
+                              Number(watchedData.propertyId) === property.id
+                                ? 'border-l-4 border-blue-600'
+                                : 'border-l-4 border-transparent'
+                            }`}
+                            onMouseEnter={() => setPropertyHighlighted(index)}
+                          >
+                            <Building2 className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-gray-900 truncate">
+                                {property.name}
+                              </div>
+                              <div className="text-sm text-gray-500 truncate">
+                                {property.address} · ${property.price.toLocaleString()}/mes
+                              </div>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
                 </div>
+
+                {/* Selected property card */}
+                {selectedProperty && (
+                  <div className="mt-4 p-4 border-2 border-blue-600 bg-blue-50 rounded-lg flex items-center gap-4">
+                    <Building2 className="w-8 h-8 text-blue-600" />
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">{selectedProperty.name}</div>
+                      <div className="text-sm text-gray-600">{selectedProperty.address}</div>
+                      <div className="text-sm font-semibold text-blue-600 mt-1">
+                        ${selectedProperty.price.toLocaleString()}/mes
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <input
+                  type="hidden"
+                  {...register('propertyId', { required: 'Debes seleccionar una propiedad' })}
+                />
                 {errors.propertyId && (
                   <p className="mt-2 text-sm text-red-600">{errors.propertyId.message}</p>
                 )}
@@ -332,18 +408,101 @@ export function AdminContractWizard() {
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 relative">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Nombre completo *
                     </label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="text"
+                        value={tenantQuery}
+                        onChange={(e) => {
+                          setTenantQuery(e.target.value);
+                          setTenantDropdownOpen(true);
+                          setTenantHighlighted(0);
+                        }}
+                        onFocus={() => setTenantDropdownOpen(true)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            setTenantHighlighted((prev) =>
+                              prev < filteredTenants.length - 1 ? prev + 1 : prev
+                            );
+                          } else if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            setTenantHighlighted((prev) => (prev > 0 ? prev - 1 : 0));
+                          } else if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const t = filteredTenants[tenantHighlighted];
+                            if (t) {
+                              setValue('tenant', t.name, { shouldValidate: true });
+                              setValue('tenantEmail', t.email, { shouldValidate: true });
+                              setValue('tenantPhone', t.phone, { shouldValidate: true });
+                              setTenantQuery(t.name);
+                              setTenantDropdownOpen(false);
+                            }
+                          } else if (e.key === 'Escape') {
+                            setTenantDropdownOpen(false);
+                          }
+                        }}
+                        placeholder="Buscar inquilino por nombre o correo..."
+                        className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setTenantDropdownOpen((open) => !open)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+                      >
+                        <ChevronDown className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {tenantDropdownOpen && (
+                      <div
+                        ref={tenantListRef}
+                        className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+                      >
+                        {filteredTenants.length > 0 ? (
+                          filteredTenants.map((t, index) => (
+                            <button
+                              key={t.id}
+                              type="button"
+                              onClick={() => {
+                                setValue('tenant', t.name, { shouldValidate: true });
+                                setValue('tenantEmail', t.email, { shouldValidate: true });
+                                setValue('tenantPhone', t.phone, { shouldValidate: true });
+                                setTenantQuery(t.name);
+                                setTenantDropdownOpen(false);
+                              }}
+                              className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
+                                index === tenantHighlighted
+                                  ? 'bg-blue-50'
+                                  : 'hover:bg-gray-50'
+                              }`}
+                              onMouseEnter={() => setTenantHighlighted(index)}
+                            >
+                              <User className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-gray-900 truncate">
+                                  {t.name}
+                                </div>
+                                <div className="text-sm text-gray-500 truncate">
+                                  {t.email} · {t.phone}
+                                </div>
+                              </div>
+                            </button>
+                          ))
+                        ) : null}
+                      </div>
+                    )}
+
                     <input
-                      type="text"
-                      {...register('tenantName', { required: 'El nombre es requerido' })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Juan Pérez González"
+                      type="hidden"
+                      {...register('tenant', { required: 'El nombre es requerido' })}
                     />
-                    {errors.tenantName && (
-                      <p className="mt-1 text-sm text-red-600">{errors.tenantName.message}</p>
+                    {errors.tenant && (
+                      <p className="mt-1 text-sm text-red-600">{errors.tenant.message}</p>
                     )}
                   </div>
 
@@ -580,10 +739,10 @@ export function AdminContractWizard() {
                       Cláusulas especiales
                     </label>
                     <textarea
-                      {...register('specialClauses')}
+                      {...register('terms', { setValueAs: (value) => value.join('\n'), onChange: (e) => setValue('terms', e.target.value.split('\n')) })}
                       rows={6}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Ej: No se permiten mascotas. El inquilino es responsable de los servicios públicos. Se requiere seguro de inquilino..."
+                      placeholder="Ej: No se permiten mascotas. \nEl inquilino es responsable de los servicios públicos. \nSe requiere seguro de inquilino..."
                     />
                     <p className="mt-1 text-xs text-gray-500">
                       Incluye restricciones, responsabilidades y acuerdos especiales
@@ -733,7 +892,7 @@ export function AdminContractWizard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                       <div>
                         <span className="text-gray-600">Nombre:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.tenantName}</span>
+                        <span className="font-medium text-gray-900">{watchedData.tenant}</span>
                       </div>
                       <div>
                         <span className="text-gray-600">Email:</span>{' '}
@@ -799,15 +958,19 @@ export function AdminContractWizard() {
                   </div>
 
                   {/* Condiciones */}
+<<<<<<< HEAD
                   {(watchedData.specialClauses  || watchedData.includeMaintenance) && (
+=======
+                  {(watchedData.terms || watchedData.includeUtilities || watchedData.includeMaintenance) && (
+>>>>>>> bd4e9b23d9e77b05413353cc26162e369850d7e0
                     <div className="bg-gray-50 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <FileCheck className="w-5 h-5 text-blue-600" />
                         <h4 className="font-semibold text-gray-900">Condiciones Especiales</h4>
                       </div>
-                      {watchedData.specialClauses && (
+                      {watchedData.terms && (
                         <div className="text-sm text-gray-700 mb-3 whitespace-pre-line">
-                          {watchedData.specialClauses}
+                          {Array.isArray(watchedData.terms) ? watchedData.terms.join('\n') : watchedData.terms}
                         </div>
                       )}
                       <div className="flex flex-wrap gap-2">

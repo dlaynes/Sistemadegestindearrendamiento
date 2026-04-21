@@ -1,8 +1,22 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Contract, ContractFormData } from '../types/contract';
-import { useProperty } from './property-context';
 
 type ContractStatus = 'activo' | 'vencido' | 'terminado' | 'suspendido';
+
+interface Contract {
+  id: string;
+  propertyId: string;
+  tenantId: string;
+  landlordId: string;
+  startDate: string;
+  endDate: string;
+  monthlyRent: number;
+  deposit: number;
+  status: ContractStatus;
+  terms?: string;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 interface ContractContextType {
   contracts: Contract[];
@@ -17,13 +31,6 @@ interface ContractContextType {
 
 interface ContractContextProps {
   children: ReactNode;
-}
-
-interface PropertyContracts {
-  id: string;
-  contracts: Contract[];
-  addContract: (contract: Contract) => void;
-  getContractById: (id: string) => Contract | undefined;
 }
 
 const ContractContext = createContext<ContractContextType | undefined>(undefined);
@@ -77,36 +84,45 @@ export function ContractProvider({ children }: ContractContextProps) {
     },
   ]);
 
-  const { properties } = useProperty();
-
   const addContract = useCallback((contract: Contract) => {
-    setContracts((prev) => [...prev, contract]);
+    setContracts((prevContracts) => [...prevContracts, contract]);
   }, []);
 
   const updateContract = useCallback((id: string, contract: Contract) => {
-    setContracts((prev) =>
-      prev.map((contract) => (contract.id === id ? contract : contract))
+    setContracts((prevContracts) =>
+      prevContracts.map((c) => (c.id === id ? contract : c))
     );
   }, []);
 
   const deleteContract = useCallback((id: string) => {
-    setContracts((prev) => prev.filter((contract) => contract.id !== id));
+    setContracts((prevContracts) =>
+      prevContracts.filter((c) => c.id !== id)
+    );
   }, []);
 
-  const getContractById = useCallback((id: string) => {
-    return contracts.find((contract) => contract.id === id);
-  }, [contracts]);
+  const getContractById = useCallback(
+    (id: string) => {
+      return contracts.find((c) => c.id === id);
+    },
+    [contracts]
+  );
 
-  const getContractsByProperty = useCallback((propertyId: string) => {
-    return contracts.filter((contract) => contract.propertyId === propertyId);
-  }, [contracts]);
+  const getContractsByProperty = useCallback(
+    (propertyId: string) => {
+      return contracts.filter((c) => c.propertyId === propertyId);
+    },
+    [contracts]
+  );
 
-  const getContractsByStatus = useCallback((status: ContractStatus) => {
-    return contracts.filter((contract) => contract.status === status);
-  }, [contracts]);
+  const getContractsByStatus = useCallback(
+    (status: ContractStatus) => {
+      return contracts.filter((c) => c.status === status);
+    },
+    [contracts]
+  );
 
   const getAvailableContracts = useCallback(() => {
-    return contracts.filter((contract) => contract.status === 'activo');
+    return contracts.filter((c) => c.status === 'activo');
   }, [contracts]);
 
   return (
