@@ -1,5 +1,4 @@
 import { useParams } from 'react-router';
-import type { Contract } from '../../types';
 import { 
   FileText, 
   User,
@@ -25,67 +24,7 @@ import {
   EmptyState,
   getDaysUntilExpiration
 } from '../shared';
-
-const mockContracts: Contract[] = [
-  {
-    id: 1,
-    code: 'CT-0001',
-    tenant: 'Juan Pérez',
-    tenantEmail: 'juan.perez@email.com',
-    tenantPhone: '+1 (555) 123-4567',
-    property: 'Apartamento Centro #101',
-    propertyAddress: 'Calle Principal 123, Centro',
-    startDate: '2025-06-01',
-    endDate: '2026-06-01',
-    monthlyRent: '$3,200',
-    deposit: '$6,400',
-    status: 'activo',
-    paymentDay: 5,
-    terms: [
-      'El arrendatario se compromete a pagar la renta mensual puntualmente.',
-      'No se permiten mascotas sin autorización previa del arrendador.',
-      'El arrendatario debe mantener la propiedad en buen estado.',
-    ],
-  },
-  {
-    id: 2,
-    code: 'CT-0002',
-    tenant: 'Ana Martínez',
-    tenantEmail: 'ana.martinez@email.com',
-    tenantPhone: '+1 (555) 234-5678',
-    property: 'Casa Residencial #102',
-    propertyAddress: 'Av. Los Pinos 456, Zona Norte',
-    startDate: '2025-08-15',
-    endDate: '2027-08-15',
-    monthlyRent: '$4,500',
-    deposit: '$9,000',
-    status: 'activo',
-    paymentDay: 15,
-    terms: [
-      'El arrendatario se compromete a pagar la renta mensual puntualmente.',
-      'Se permite máximo 2 mascotas pequeñas.',
-    ],
-  },
-  {
-    id: 3,
-    code: 'CT-0003',
-    tenant: 'María García',
-    tenantEmail: 'maria.garcia@email.com',
-    tenantPhone: '+1 (555) 345-6789',
-    property: 'Apartamento Vista Mar #103',
-    propertyAddress: 'Malecón 789, Playa',
-    startDate: '2025-09-01',
-    endDate: '2026-03-01',
-    monthlyRent: '$2,800',
-    deposit: '$5,600',
-    status: 'proximo_vencer',
-    paymentDay: 1,
-    terms: [
-      'El arrendatario se compromete a pagar la renta mensual puntualmente.',
-      'No se permiten fiestas o reuniones ruidosas.',
-    ],
-  },
-];
+import { mockContracts } from '@/app/data/mocks';
 
 const mockPaymentHistory = [
   { month: 'Marzo 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-03-04' },

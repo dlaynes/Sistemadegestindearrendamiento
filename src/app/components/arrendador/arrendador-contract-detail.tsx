@@ -24,48 +24,7 @@ import {
   EmptyState,
   getDaysUntilExpiration
 } from '../shared';
-import { Contract } from '@/app/types';
-
-const mockContracts : Contract[] = [
-  {
-    id: 1,
-    code: 'CT-0001',
-    tenant: 'Juan Pérez',
-    tenantEmail: 'juan.perez@email.com',
-    tenantPhone: '+1 (555) 123-4567',
-    property: 'Apartamento Centro #101',
-    propertyAddress: 'Calle Principal 123, Centro',
-    startDate: '2025-06-01',
-    endDate: '2026-06-01',
-    monthlyRent: '$3,200',
-    deposit: '$6,400',
-    status: 'activo' as const,
-    paymentDay: 5,
-    terms: [
-      'El arrendatario se compromete a pagar la renta mensual puntualmente.',
-      'No se permiten mascotas sin autorización previa del arrendador.',
-    ],
-  },
-  {
-    id: 2,
-    code: 'CT-0002',
-    tenant: 'Ana Martínez',
-    tenantEmail: 'ana.martinez@email.com',
-    tenantPhone: '+1 (555) 234-5678',
-    property: 'Casa Residencial #102',
-    propertyAddress: 'Av. Los Pinos 456, Zona Norte',
-    startDate: '2025-08-15',
-    endDate: '2027-08-15',
-    monthlyRent: '$4,500',
-    deposit: '$9,000',
-    status: 'activo' as const,
-    paymentDay: 15,
-    terms: [
-      'El arrendatario se compromete a pagar la renta mensual puntualmente.',
-      'Se permite máximo 2 mascotas pequeñas.',
-    ],
-  },
-];
+import { mockContracts } from '@/app/data/mocks';
 
 const mockPaymentHistory = [
   { month: 'Marzo 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-03-04' },
