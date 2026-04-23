@@ -1,6 +1,7 @@
 import { useParams } from 'react-router';
 import { Building2 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { useProperty } from '../../contexts/property-context';
 import { 
   PageHeader, 
   BackButton, 
@@ -8,30 +9,13 @@ import {
   EmptyState 
 } from '../shared';
 
-const mockProperties = [
-  {
-    id: 3,
-    name: 'Apartamento Vista Mar #103',
-    address: 'Malecón 789, Playa',
-    type: 'apartamento',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '55',
-    rent: '$2,800',
-    status: 'ocupado' as const,
-    description: 'Acogedor apartamento con vista directa al mar.',
-    amenities: ['Vista al mar', 'Piscina compartida', 'Gimnasio', 'Seguridad 24/7'],
-    yearBuilt: 2020,
-    floors: 1,
-    furnished: true,
-  },
-];
 
 export function InquilinoPropertyForm() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
+  const { getPropertyById } = useProperty();
   
-  const property = mockProperties.find(p => p.id === Number(id));
+  const property = id ? getPropertyById(id) : undefined;
 
   if (!property) {
     return (

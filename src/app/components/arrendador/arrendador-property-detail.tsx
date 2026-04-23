@@ -15,6 +15,7 @@ import {
   Trash2,
   History
 } from 'lucide-react';
+import { useProperty } from '../../contexts/property-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { 
   BackButton, 
@@ -24,61 +25,7 @@ import {
   DocumentList,
   EmptyState 
 } from '../shared';
-import { Property } from '@/app/types';
 
-// Mock data
-const mockProperties : Property[] = [
-  {
-    id: 1,
-    name: 'Apartamento Centro #101',
-    address: 'Calle Principal 123, Centro',
-    type: 'apartamento',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: '85 m²',
-    rent: '$3,200',
-    status: 'ocupado' as const,
-    tenant: 'Juan Pérez',
-    description: 'Moderno apartamento en el corazón del centro.',
-    amenities: ['Estacionamiento', 'Balcón', 'Cocina equipada', 'Aire acondicionado', 'Internet incluido'],
-    yearBuilt: 2018,
-    floors: 1,
-    furnished: true,
-  },
-  {
-    id: 2,
-    name: 'Casa Residencial #102',
-    address: 'Av. Los Pinos 456, Zona Norte',
-    type: 'casa',
-    bedrooms: 3,
-    bathrooms: 2,
-    area: '120 m²',
-    rent: '$4,500',
-    status: 'ocupado' as const,
-    tenant: 'Ana Martínez',
-    description: 'Amplia casa en zona residencial tranquila.',
-    amenities: ['Jardín', 'Garaje 2 autos', 'Cuarto de lavado', 'Terraza', 'Sistema de seguridad'],
-    yearBuilt: 2015,
-    floors: 2,
-    furnished: false,
-  },
-  {
-    id: 4,
-    name: 'Estudio Moderno #104',
-    address: 'Calle Comercial 321, Centro',
-    type: 'estudio',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '45 m²',
-    rent: '$2,200',
-    status: 'disponible' as const,
-    description: 'Estudio completamente renovado.',
-    amenities: ['Cocina americana', 'Internet fibra óptica', 'Lavandería compartida'],
-    yearBuilt: 2022,
-    floors: 1,
-    furnished: true,
-  },
-];
 
 const mockDocuments = [
   { name: 'Ficha técnica.pdf', size: '245 KB' },
@@ -88,8 +35,9 @@ const mockDocuments = [
 export function ArrendadorPropertyDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
+  const { getPropertyById } = useProperty();
   
-  const property = mockProperties.find(p => p.id === Number(id));
+  const property = id ? getPropertyById(id) : undefined;
 
   if (!property) {
     return (

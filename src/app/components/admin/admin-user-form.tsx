@@ -85,7 +85,6 @@ export function AdminUserForm() {
   ];
 
   // Obtener todas las propiedades existentes para mostrarlas en modo edición
-  const allProperties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
   return (
     <div className="space-y-6">

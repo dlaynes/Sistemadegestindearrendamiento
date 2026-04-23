@@ -4,32 +4,15 @@ import { Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { PageHeader, BackButton, FormField, FormSection, TagInput, FormActions } from '../shared';
 import type { Property, PropertyType } from '../../types';
-
-const mockProperties: Property[] = [
-  {
-    id: '1',
-    name: 'Apartamento Centro #101',
-    address: 'Calle Principal 123, Centro',
-    type: 'apartamento',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: '85',
-    rent: '$3,200',
-    status: 'ocupado',
-    description: 'Moderno apartamento en el corazón del centro.',
-    amenities: ['Estacionamiento', 'Balcón', 'Cocina equipada'],
-    yearBuilt: 2018,
-    floors: 1,
-    furnished: true,
-  },
-];
+import { useProperty } from '../../contexts/property-context';
 
 export function AdminPropertyForm() {
   const { id } = useParams();
   const navBack = useNavigate();
   const isEditing = !!id;
+  const { getPropertyById, addProperty, updateProperty, deleteProperty } = useProperty();
 
-  const property = isEditing ? mockProperties.find((p) => p.id === id) : null;
+  const property = isEditing && id ? getPropertyById(id) : undefined;
 
   const [amenities, setAmenities] = useState<string[]>(property?.amenities || []);
 
@@ -59,14 +42,17 @@ export function AdminPropertyForm() {
   });
 
   const onSubmit = (data: Partial<Property>) => {
-    const formData = { ...data, amenities };
-    console.log(isEditing ? 'Actualizando:' : 'Creando:', formData);
+    if (isEditing) {
+      updateProperty(id!, { ...data, amenities } as Property);
+    } else {
+      addProperty({ ...data, amenities } as Property);
+    }
     navBack(-1);
   };
 
   const handleDelete = () => {
     if (confirm('¿Estás seguro de eliminar esta propiedad?')) {
-      console.log('Eliminando propiedad:', id);
+      deleteProperty(id!);
       navBack(-1);
     }
   };

@@ -12,6 +12,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { useProperty } from '../../contexts/property-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { 
   BackButton, 
@@ -21,42 +22,6 @@ import {
   EmptyState 
 } from '../shared';
 
-// Mock data - solo propiedades disponibles o la propiedad actual del inquilino
-const mockProperties = [
-  {
-    id: 3,
-    name: 'Apartamento Vista Mar #103',
-    address: 'Malecón 789, Playa',
-    type: 'apartamento',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '55 m²',
-    rent: '$2,800',
-    status: 'ocupado' as const,
-    tenant: 'Mi Propiedad',
-    description: 'Acogedor apartamento con vista directa al mar.',
-    amenities: ['Vista al mar', 'Piscina compartida', 'Gimnasio', 'Seguridad 24/7', 'Estacionamiento'],
-    yearBuilt: 2020,
-    floors: 1,
-    furnished: true,
-  },
-  {
-    id: 4,
-    name: 'Estudio Moderno #104',
-    address: 'Calle Comercial 321, Centro',
-    type: 'estudio',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '45 m²',
-    rent: '$2,200',
-    status: 'disponible' as const,
-    description: 'Estudio completamente renovado.',
-    amenities: ['Cocina americana', 'Internet fibra óptica', 'Lavandería compartida'],
-    yearBuilt: 2022,
-    floors: 1,
-    furnished: true,
-  },
-];
 
 const mockDocuments = [
   { name: 'Contrato de arrendamiento.pdf', size: '1.5 MB' },
@@ -66,8 +31,9 @@ const mockDocuments = [
 export function InquilinoPropertyDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
+  const { getPropertyById } = useProperty();
   
-  const property = mockProperties.find(p => p.id === Number(id));
+  const property = id ? getPropertyById(id) : undefined;
 
   if (!property) {
     return (
