@@ -182,6 +182,7 @@ export function AdminContractWizard() {
         return watchedData.startDate && watchedData.endDate && watchedData.monthlyRent && watchedData.deposit;
       case 4:
       case 5:
+      case 6:
         return true;
       default:
         return true;
@@ -267,7 +268,7 @@ export function AdminContractWizard() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={() => false}>
           {/* Step 1: Seleccionar Propiedad */}
           {currentStep === 1 && (
             <div className="space-y-6">
@@ -972,7 +973,7 @@ export function AdminContractWizard() {
                       </div>
                       {watchedData.terms && (
                         <div className="text-sm text-gray-700 mb-3 whitespace-pre-line">
-                          {Array.isArray(watchedData.terms) ? (watchedData.terms || []).join('\n') : watchedData.terms}
+                          {Array.isArray(watchedData.terms) ? (watchedData.terms || "").join('\n') : watchedData.terms}
                         </div>
                       )}
                       <div className="flex flex-wrap gap-2">
@@ -1047,7 +1048,8 @@ export function AdminContractWizard() {
               </button>
             ) : (
               <button
-                type="submit"
+                type="button"
+                onClick={handleSubmit(onSubmit)}
                 className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 <Save className="w-4 h-4" />

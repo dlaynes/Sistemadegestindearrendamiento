@@ -1049,7 +1049,7 @@ export function ArrendadorContractWizard() {
             ) : (
               <button
                 type="button"
-                onClick={() => onSubmit(watchedData)}
+                onClick={handleSubmit(onSubmit)}
                 className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 <Save className="w-4 h-4" />
