@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { useProperty } from '../../contexts/property-context';
+import type { Property } from '../../types';
 import { 
   PageHeader, 
   BackButton, 
@@ -12,24 +14,6 @@ import {
   FormActions 
 } from '../shared';
 
-const mockProperties = [
-  {
-    id: 1,
-    name: 'Apartamento Centro #101',
-    address: 'Calle Principal 123, Centro',
-    type: 'apartamento',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: '85',
-    rent: '$3,200',
-    status: 'ocupado' as const,
-    description: 'Moderno apartamento en el corazón del centro.',
-    amenities: ['Estacionamiento', 'Balcón', 'Cocina equipada'],
-    yearBuilt: 2018,
-    floors: 1,
-    furnished: true,
-  },
-];
 
 type PropertyFormData = {
   name: string;
@@ -61,8 +45,9 @@ export function ArrendadorPropertyForm() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
   const isEditing = !!id;
+  const { getPropertyById, addProperty, updateProperty, deleteProperty } = useProperty();
   
-  const property = isEditing ? mockProperties.find(p => p.id === Number(id)) : null;
+  const property = isEditing && id ? getPropertyById(id) : undefined;
 
   const [amenities, setAmenities] = useState<string[]>(property?.amenities || []);
 
@@ -90,14 +75,17 @@ export function ArrendadorPropertyForm() {
   });
 
   const onSubmit = (data: PropertyFormData) => {
-    const formData = { ...data, amenities };
-    console.log(isEditing ? 'Actualizando:' : 'Creando:', formData);
+    if (isEditing) {
+      updateProperty(id!, { ...data, amenities } as Property);
+    } else {
+      addProperty({ ...data, amenities } as Property);
+    }
     navigate('/propiedades');
   };
 
   const handleDelete = () => {
     if (confirm('¿Estás seguro de eliminar esta propiedad?')) {
-      console.log('Eliminando propiedad:', id);
+      deleteProperty(id!);
       navigate('/propiedades');
     }
   };

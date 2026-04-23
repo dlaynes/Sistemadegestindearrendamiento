@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router';
-import type { Property, PropertyStatus } from '../../types';
 import { 
   Building2, 
   MapPin, 
@@ -16,6 +15,7 @@ import {
   Trash2,
   History
 } from 'lucide-react';
+import { useProperty } from '../../contexts/property-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { 
   BackButton, 
@@ -26,76 +26,6 @@ import {
   EmptyState 
 } from '../shared';
 
-// Mock data
-const mockProperties: Property[] = [
-  {
-    id: 1,
-    name: 'Apartamento Centro #101',
-    address: 'Calle Principal 123, Centro',
-    type: 'apartamento',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: '85 m²',
-    rent: '$3,200',
-    status: 'ocupado' as PropertyStatus,
-    tenant: 'Juan Pérez',
-    description: 'Moderno apartamento en el corazón del centro, con excelente iluminación natural y vistas panorámicas.',
-    amenities: ['Estacionamiento', 'Balcón', 'Cocina equipada', 'Aire acondicionado', 'Internet incluido'],
-    yearBuilt: 2018,
-    floors: 1,
-    furnished: true,
-  },
-  {
-    id: 2,
-    name: 'Casa Residencial #102',
-    address: 'Av. Los Pinos 456, Zona Norte',
-    type: 'casa',
-    bedrooms: 3,
-    bathrooms: 2,
-    area: '120 m²',
-    rent: '$4,500',
-    status: 'ocupado' as PropertyStatus,
-    tenant: 'Ana Martínez',
-    description: 'Amplia casa en zona residencial tranquila y segura. Ideal para familias.',
-    amenities: ['Jardín', 'Garaje 2 autos', 'Cuarto de lavado', 'Terraza', 'Sistema de seguridad'],
-    yearBuilt: 2015,
-    floors: 2,
-    furnished: false,
-  },
-  {
-    id: 3,
-    name: 'Apartamento Vista Mar #103',
-    address: 'Malecón 789, Playa',
-    type: 'apartamento',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '55 m²',
-    rent: '$2,800',
-    status: 'ocupado' as PropertyStatus,
-    tenant: 'María García',
-    description: 'Acogedor apartamento con vista directa al mar.',
-    amenities: ['Vista al mar', 'Piscina compartida', 'Gimnasio', 'Seguridad 24/7', 'Estacionamiento'],
-    yearBuilt: 2020,
-    floors: 1,
-    furnished: true,
-  },
-  {
-    id: 4,
-    name: 'Estudio Moderno #104',
-    address: 'Calle Comercial 321, Centro',
-    type: 'estudio',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '45 m²',
-    rent: '$2,200',
-    status: 'disponible' as PropertyStatus,
-    description: 'Estudio completamente renovado con diseño minimalista.',
-    amenities: ['Cocina americana', 'Internet fibra óptica', 'Lavandería compartida', 'Espacio de coworking'],
-    yearBuilt: 2022,
-    floors: 1,
-    furnished: true,
-  },
-];
 
 const mockDocuments = [
   { name: 'Ficha técnica.pdf', size: '245 KB' },
@@ -108,8 +38,9 @@ export function AdminPropertyDetail() {
   const navBack = useNavigate();
 
   const navigate = useRoleNavigation();
+  const { getPropertyById } = useProperty();
   
-  const property = mockProperties.find(p => p.id === Number(id));
+  const property = id ? getPropertyById(id) : undefined;
 
   if (!property) {
     return (

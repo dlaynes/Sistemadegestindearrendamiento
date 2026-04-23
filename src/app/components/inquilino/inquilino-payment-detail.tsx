@@ -2,8 +2,6 @@ import { useParams } from 'react-router';
 import { 
   DollarSign,
   ArrowLeft,
-  User,
-  Building2,
   Calendar,
   CheckCircle,
   AlertCircle,

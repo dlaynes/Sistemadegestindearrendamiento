@@ -23,7 +23,7 @@ export function Login() {
       if (user) {
         navigate(`/${user.role}/dashboard`);
       }
-    } catch (err) {
+    } catch {
       setError('Credenciales inválidas. Por favor intenta de nuevo.');
     } finally {
       setIsLoading(false);
