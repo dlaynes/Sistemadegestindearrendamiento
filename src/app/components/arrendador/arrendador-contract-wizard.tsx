@@ -17,15 +17,10 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
-import { mockContracts } from '@/app/data/mocks';
+import { useProperty } from '../../contexts/property-context';
+import { useContract } from '../../contexts/contract-context';
 import { Attachment, ContractFormData } from '@/app/types/contract';
 
-// Mock data para propiedades disponibles
-const mockAvailableProperties = [
-  { id: 1, name: 'Apartamento Centro #101', address: 'Calle Principal 123, Centro', price: 3200 },
-  { id: 4, name: 'Casa Familiar #201', address: 'Av. Secundaria 456, Residencial', price: 5500 },
-  { id: 5, name: 'Estudio Moderno #104', address: 'Calle Comercial 789, Centro', price: 2200 },
-];
 
 // Mock data para inquilinos existentes
 const mockTenants = [
@@ -49,8 +44,11 @@ export function ArrendadorContractWizard() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
   const isEditing = !!id;
+  const { getAvailableProperties } = useProperty();
+  const availableProperties = getAvailableProperties();
+  const { getContractById, addContract, updateContract } = useContract();
 
-  const contract = isEditing ? mockContracts.find((c) => c.id === Number(id)) : null;
+  const contract = isEditing && id ? getContractById(id) : undefined;
 
   const [currentStep, setCurrentStep] = useState(1);
   const [attachments, setAttachments] = useState<Attachment[]>(contract?.attachments || []);
@@ -68,8 +66,8 @@ export function ArrendadorContractWizard() {
   const tenantListRef = React.useRef<HTMLDivElement>(null);
 
   const filteredProperties = propertyQuery.trim() === ''
-    ? mockAvailableProperties
-    : mockAvailableProperties.filter(
+    ? availableProperties
+    : availableProperties.filter(
         (p) =>
           p.name.toLowerCase().includes(propertyQuery.toLowerCase()) ||
           p.address.toLowerCase().includes(propertyQuery.toLowerCase())
@@ -119,7 +117,7 @@ export function ArrendadorContractWizard() {
   });
 
   const watchedData = watch();
-  const selectedProperty = mockAvailableProperties.find((p) => p.id === Number(watchedData.propertyId));
+  const selectedProperty = availableProperties.find((p) => p.id === Number(watchedData.propertyId));
 
   // Calcular fecha de fin basada en duración
   const handleDurationChange = (duration: number) => {
@@ -150,14 +148,34 @@ export function ArrendadorContractWizard() {
   };
 
   const onSubmit = (data: ContractFormData) => {
-    const formData = {
-      ...data,
+    const payload = {
+      id: id || String(Date.now()),
+      code: contract?.code || `CT-${String(Date.now()).slice(-4)}`,
+      tenant: data.tenant,
+      tenantEmail: data.tenantEmail,
+      tenantPhone: data.tenantPhone,
+      propertyId: data.propertyId,
+      property: selectedProperty?.name || '',
+      propertyAddress: selectedProperty?.address || '',
+      startDate: data.startDate,
+      endDate: data.endDate,
+      duration: data.duration,
+      monthlyRent: data.monthlyRent,
+      services: data.services,
+      deposit: data.deposit,
+      contractType: data.contractType,
+      status: 'activo' as const,
+      paymentDay: data.paymentDay,
+      terms: data.terms,
       attachments,
     };
 
-    console.log(isEditing ? 'Actualizando contrato:' : 'Creando contrato:', formData);
+    if (isEditing && id) {
+      updateContract(id, payload);
+    } else {
+      addContract(payload);
+    }
 
-    // Aquí iría la lógica para guardar en el backend
     navigate('/contratos');
   };
 
@@ -307,7 +325,7 @@ export function ArrendadorContractWizard() {
                           e.preventDefault();
                           const prop = filteredProperties[propertyHighlighted];
                           if (prop) {
-                            setValue('propertyId', prop.id, { shouldValidate: true });
+                            setValue('propertyId', Number(prop.id), { shouldValidate: true });
                             setPropertyQuery(prop.name);
                             setPropertyDropdownOpen(false);
                           }
@@ -342,7 +360,7 @@ export function ArrendadorContractWizard() {
                             key={property.id}
                             type="button"
                             onClick={() => {
-                              setValue('propertyId', property.id, { shouldValidate: true });
+                              setValue('propertyId', Number(property.id), { shouldValidate: true });
                               setPropertyQuery(property.name);
                               setPropertyDropdownOpen(false);
                             }}
@@ -363,7 +381,7 @@ export function ArrendadorContractWizard() {
                                 {property.name}
                               </div>
                               <div className="text-sm text-gray-500 truncate">
-                                {property.address} · ${property.price.toLocaleString()}/mes
+                                {property.address} · ${property.rent}/mes
                               </div>
                             </div>
                           </button>
@@ -381,7 +399,7 @@ export function ArrendadorContractWizard() {
                       <div className="font-medium text-gray-900">{selectedProperty.name}</div>
                       <div className="text-sm text-gray-600">{selectedProperty.address}</div>
                       <div className="text-sm font-semibold text-blue-600 mt-1">
-                        ${selectedProperty.price.toLocaleString()}/mes
+                        ${selectedProperty.rent}/mes
                       </div>
                     </div>
                   </div>
@@ -898,7 +916,7 @@ export function ArrendadorContractWizard() {
                       <div className="font-medium text-gray-900">{selectedProperty?.name}</div>
                       <div className="text-gray-600">{selectedProperty?.address}</div>
                       <div className="text-blue-600 font-semibold">
-                        ${selectedProperty?.price.toLocaleString()}/mes
+                        ${selectedProperty?.rent}/mes
                       </div>
                     </div>
                   </div>

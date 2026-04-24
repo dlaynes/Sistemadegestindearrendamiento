@@ -4,7 +4,7 @@ import { Building2 } from 'lucide-react';
 import { useState } from 'react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useProperty } from '../../contexts/property-context';
-import type { Property } from '../../types';
+import type { Property, PropertyStatus } from '../../types';
 import { 
   PageHeader, 
   BackButton, 
@@ -23,7 +23,7 @@ type PropertyFormData = {
   bathrooms: number;
   area: string;
   rent: string;
-  status: 'ocupado' | 'disponible';
+  status: PropertyStatus;
   description: string;
   yearBuilt: number;
   floors: number;

@@ -11,7 +11,7 @@ export type ContractFormData = {
   startDate: string;
   endDate: string;
   duration: number;
-  monthlyRent?: string;
+  monthlyRent: string;
   services?: string;
   deposit: string;
   contractType: 'fijo' | 'mensual' | 'renovable';
@@ -33,7 +33,7 @@ export interface Contract {
   startDate: string;
   endDate: string;
   duration?: number;
-  monthlyRent?: string;
+  monthlyRent: string;
   services?: string;
   contractType?: 'fijo' | 'mensual' | 'renovable';
   deposit: string;

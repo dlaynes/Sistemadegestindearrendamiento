@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
+import { useContract } from '../../contexts/contract-context';
 import {
   DollarSign,
   ArrowLeft,
@@ -11,30 +12,6 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
-// Mock data para contratos
-const mockContracts = [
-  {
-    id: 1,
-    tenant: 'Juan Pérez',
-    property: 'Apartamento Centro #101',
-    monthlyRent: 3200,
-    paymentDay: 5,
-  },
-  {
-    id: 2,
-    tenant: 'Ana Martínez',
-    property: 'Casa Residencial #102',
-    monthlyRent: 4500,
-    paymentDay: 15,
-  },
-  {
-    id: 3,
-    tenant: 'María García',
-    property: 'Apartamento Vista Mar #103',
-    monthlyRent: 2800,
-    paymentDay: 1,
-  },
-];
 
 type PaymentFormData = {
   contractId: number;
@@ -60,7 +37,8 @@ export function InquilinoPaymentForm() {
   const { contractId } = useParams();
   const navigate = useNavigate();
 
-  const contract = mockContracts.find((c) => c.id === Number(contractId));
+  const { getContractById } = useContract();
+  const contract = contractId ? getContractById(contractId) : undefined;
   const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   const {
@@ -72,7 +50,7 @@ export function InquilinoPaymentForm() {
   } = useForm<PaymentFormData>({
     defaultValues: {
       contractId: Number(contractId),
-      baseRent: contract?.monthlyRent || 0,
+      baseRent: Number(contract?.monthlyRent?.replace(/[^\d]/g, '') || '0'),
       services: 0,
       paymentDate: new Date().toISOString().split('T')[0],
       paymentMethod: 'transferencia',

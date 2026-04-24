@@ -2,24 +2,13 @@ import { Info } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader, ContractCard, InfoCard } from '../shared';
 import type { ContractListItem } from '../../types';
+import { useContract } from '../../contexts/contract-context';
 
 // Para inquilinos, solo mostrar su contrato actual
-const mockContracts: ContractListItem[] = [
-  {
-    id: 3,
-    code: 'CT-0003',
-    tenant: 'Yo (María García)',
-    property: 'Apartamento Vista Mar #103',
-    startDate: '2025-09-01',
-    endDate: '2026-03-01',
-    monthlyRent: '$2,800',
-    deposit: '$5,600',
-    status: 'activo',
-  },
-];
 
 export function InquilinoContracts() {
   const navigate = useRoleNavigation();
+  const { contracts } = useContract();
 
   const handleViewContract = (contract: ContractListItem) => {
     navigate(`/contratos/${contract.id}`);
@@ -34,7 +23,7 @@ export function InquilinoContracts() {
 
       {/* Contract Card */}
       <div className="space-y-4">
-        {mockContracts.map((contract) => (
+        {contracts.map((contract) => (
           <ContractCard
             key={contract.id}
             contract={contract}

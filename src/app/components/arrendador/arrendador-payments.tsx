@@ -1,87 +1,21 @@
 import { useState } from 'react';
 import { DollarSign, CheckCircle, Clock, AlertCircle, Calendar, TrendingUp } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { usePayment } from "../../contexts/payment-context";
 
-const mockPayments = [
-  {
-    id: 1,
-    contractId: 1,
-    tenant: 'Juan Pérez',
-    property: 'Apartamento Centro #101',
-    amount: '3200',
-    dueDate: '2026-03-05',
-    paidDate: '2026-03-04',
-    status: 'pagado',
-    method: 'transferencia',
-  },
-  {
-    id: 2,
-    contractId: 2,
-    tenant: 'Ana Martínez',
-    property: 'Casa Residencial #102',
-    amount: '4500',
-    dueDate: '2026-03-15',
-    paidDate: '2026-03-14',
-    status: 'pagado',
-    method: 'efectivo',
-  },
-  {
-    id: 3,
-    contractId: 3,
-    tenant: 'María García',
-    property: 'Apartamento Vista Mar #103',
-    amount: '2800',
-    dueDate: '2026-03-20',
-    
-    status: 'vencido',
-    method: 'transferencia',
-  },
-  {
-    id: 4,
-    contractId: 4,
-    tenant: 'Laura Gómez',
-    property: 'Casa Familiar #201',
-    amount: '5500',
-    dueDate: '2026-04-10',
-    
-    status: 'pendiente',
-    method: 'transferencia',
-  },
-  {
-    id: 5,
-    contractId: 5,
-    tenant: 'Roberto Silva',
-    property: 'Estudio Moderno #104',
-    amount: '2200',
-    dueDate: '2026-04-08',
-    
-    status: 'pendiente',
-    method: 'transferencia',
-  },
-  {
-    id: 6,
-    contractId: 6,
-    tenant: 'Carlos López',
-    property: 'Loft Industrial #205',
-    amount: '3800',
-    dueDate: '2026-04-05',
-    
-    status: 'pendiente',
-    method: 'transferencia',
-  },
-];
 
 export function ArrendadorPayments() {
+  const { payments } = usePayment();
   const navigate = useRoleNavigation();
   const [statusFilter, setStatusFilter] = useState<'all' | 'pagado' | 'pendiente' | 'vencido'>('all');
 
-  const filteredPayments = mockPayments.filter((payment) => {
+  const filteredPayments = payments.filter((payment) => {
     return statusFilter === 'all' || payment.status === statusFilter;
   });
 
-  const totalPaid = mockPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
-  const totalPending = mockPayments.filter(p => p.status === 'pendiente').reduce((sum, p) => sum + Number(p.amount), 0);
-  const totalOverdue = mockPayments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalPaid = payments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalPending = payments.filter(p => p.status === 'pendiente').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalOverdue = payments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
