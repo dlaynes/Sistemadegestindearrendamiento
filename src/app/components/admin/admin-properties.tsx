@@ -57,7 +57,7 @@ export function AdminProperties() {
       />
 
       {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProperties.map((property) => (
             <PropertyCard
               key={property.id}

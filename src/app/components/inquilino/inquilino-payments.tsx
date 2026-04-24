@@ -1,54 +1,21 @@
 import { useState } from 'react';
 import { DollarSign, CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { usePayment } from "../../contexts/payment-context";
 
 // Para inquilinos, solo mostrar sus propios pagos
-const mockPayments = [
-  {
-    id: 3,
-    contractId: 3,
-    tenant: 'Yo (María García)',
-    property: 'Apartamento Vista Mar #103',
-    amount: '2800',
-    dueDate: '2026-03-20',
-    
-    status: 'vencido',
-    method: 'transferencia',
-  },
-  {
-    id: 7,
-    contractId: 7,
-    tenant: 'Yo (María García)',
-    property: 'Apartamento Vista Mar #103',
-    amount: '2800',
-    dueDate: '2026-02-01',
-    paidDate: '2026-02-01',
-    status: 'pagado',
-    method: 'transferencia',
-  },
-  {
-    id: 8,
-    contractId: 8,
-    tenant: 'Yo (María García)',
-    property: 'Apartamento Vista Mar #103',
-    amount: '2800',
-    dueDate: '2026-01-01',
-    paidDate: '2025-12-30',
-    status: 'pagado',
-    method: 'transferencia',
-  },
-];
 
 export function InquilinoPayments() {
+  const { payments } = usePayment();
   const navigate = useRoleNavigation();
   const [statusFilter, setStatusFilter] = useState<'all' | 'pagado' | 'pendiente' | 'vencido'>('all');
 
-  const filteredPayments = mockPayments.filter((payment) => {
+  const filteredPayments = payments.filter((payment) => {
     return statusFilter === 'all' || payment.status === statusFilter;
   });
 
-  const totalPaid = mockPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
-  const totalOverdue = mockPayments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalPaid = payments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalOverdue = payments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

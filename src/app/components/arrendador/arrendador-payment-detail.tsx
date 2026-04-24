@@ -15,116 +15,15 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { usePayment } from "../../contexts/payment-context";
 
-// Mock data - debería coincidir con el de payments.tsx
-const mockPayments = [
-  {
-    id: 1,
-    contractId: 1,
-    tenant: 'Juan Pérez',
-    tenantEmail: 'juan.perez@email.com',
-    property: 'Apartamento Centro #101',
-    propertyAddress: 'Calle Principal 123, Centro',
-    amount: '3200',
-    dueDate: '2026-03-05',
-    paidDate: '2026-03-04',
-    status: 'pagado',
-    method: 'transferencia',
-    referenceNumber: 'TRF-20260304-001',
-    notes: 'Pago realizado un día antes del vencimiento.',
-    breakdown: [
-      { concept: 'Renta mensual', amount: 3200 },
-      { concept: 'Mantenimiento', amount: 0 },
-      { concept: 'Servicios', amount: 0 }
-    ],
-    relatedPayments: [
-      { month: 'Febrero 2026', status: 'pagado', date: '2026-02-03' },
-      { month: 'Enero 2026', status: 'pagado', date: '2026-01-04' },
-      { month: 'Diciembre 2025', status: 'pagado', date: '2025-12-04' }
-    ]
-  },
-  {
-    id: 2,
-    contractId: 2,
-    tenant: 'Ana Martínez',
-    tenantEmail: 'ana.martinez@email.com',
-    property: 'Casa Residencial #102',
-    propertyAddress: 'Av. Los Pinos 456, Zona Norte',
-    amount: '4500',
-    dueDate: '2026-03-15',
-    paidDate: '2026-03-14',
-    status: 'pagado',
-    method: 'efectivo',
-    referenceNumber: 'EFE-20260314-002',
-    notes: 'Pago recibido en efectivo en oficina.',
-    breakdown: [
-      { concept: 'Renta mensual', amount: 4500 },
-      { concept: 'Mantenimiento', amount: 0 },
-      { concept: 'Servicios', amount: 0 }
-    ],
-    relatedPayments: [
-      { month: 'Febrero 2026', status: 'pagado', date: '2026-02-14' },
-      { month: 'Enero 2026', status: 'pagado', date: '2026-01-15' },
-      { month: 'Diciembre 2025', status: 'pagado', date: '2025-12-15' }
-    ]
-  },
-  {
-    id: 3,
-    contractId: 3,
-    tenant: 'María García',
-    tenantEmail: 'maria.garcia@email.com',
-    property: 'Apartamento Vista Mar #103',
-    propertyAddress: 'Malecón 789, Playa',
-    amount: '2800',
-    dueDate: '2026-03-20',
-    
-    status: 'vencido',
-    method: 'transferencia',
-    referenceNumber: null,
-    notes: 'Pago vencido. Se ha enviado recordatorio al inquilino.',
-    breakdown: [
-      { concept: 'Renta mensual', amount: 2800 },
-      { concept: 'Mora (5 días)', amount: 140 },
-      { concept: 'Servicios', amount: 0 }
-    ],
-    relatedPayments: [
-      { month: 'Febrero 2026', status: 'pagado', date: '2026-02-02' },
-      { month: 'Enero 2026', status: 'pagado', date: '2026-01-01' },
-      { month: 'Diciembre 2025', status: 'pagado', date: '2025-12-01' }
-    ]
-  },
-  {
-    id: 4,
-    contractId: 4,
-    tenant: 'Laura Gómez',
-    tenantEmail: 'laura.gomez@email.com',
-    property: 'Casa Familiar #201',
-    propertyAddress: 'Residencial Las Flores 555',
-    amount: '5500',
-    dueDate: '2026-04-10',
-    
-    status: 'pendiente',
-    method: 'transferencia',
-    referenceNumber: null,
-    notes: 'Pago programado para abril 2026.',
-    breakdown: [
-      { concept: 'Renta mensual', amount: 5500 },
-      { concept: 'Mantenimiento', amount: 0 },
-      { concept: 'Servicios', amount: 0 }
-    ],
-    relatedPayments: [
-      { month: 'Marzo 2026', status: 'pagado', date: '2026-03-09' },
-      { month: 'Febrero 2026', status: 'pagado', date: '2026-02-10' },
-      { month: 'Enero 2026', status: 'pagado', date: '2026-01-10' }
-    ]
-  },
-];
 
 export function ArrendadorPaymentDetail() {
+  const { payments } = usePayment();
   const { id } = useParams();
   const navigate = useRoleNavigation();
   
-  const payment = mockPayments.find(p => p.id === Number(id));
+  const payment = payments.find(p => p.id === Number(id));
 
   if (!payment) {
     return (
@@ -190,7 +89,7 @@ export function ArrendadorPaymentDetail() {
     return diffDays;
   };
 
-  const totalAmount = payment.breakdown.reduce((sum, item) => sum + item.amount, 0);
+  const totalAmount = payment.breakdown?.reduce((sum, item) => sum + item.amount, 0) ?? 0;
 
   return (
     <div className="space-y-6">
@@ -309,7 +208,7 @@ export function ArrendadorPaymentDetail() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Desglose del Pago</h2>
             <div className="space-y-3">
-              {payment.breakdown.map((item, index) => (
+              {payment.breakdown?.map((item, index) => (
                 <div key={index} className="flex items-center justify-between py-3 border-b border-gray-200 last:border-0">
                   <span className="text-gray-700">{item.concept}</span>
                   <span className="font-semibold text-gray-900">${item.amount.toLocaleString()}</span>
@@ -360,7 +259,7 @@ export function ArrendadorPaymentDetail() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Historial de Pagos Relacionados</h2>
             <div className="space-y-3">
-              {payment.relatedPayments.map((related, index) => (
+              {payment.relatedPayments?.map((related, index) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600" />
@@ -453,7 +352,7 @@ export function ArrendadorPaymentDetail() {
                 <p className="text-sm text-gray-600 mb-1">Pagos a tiempo</p>
                 <div className="flex items-center gap-2">
                   <p className="text-lg font-semibold text-gray-900">
-                    {payment.relatedPayments.length} / {payment.relatedPayments.length}
+                    {payment.relatedPayments?.length || 0} / {payment.relatedPayments?.length || 0}
                   </p>
                   <TrendingUp className="w-4 h-4 text-green-600" />
                 </div>
@@ -464,7 +363,7 @@ export function ArrendadorPaymentDetail() {
               <div>
                 <p className="text-sm text-gray-600 mb-1">Total pagado este año</p>
                 <p className="text-lg font-semibold text-gray-900">
-                  ${(payment.relatedPayments.length * Number(payment.amount)).toLocaleString()}
+                  ${(payment.relatedPayments?.length || 0 * Number(payment.amount)).toLocaleString()}
                 </p>
               </div>
             </div>

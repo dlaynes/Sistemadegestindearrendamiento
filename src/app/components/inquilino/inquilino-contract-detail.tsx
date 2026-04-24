@@ -2,27 +2,9 @@ import { useParams } from 'react-router';
 import { FileText, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { BackButton, StatusBadge, InfoCard, SidebarActions, EmptyState } from '../shared';
-import type { Contract, PaymentHistoryItem } from '../../types';
+import type { PaymentHistoryItem } from '../../types';
+import { useContract } from '../../contexts/contract-context';
 
-const mockContracts: Contract[] = [
-  {
-    id: '3',
-    code: 'CT-0003',
-    tenant: 'María García',
-    property: 'Apartamento Vista Mar #103',
-    startDate: '2025-09-01',
-    endDate: '2026-03-01',
-    monthlyRent: '$2,800',
-    deposit: '$5,600',
-    status: 'activo',
-    terms: [
-      'El arrendatario se compromete a pagar la renta mensual puntualmente.',
-      'No se permiten fiestas o reuniones ruidosas.',
-      'El uso de amenidades compartidas debe respetar el reglamento.',
-      'Prohibido fumar dentro de la propiedad.',
-    ],
-  },
-];
 
 const mockPaymentHistory: PaymentHistoryItem[] = [
   { month: 'Marzo 2026', amount: '$2,800', status: 'pagado', date: '2026-03-01' },
@@ -34,7 +16,8 @@ export function InquilinoContractDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
 
-  const contract = mockContracts.find((c) => c.id === id);
+  const { getContractById } = useContract();
+  const contract = id ? getContractById(id) : undefined;
 
   if (!contract) {
     return (

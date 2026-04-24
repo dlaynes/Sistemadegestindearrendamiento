@@ -24,7 +24,7 @@ import {
   EmptyState,
   getDaysUntilExpiration
 } from '../shared';
-import { mockContracts } from '@/app/data/mocks';
+import { useContract } from '../../contexts/contract-context';
 
 const mockPaymentHistory = [
   { month: 'Marzo 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-03-04' },
@@ -36,7 +36,8 @@ export function AdminContractDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
   
-  const contract = mockContracts.find(c => c.id === Number(id));
+  const { getContractById } = useContract();
+  const contract = id ? getContractById(id) : undefined;
 
   if (!contract) {
     return (

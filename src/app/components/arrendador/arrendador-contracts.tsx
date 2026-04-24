@@ -10,70 +10,15 @@ import {
   ActionButton 
 } from '../shared';
 import type { ContractListItem } from '../../types';
+import { useContract } from '../../contexts/contract-context';
 
-const mockContracts: ContractListItem[] = [
-  {
-    id: 1,
-    code: 'CT-0001',
-    tenant: 'Juan Pérez',
-    property: 'Apartamento Centro #101',
-    startDate: '2025-06-01',
-    endDate: '2026-06-01',
-    monthlyRent: '$3,200',
-    deposit: '$6,400',
-    status: 'activo',
-  },
-  {
-    id: 2,
-    code: 'CT-0002',
-    tenant: 'Ana Martínez',
-    property: 'Casa Residencial #102',
-    startDate: '2025-08-15',
-    endDate: '2027-08-15',
-    monthlyRent: '$4,500',
-    deposit: '$9,000',
-    status: 'activo',
-  },
-  {
-    id: 3,
-    code: 'CT-0003',
-    tenant: 'María García',
-    property: 'Apartamento Vista Mar #103',
-    startDate: '2025-09-01',
-    endDate: '2026-03-01',
-    monthlyRent: '$2,800',
-    deposit: '$5,600',
-    status: 'proximo_vencer',
-  },
-  {
-    id: 4,
-    code: 'CT-0004',
-    tenant: 'Laura Gómez',
-    property: 'Casa Familiar #201',
-    startDate: '2024-12-01',
-    endDate: '2026-12-01',
-    monthlyRent: '$5,500',
-    deposit: '$11,000',
-    status: 'activo',
-  },
-  {
-    id: 5,
-    code: 'CT-0005',
-    tenant: 'Roberto Silva',
-    property: 'Estudio Moderno #104',
-    startDate: '2025-01-15',
-    endDate: '2025-12-15',
-    monthlyRent: '$2,200',
-    deposit: '$4,400',
-    status: 'proximo_vencer',
-  },
-];
 
 export function ArrendadorContracts() {
   const navigate = useRoleNavigation();
+  const { contracts } = useContract();
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const filteredContracts = mockContracts.filter((contract) => {
+  const filteredContracts = contracts.filter((contract) => {
     return statusFilter === 'all' || contract.status === statusFilter;
   });
 
@@ -121,7 +66,7 @@ export function ArrendadorContracts() {
       />
 
       {filteredContracts.length > 0 ? (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           {filteredContracts.map((contract) => (
             <ContractCard
               key={contract.id}
