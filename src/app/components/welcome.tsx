@@ -66,7 +66,7 @@ function Welcome() {
               </div>
               <h3 className="welcome-feature-title">Seguridad Avanzada</h3>
               <p className="welcome-feature-desc">
-                Autenticación segura con Supabase y protección de datos
+                Autenticación segura y protección de datos
               </p>
             </div>
 
