@@ -17,11 +17,11 @@ import { usePayment } from "../../contexts/payment-context";
 
 
 export function InquilinoPaymentDetail() {
-  const { payments } = usePayment();
+  const { getPaymentById } = usePayment();
   const { id } = useParams();
   const navigate = useRoleNavigation();
   
-  const payment = payments.find(p => p.id === Number(id));
+  const payment = id ? getPaymentById(id) : undefined;
 
   if (!payment) {
     return (

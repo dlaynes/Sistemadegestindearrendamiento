@@ -130,12 +130,12 @@ export function AdminPropertyDetail() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {property.tenant ? (
+          {property.tenantName ? (
             <InfoCard
               title="Inquilino Actual"
               icon={User}
               items={[
-                { label: 'Nombre', value: property.tenant },
+                { label: 'Nombre', value: property.tenantName },
                 { label: 'Estado', value: 'Inquilino activo' },
               ]}
             >

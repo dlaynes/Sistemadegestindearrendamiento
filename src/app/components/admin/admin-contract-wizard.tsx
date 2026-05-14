@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useForm, Controller } from 'react-hook-form';
 import {
@@ -20,16 +20,10 @@ import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { Attachment, ContractFormData } from '@/app/types/contract';
 import { useProperty } from '../../contexts/property-context';
 import { useContract } from '../../contexts/contract-context';
+import { useServices } from '../../services/service-context';
+import type { User as UserType } from '../../types/user';
 
 
-// Mock data para inquilinos existentes
-const mockTenants = [
-  { id: 1, name: 'Juan Pérez', email: 'juan.perez@email.com', phone: '+51 999 888 777' },
-  { id: 2, name: 'Ana Martínez', email: 'ana.martinez@email.com', phone: '+51 999 777 666' },
-  { id: 3, name: 'María García', email: 'maria.garcia@email.com', phone: '+51 999 666 555' },
-  { id: 4, name: 'Laura Gómez', email: 'laura.gomez@email.com', phone: '+51 999 555 444' },
-  { id: 5, name: 'Roberto Silva', email: 'roberto.silva@email.com', phone: '+51 999 444 333' },
-];
 
 const STEPS = [
   { id: 1, name: 'Propiedad', icon: Building2 },
@@ -49,9 +43,15 @@ export function AdminContractWizard() {
   const { getContractById, addContract, updateContract } = useContract();
 
   const contract = isEditing && id ? getContractById(id) : undefined;
+  const { auth: authService } = useServices();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [attachments, setAttachments] = useState<Attachment[]>(contract?.attachments || []);
+  const [tenants, setTenants] = useState<UserType[]>([]);
+
+  useEffect(() => {
+    authService.getTenants().then(setTenants).catch(console.error);
+  }, []);
 
   // Autocomplete state for property selection
   const [propertyQuery, setPropertyQuery] = useState('');
@@ -74,8 +74,8 @@ export function AdminContractWizard() {
       );
 
   const filteredTenants = tenantQuery.trim() === ''
-    ? mockTenants
-    : mockTenants.filter(
+    ? tenants
+    : tenants.filter(
         (t) =>
           t.name.toLowerCase().includes(tenantQuery.toLowerCase()) ||
           t.email.toLowerCase().includes(tenantQuery.toLowerCase())
@@ -92,10 +92,10 @@ export function AdminContractWizard() {
     defaultValues: isEditing && contract
       ? {
           propertyId: contract.propertyId,
-          tenant: contract.tenant,
-          tenantEmail: contract.tenantEmail,
-          tenantPhone: contract.tenantPhone,
-          tenantId: '',
+          invitedTenantName: contract.invitedTenantName,
+          invitedTenantEmail: contract.invitedTenantEmail,
+          invitedTenantPhone: contract.invitedTenantPhone,
+          tenantId: undefined,
           services: contract.services,
           startDate: contract.startDate,
           endDate: contract.endDate,
@@ -151,9 +151,10 @@ export function AdminContractWizard() {
     const payload = {
       id: id || String(Date.now()),
       code: contract?.code || `CT-${String(Date.now()).slice(-4)}`,
-      tenant: data.tenant,
-      tenantEmail: data.tenantEmail,
-      tenantPhone: data.tenantPhone,
+      invitedTenantName: data.invitedTenantName,
+      invitedTenantEmail: data.invitedTenantEmail,
+      invitedTenantPhone: data.invitedTenantPhone,
+      tenantId: data.tenantId,
       propertyId: data.propertyId,
       property: selectedProperty?.name || '',
       propertyAddress: selectedProperty?.address || '',
@@ -196,7 +197,7 @@ export function AdminContractWizard() {
       case 1:
         return watchedData.propertyId;
       case 2:
-        return watchedData.tenant && watchedData.tenantEmail && watchedData.tenantPhone;
+        return watchedData.invitedTenantName && watchedData.invitedTenantEmail && watchedData.invitedTenantPhone;
       case 3:
         return watchedData.startDate && watchedData.endDate && watchedData.monthlyRent && watchedData.deposit;
       case 4:
@@ -456,9 +457,9 @@ export function AdminContractWizard() {
                             e.preventDefault();
                             const t = filteredTenants[tenantHighlighted];
                             if (t) {
-                              setValue('tenant', t.name, { shouldValidate: true });
-                              setValue('tenantEmail', t.email, { shouldValidate: true });
-                              setValue('tenantPhone', t.phone, { shouldValidate: true });
+                              setValue('invitedTenantName', t.name, { shouldValidate: true });
+                              setValue('invitedTenantEmail', t.email, { shouldValidate: true });
+                              setValue('tenantId', Number(t.id), { shouldValidate: true });
                               setTenantQuery(t.name);
                               setTenantDropdownOpen(false);
                             }
@@ -489,9 +490,9 @@ export function AdminContractWizard() {
                               key={t.id}
                               type="button"
                               onClick={() => {
-                                setValue('tenant', t.name, { shouldValidate: true });
-                                setValue('tenantEmail', t.email, { shouldValidate: true });
-                                setValue('tenantPhone', t.phone, { shouldValidate: true });
+                                setValue('invitedTenantName', t.name, { shouldValidate: true });
+                                setValue('invitedTenantEmail', t.email, { shouldValidate: true });
+                                setValue('tenantId', Number(t.id), { shouldValidate: true });
                                 setTenantQuery(t.name);
                                 setTenantDropdownOpen(false);
                               }}
@@ -508,7 +509,7 @@ export function AdminContractWizard() {
                                   {t.name}
                                 </div>
                                 <div className="text-sm text-gray-500 truncate">
-                                  {t.email} · {t.phone}
+                                  {t.email}
                                 </div>
                               </div>
                             </button>
@@ -519,10 +520,10 @@ export function AdminContractWizard() {
 
                     <input
                       type="hidden"
-                      {...register('tenant', { required: 'El nombre es requerido' })}
+                      {...register('invitedTenantName', { required: 'El nombre es requerido' })}
                     />
-                    {errors.tenant && (
-                      <p className="mt-1 text-sm text-red-600">{errors.tenant.message}</p>
+                    {errors.invitedTenantName && (
+                      <p className="mt-1 text-sm text-red-600">{errors.invitedTenantName.message}</p>
                     )}
                   </div>
 
@@ -532,7 +533,7 @@ export function AdminContractWizard() {
                     </label>
                     <input
                       type="email"
-                      {...register('tenantEmail', {
+                      {...register('invitedTenantEmail', {
                         required: 'El correo es requerido',
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -542,8 +543,8 @@ export function AdminContractWizard() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="juan.perez@email.com"
                     />
-                    {errors.tenantEmail && (
-                      <p className="mt-1 text-sm text-red-600">{errors.tenantEmail.message}</p>
+                    {errors.invitedTenantEmail && (
+                      <p className="mt-1 text-sm text-red-600">{errors.invitedTenantEmail.message}</p>
                     )}
                   </div>
 
@@ -553,29 +554,16 @@ export function AdminContractWizard() {
                     </label>
                     <input
                       type="tel"
-                      {...register('tenantPhone', { required: 'El teléfono es requerido' })}
+                      {...register('invitedTenantPhone', { required: 'El teléfono es requerido' })}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="+1234567890"
                     />
-                    {errors.tenantPhone && (
-                      <p className="mt-1 text-sm text-red-600">{errors.tenantPhone.message}</p>
+                    {errors.invitedTenantPhone && (
+                      <p className="mt-1 text-sm text-red-600">{errors.invitedTenantPhone.message}</p>
                     )}
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Número de identificación *
-                    </label>
-                    <input
-                      type="text"
-                      {...register('tenantId', { required: 'La identificación es requerida' })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Cédula, DNI, o Pasaporte"
-                    />
-                    {errors.tenantId && (
-                      <p className="mt-1 text-sm text-red-600">{errors.tenantId.message}</p>
-                    )}
-                  </div>
+                  <input type="hidden" {...register('tenantId')} />
                 </div>
               </div>
             </div>
@@ -930,19 +918,19 @@ export function AdminContractWizard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                       <div>
                         <span className="text-gray-600">Nombre:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.tenant}</span>
+                        <span className="font-medium text-gray-900">{watchedData.invitedTenantName}</span>
                       </div>
                       <div>
                         <span className="text-gray-600">Email:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.tenantEmail}</span>
+                        <span className="font-medium text-gray-900">{watchedData.invitedTenantEmail}</span>
                       </div>
                       <div>
                         <span className="text-gray-600">Teléfono:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.tenantPhone}</span>
+                        <span className="font-medium text-gray-900">{watchedData.invitedTenantPhone}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Identificación:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.tenantId}</span>
+                        <span className="text-gray-600">Inquilino asignado:</span>{' '}
+                        <span className="font-medium text-gray-900">{watchedData.tenantId ? 'Sí (ID: ' + watchedData.tenantId + ')' : 'Nuevo (invitación)'}</span>
                       </div>
                     </div>
                   </div>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthState, UserRole } from '../types/user';
+import { useServices } from '../services';
+import type { User, AuthState, UserRole } from '../types/user';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<User>;
@@ -10,112 +11,20 @@ interface AuthContextType extends AuthState {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Usuarios mock para desarrollo
-export const mockUsers: Array<User & { password: string }> = [
-  {
-    id: '1',
-    name: 'Admin Principal',
-    email: 'admin@rentmanager.com',
-    password: 'admin123',
-    role: 'administrador',
-    avatar: 'AP',
-    status: 'activo',
-    lastLogin: '2026-04-12 10:30:00',
-  },
-  {
-    id: '2',
-    name: 'Carlos Rodríguez',
-    email: 'carlos@rentmanager.com',
-    password: 'arrendador123',
-    role: 'arrendador',
-    avatar: 'CR',
-    properties: ['1', '2'],
-    status: 'activo',
-    lastLogin: '2026-04-12 10:30:00',
-  },
-  {
-    id: '3',
-    name: 'Juan Pérez',
-    email: 'juan@email.com',
-    password: 'inquilino123',
-    role: 'inquilino',
-    avatar: 'JP',
-    properties: ['1'],
-    status: 'activo',
-    lastLogin: '2026-04-12 10:30:00',
-  },
-  {
-    id: '4',
-    name: 'Carlos Rodríguez',
-    email: 'carlos@rentmanager.com',
-    password: 'arrendador123',
-    role: 'arrendador',
-    status: 'activo',
-    lastLogin: '2026-04-11 16:45:00',
-    avatar: 'CR',
-    properties: ['3', '6'],
-  },
-  {
-    id: '5',
-    name: 'Hugo Pérez',
-    email: 'hugo@email.com',
-    role: 'inquilino',
-    status: 'activo',
-    lastLogin: '2026-04-10 09:15:00',
-    avatar: 'HP',
-    properties: ['2'],
-    password: 'inquilino123',
-  },
-  {
-    id: '6',
-    name: 'María González',
-    email: 'maria.g@rentmanager.com',
-    role: 'arrendador',
-    password: 'arrendador123',
-    status: 'activo',
-    lastLogin: '2026-04-12 08:20:00',
-    avatar: 'MG',
-    properties: ['4', '5'],
-  },
-  {
-    id: '7',
-    name: 'Roberto Silva',
-    email: 'roberto.s@email.com',
-    role: 'inquilino',
-    status: 'inactivo',
-    lastLogin: '2026-03-15 14:30:00',
-    avatar: 'RS',
-    properties: ['6'],
-    password: 'inquilino123',
-  },
-  {
-    id: '8',
-    name: 'Laura Gómez',
-    email: 'laura.g@email.com',
-    role: 'inquilino',
-    status: 'activo',
-    lastLogin: '2026-04-12 11:00:00',
-    avatar: 'LG',
-    properties: ['5'],
-    password: 'inquilino123',
-  },
-
-];
-
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { auth: authService } = useServices();
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
     isLoading: true,
   });
 
-  // Verificar sesión guardada al cargar
   useEffect(() => {
     const checkSession = () => {
       try {
         const savedUser = localStorage.getItem('rentmanager_user');
         if (savedUser) {
-          const user = JSON.parse(savedUser);
+          const user = JSON.parse(savedUser) as User;
           setAuthState({
             user,
             isAuthenticated: true,
@@ -134,64 +43,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string): Promise<User> => {
-    setAuthState(prev => ({ ...prev, isLoading: true }));
+    setAuthState((prev) => ({ ...prev, isLoading: true }));
     try {
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const foundUser = mockUsers.find(
-        u => u.email === email && u.password === password
-      );
-
-      if (!foundUser) {
-        throw new Error('Credenciales inválidas');
-      }
-
-      const { password: _, ...userWithoutPassword } = foundUser;
-      
+      const user = await authService.login(email, password);
       setAuthState({
-        user: userWithoutPassword,
+        user,
         isAuthenticated: true,
         isLoading: false,
       });
-      localStorage.setItem('rentmanager_user', JSON.stringify(userWithoutPassword));
-
-      return userWithoutPassword;
+      localStorage.setItem('rentmanager_user', JSON.stringify(user));
+      return user;
     } catch (error) {
       console.error('Error en login:', error);
-      setAuthState(prev => ({ ...prev, isLoading: false }));
+      setAuthState((prev) => ({ ...prev, isLoading: false }));
       throw error;
     }
   };
 
   const logout = (): void => {
+    authService.logout().catch((err) => console.error('Error en logout:', err));
     setAuthState({
       user: null,
       isAuthenticated: false,
       isLoading: false,
     });
     localStorage.removeItem('rentmanager_user');
-    // Redirigir al login
     window.location.href = '/login';
   };
 
   const hasRole = (roles: UserRole | UserRole[]): boolean => {
-    if (!authState.user) return false;
-    
-    const roleArray = Array.isArray(roles) ? roles : [roles];
-    return roleArray.includes(authState.user.role);
+    return authService.hasRole(authState.user, roles);
   };
 
-  const updateUser = (userData: Partial<User>) => {
+  const updateUser = async (userData: Partial<User>) => {
     if (!authState.user) return;
-
-    const updatedUser = { ...authState.user, ...userData };
-    setAuthState((prev) => ({
-      ...prev,
-      user: updatedUser,
-    }));
-
-    localStorage.setItem('rentmanager_user', JSON.stringify(updatedUser));
+    try {
+      const updatedUser = await authService.updateUser(
+        String(authState.user.id),
+        userData
+      );
+      setAuthState((prev) => ({
+        ...prev,
+        user: updatedUser,
+      }));
+      localStorage.setItem('rentmanager_user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+    }
   };
 
   return (

@@ -4,10 +4,13 @@ export type ContractStatus = 'activo' | 'proximo_vencer' | 'vencido' | 'cancelad
 
 export type ContractFormData = {
   propertyId: number;
-  tenant: string;
-  tenantEmail: string;
-  tenantPhone: string;
-  tenantId: string;
+  tenantId?: number;
+  tenantName?: string;
+  tenantEmail?: string;
+  tenantPhone?: string;
+  invitedTenantName?: string;
+  invitedTenantEmail?: string;
+  invitedTenantPhone?: string;
   startDate: string;
   endDate: string;
   duration: number;
@@ -16,7 +19,7 @@ export type ContractFormData = {
   deposit: string;
   contractType: 'fijo' | 'mensual' | 'renovable';
   paymentDay: number;
-  terms?: string[];
+  terms?: string;
   includeUtilities: boolean;
   includeMaintenance: boolean;
 };
@@ -24,12 +27,20 @@ export type ContractFormData = {
 export interface Contract {
   id: string | number;
   code: string;
-  tenant: string;
+  tenantId?: number;
+  tenantName?: string;
   tenantEmail?: string;
   tenantPhone?: string;
+  landlordId?: number;
+  landlordName?: string;
+  landlordEmail?: string;
   propertyId?: number;
-  property: string;
+  property?: string;
   propertyAddress?: string;
+  invitedTenantName?: string;
+  invitedTenantEmail?: string;
+  invitedTenantPhone?: string;
+  invitationToken?: string;
   startDate: string;
   endDate: string;
   duration?: number;
@@ -39,7 +50,7 @@ export interface Contract {
   deposit: string;
   status: ContractStatus;
   paymentDay?: number;
-  terms?: string[];
+  terms?: string;
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -57,8 +68,8 @@ export type Attachment = {
 export interface ContractListItem {
   id: string | number;
   code: string;
-  tenant: string;
-  property: string;
+  tenantName?: string;
+  property?: string;
   startDate: string;
   endDate: string;
   monthlyRent: string;

@@ -1,21 +1,22 @@
 import { useState } from 'react';
-import { DollarSign, CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { PageHeader } from '../shared/dashboard/page-header';
 import { usePayment } from "../../contexts/payment-context";
 
-// Para inquilinos, solo mostrar sus propios pagos
-
 export function InquilinoPayments() {
-  const { payments } = usePayment();
+  const { getMyPayments, isLoading } = usePayment();
   const navigate = useRoleNavigation();
   const [statusFilter, setStatusFilter] = useState<'all' | 'pagado' | 'pendiente' | 'vencido'>('all');
 
-  const filteredPayments = payments.filter((payment) => {
+  const myPayments = getMyPayments();
+
+  const filteredPayments = myPayments.filter((payment) => {
     return statusFilter === 'all' || payment.status === statusFilter;
   });
 
-  const totalPaid = payments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
-  const totalOverdue = payments.filter(p => p.status === 'vencido').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalPaid = myPayments.filter(p => p.status === 'pagado').reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalPending = myPayments.filter(p => p.status === 'pendiente').reduce((sum, p) => sum + Number(p.amount), 0);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -43,176 +44,97 @@ export function InquilinoPayments() {
     }
   };
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'pagado':
-        return 'Pagado';
-      case 'pendiente':
-        return 'Pendiente';
-      case 'vencido':
-        return 'Vencido';
-      default:
-        return status;
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-semibold text-gray-900">Mis Pagos</h1>
-        <p className="text-gray-600 mt-1">Historial de pagos de renta</p>
-      </div>
+      <PageHeader title="Mis Pagos" subtitle="Historial de pagos de renta" />
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="bg-green-100 p-3 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-green-100">
+              <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
-            <div>
-              <p className="text-gray-600 text-sm">Total Pagado</p>
-              <p className="text-2xl font-semibold text-gray-900">${totalPaid.toLocaleString()}</p>
-            </div>
+            <span className="text-sm font-medium text-gray-600">Total Pagado</span>
           </div>
-          <p className="text-sm text-gray-600">Últimos 6 meses</p>
+          <p className="text-2xl font-bold text-gray-900">${totalPaid.toLocaleString()}</p>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="bg-red-100 p-3 rounded-lg">
-              <AlertCircle className="w-6 h-6 text-red-600" />
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-yellow-100">
+              <Clock className="w-5 h-5 text-yellow-600" />
             </div>
-            <div>
-              <p className="text-gray-600 text-sm">Pagos Vencidos</p>
-              <p className="text-2xl font-semibold text-gray-900">${totalOverdue.toLocaleString()}</p>
-            </div>
+            <span className="text-sm font-medium text-gray-600">Pendiente</span>
           </div>
-          <p className="text-sm text-gray-600">Requiere atención inmediata</p>
+          <p className="text-2xl font-bold text-gray-900">${totalPending.toLocaleString()}</p>
         </div>
       </div>
-
-      {totalOverdue > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-            <div>
-              <h3 className="font-semibold text-red-900 mb-1">Pago Vencido</h3>
-              <p className="text-sm text-red-800">
-                Tienes un pago vencido. Por favor, ponte en contacto con tu arrendador para regularizar tu situación.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="flex items-center gap-4">
-          <span className="text-gray-700 font-medium">Filtrar por estado:</span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setStatusFilter('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                statusFilter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Todos
-            </button>
-            <button
-              onClick={() => setStatusFilter('pagado')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                statusFilter === 'pagado'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Pagados
-            </button>
-            <button
-              onClick={() => setStatusFilter('pendiente')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                statusFilter === 'pendiente'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Pendientes
-            </button>
-            <button
-              onClick={() => setStatusFilter('vencido')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                statusFilter === 'vencido'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Vencidos
-            </button>
-          </div>
-        </div>
+      <div className="flex flex-wrap gap-2">
+        {(['all', 'pagado', 'pendiente', 'vencido'] as const).map((status) => (
+          <button
+            key={status}
+            onClick={() => setStatusFilter(status)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              statusFilter === status
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            {status === 'all' ? 'Todos' : status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {/* Payments List */}
+      {/* Payments Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Propiedad
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Monto
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Fecha de Vencimiento
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Fecha de Pago
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Estado
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Acciones
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Propiedad</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-200">
               {filteredPayments.map((payment) => (
-                <tr key={payment.id} className="hover:bg-gray-50">
+                <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-gray-600">{payment.property}</div>
+                    <div className="text-sm text-gray-500">{payment.property}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-semibold text-gray-900">${Number(payment.amount).toLocaleString()}</div>
+                    <div className="text-sm font-medium text-gray-900">${Number(payment.amount).toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Calendar className="w-4 h-4" />
-                      <span>{payment.dueDate}</span>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(payment.status)}`}>
+                      <span className="mr-1">{getStatusIcon(payment.status)}</span>
+                      {payment.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">
+                      <Calendar className="inline w-4 h-4 mr-1" />
+                      {payment.dueDate}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-gray-600">
-                      {payment.paidDate || '-'}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(payment.status)}
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(payment.status)}`}>
-                        {getStatusLabel(payment.status)}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/pagos/${payment.id}`)}>
-                      Ver Pago
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button
+                      onClick={() => navigate(`/pagos/${payment.id}`)}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
+                      Ver
                     </button>
                   </td>
                 </tr>
@@ -221,14 +143,6 @@ export function InquilinoPayments() {
           </table>
         </div>
       </div>
-
-      {filteredPayments.length === 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <DollarSign className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="font-semibold text-gray-900 mb-2">No se encontraron pagos</h3>
-          <p className="text-gray-600">Intenta ajustar los filtros</p>
-        </div>
-      )}
     </div>
   );
 }

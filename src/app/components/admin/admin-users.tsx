@@ -1,18 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Trash2, Building2, Edit2Icon } from 'lucide-react';
-import { mockUsers } from '../../contexts/auth-context';
+import type { User } from '../../types';
+import { useServices } from '../../services';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader } from '../shared/dashboard/page-header';
 
 export function AdminUsers() {
   const navigate = useRoleNavigation();
+  const { auth: authService } = useServices();
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm] = useState('');
   const [roleFilter] = useState<'all' | 'administrador' | 'arrendador' | 'inquilino'>('all');
   const [statusFilter] = useState<'all' | 'activo' | 'inactivo'>('all');
 
-  const filteredUsers = mockUsers.filter((user) => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  useEffect(() => {
+    let cancelled = false;
+    authService
+      .getAllUsers()
+      .then((data) => {
+        if (!cancelled) {
+          setUsers(data);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [authService]);
+
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
     const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
     return matchesSearch && matchesRole && matchesStatus;
@@ -27,12 +52,20 @@ export function AdminUsers() {
     return badges[role as keyof typeof badges] || {};
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <PageHeader title='Usuarios' subtitle='Administra los usuarios del sistema' size='md' />
-        <button 
+        <button
           onClick={() => navigate('/usuarios/nuevo')}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
         >
@@ -83,7 +116,7 @@ export function AdminUsers() {
                         const roleBadge = getUserRoleBadge(user.role);
                         const statusBadge = user.status === 'activo' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
                         const propCount = user.properties?.length || 0;
-                        
+
                         return (
                             <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -117,21 +150,21 @@ export function AdminUsers() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div className="flex justify-end gap-3">
-                                        <button 
+                                        <button
                                             onClick={() => navigate(`/usuarios/${user.id}`)}
                                             className="text-blue-600 hover:text-blue-900 transition-colors"
                                             title="Ver detalles"
                                         >
                                             <Edit2Icon className="w-5 h-5" />
                                         </button>
-                                        {user.role !== 'administrador' ? <button 
+                                        {user.role !== 'administrador' ? <button
                                             onClick={() => navigate(`/usuarios/${user.id}/propiedades`)}
                                             className="text-indigo-600 hover:text-indigo-900 transition-colors"
                                             title="Ver propiedades"
                                         >
                                             <Building2 className="w-5 h-5" />
                                         </button> : null}
-                                        <button 
+                                        <button
                                             className="text-red-600 hover:text-red-900 transition-colors"
                                             title="Eliminar usuario"
                                             onClick={() => {/* Lógica de eliminación */}}

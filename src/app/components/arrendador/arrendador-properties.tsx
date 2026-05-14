@@ -2,43 +2,49 @@ import { useState } from 'react';
 import { Building2, Plus } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useProperty } from '../../contexts/property-context';
-import { 
-  PageHeader, 
-  PropertyCard, 
-  SearchFilter, 
-  EmptyState, 
-  ActionButton 
+import {
+  PageHeader,
+  PropertyCard,
+  SearchFilter,
+  EmptyState,
+  ActionButton,
 } from '../shared';
 
 export function ArrendadorProperties() {
   const navigate = useRoleNavigation();
-  const { properties } = useProperty();
+  const { getMyProperties, isLoading } = useProperty();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  const filteredProperties = properties.filter((property) => {
+  const myProperties = getMyProperties();
+
+  const filteredProperties = myProperties.filter((property) => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.address.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || property.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const handleViewProperty = (property: { id: string | number }) => {
-    navigate(`/propiedades/${property.id}`);
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <PageHeader 
-        title="Propiedades" 
+      <PageHeader
+        title="Mis Propiedades"
         subtitle="Administra tu portafolio de propiedades"
         action={
-          <ActionButton 
-            variant="primary" 
+          <ActionButton
+            variant="primary"
             icon={Plus}
             onClick={() => navigate('/propiedades/nueva')}
           >
-            Agregar Propiedad
+            Nueva Propiedad
           </ActionButton>
         }
       />
@@ -46,31 +52,35 @@ export function ArrendadorProperties() {
       <SearchFilter
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
-        searchPlaceholder="Buscar propiedades..."
         selectValue={statusFilter}
-        onSelectChange={setStatusFilter}
         selectOptions={[
-          { value: 'ocupado', label: 'Ocupadas' },
-          { value: 'disponible', label: 'Disponibles' },
+          { label: 'Todos', value: '' },
+          { label: 'Disponibles', value: 'disponible' },
+          { label: 'Ocupados', value: 'ocupado' },
+          { label: 'Mantenimiento', value: 'mantenimiento' },
         ]}
-        selectPlaceholder="Todas"
+        onSelectChange={setStatusFilter}
       />
 
       {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProperties.map((property) => (
             <PropertyCard
               key={property.id}
               property={property}
-              onView={handleViewProperty}
+              onView={(p) => navigate(`/propiedades/${p.id}`)}
             />
           ))}
         </div>
       ) : (
         <EmptyState
           icon={Building2}
-          title="No se encontraron propiedades"
-          description="Intenta ajustar los filtros de búsqueda"
+          title="No hay propiedades"
+          description="No tienes propiedades registradas"
+          action={{
+            label: 'Agregar propiedad',
+            onClick: () => navigate('/propiedades/nueva'),
+          }}
         />
       )}
     </div>
