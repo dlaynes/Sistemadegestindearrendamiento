@@ -2,31 +2,35 @@ import { Users, Building2, FileText, DollarSign } from 'lucide-react';
 import { AlertType } from '../../types/alert-type';
 import { AlertBox } from '../shared/alert-box';
 import { StatsCard, ActivityItem, PageHeader } from '../shared';
+import { useDashboard } from '../../contexts/dashboard-context';
 
 export function AdminDashboard() {
-  const stats = [
-    { label: 'Total Propiedades', value: '24', icon: Building2, color: 'bg-blue-500', change: '+3 este mes' },
-    { label: 'Total Contratos', value: '18', icon: FileText, color: 'bg-purple-500', change: '+2 este mes' },
-    { label: 'Total Usuarios', value: '42', icon: Users, color: 'bg-green-500', change: '+5 este mes' },
-    { label: 'Ingresos Totales', value: '$48,500', icon: DollarSign, color: 'bg-yellow-500', change: '+12% este mes' },
-  ];
+  const { stats, recentActivity, isLoading } = useDashboard();
 
-  const recentActivity = [
-    { type: 'Nuevo contrato', description: 'Contrato firmado para Propiedad #5', time: 'Hace 2 horas', status: 'success' as const },
-    { type: 'Pago recibido', description: 'Pago de $1,200 procesado', time: 'Hace 4 horas', status: 'success' as const },
-    { type: 'Nueva propiedad', description: 'Apartamento en Centro agregado', time: 'Hace 1 día', status: 'info' as const },
-    { type: 'Pago pendiente', description: 'Contrato #CT-004 vence mañana', time: 'Hace 1 día', status: 'warning' as const },
+  const dashboardStats = [
+    { label: 'Total Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500', change: '+3 este mes' },
+    { label: 'Total Contratos', value: String(stats.totalContracts), icon: FileText, color: 'bg-purple-500', change: '+2 este mes' },
+    { label: 'Total Usuarios', value: String(stats.totalUsers), icon: Users, color: 'bg-green-500', change: '+5 este mes' },
+    { label: 'Ingresos Totales', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500', change: '+12% este mes' },
   ];
 
   const alerts : { message: string; type: AlertType }[] = [
     { message: '4 arrendatarios nuevos agregados al sistema en la última semana', type: 'success' },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <PageHeader 
-        title="Dashboard - Administrador" 
-        subtitle="Vista general del sistema de gestión" 
+      <PageHeader
+        title="Dashboard - Administrador"
+        subtitle="Vista general del sistema de gestión"
       />
 
       {/* Alertas */}
@@ -40,7 +44,7 @@ export function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
+        {dashboardStats.map((stat, index) => (
           <StatsCard
             key={index}
             label={stat.label}

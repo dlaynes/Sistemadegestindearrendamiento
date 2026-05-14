@@ -2,13 +2,13 @@
 
 export type PropertyStatus = 'disponible' | 'ocupado' | 'mantenimiento';
 
-export type PropertyType = 
-  | 'apartamento' 
-  | 'casa' 
-  | 'estudio' 
-  | 'loft' 
-  | 'penthouse' 
-  | 'villa' 
+export type PropertyType =
+  | 'apartamento'
+  | 'casa'
+  | 'estudio'
+  | 'loft'
+  | 'penthouse'
+  | 'villa'
   | 'otro';
 
 export interface Property {
@@ -26,7 +26,9 @@ export interface Property {
   floors: number;
   furnished: boolean;
   amenities: string[];
-  tenant?: string;
+  tenantId?: number;
+  tenantName?: string;
+  ownerId?: number;
   images?: string[];
   createdAt?: string;
   updatedAt?: string;
@@ -42,5 +44,5 @@ export interface PropertyListItem {
   bedrooms: number;
   bathrooms: number;
   area: string;
-  tenant?: string;
+  tenantName?: string;
 }

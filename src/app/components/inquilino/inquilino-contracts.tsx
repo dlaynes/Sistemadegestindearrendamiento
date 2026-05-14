@@ -1,50 +1,83 @@
-import { Info } from 'lucide-react';
-import { useRoleNavigation } from '../../hooks/use-role-navigation';
-import { PageHeader, ContractCard, InfoCard } from '../shared';
-import type { ContractListItem } from '../../types';
+import { useState } from 'react';
+import { FileText, Clock } from 'lucide-react';
 import { useContract } from '../../contexts/contract-context';
-
-// Para inquilinos, solo mostrar su contrato actual
+import {
+  PageHeader,
+  ContractCard,
+  FilterButtons,
+  SummaryCards,
+  EmptyState,
+} from '../shared';
+import type { ContractListItem } from '../../types';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 export function InquilinoContracts() {
   const navigate = useRoleNavigation();
-  const { contracts } = useContract();
+  const { getMyContracts, isLoading } = useContract();
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const myContracts = getMyContracts();
+
+  const filteredContracts = myContracts.filter((contract) => {
+    return statusFilter === 'all' || contract.status === statusFilter;
+  });
 
   const handleViewContract = (contract: ContractListItem) => {
     navigate(`/contratos/${contract.id}`);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <PageHeader 
-        title="Mi Contrato" 
-        subtitle="Información de tu contrato de arrendamiento"
+      <PageHeader
+        title="Mis Contratos"
+        subtitle="Contratos de arrendamiento activos"
       />
 
-      {/* Contract Card */}
-      <div className="space-y-4">
-        {contracts.map((contract) => (
-          <ContractCard
-            key={contract.id}
-            contract={contract}
-            onView={handleViewContract}
-            showActions
-          />
-        ))}
-      </div>
-
-      {/* Info Card */}
-      <InfoCard
-        title="Información Importante"
-        icon={Info}
-        columns={1}
-        items={[
-          { label: 'Pago', value: 'El pago de la renta debe realizarse dentro de los primeros 5 días del mes' },
-          { label: 'Historial', value: 'Puedes ver el historial de pagos en la sección de detalles del contrato' },
-          { label: 'Renovación', value: 'Para solicitar renovación, contacta con tu arrendador' },
+      <SummaryCards
+        cards={[
+          { label: 'Activos', value: String(myContracts.filter(c => c.status === 'activo').length), icon: FileText, color: 'bg-blue-500' },
+          { label: 'Por vencer', value: String(myContracts.filter(c => c.status === 'proximo_vencer').length), icon: Clock, color: 'bg-yellow-500' },
+          { label: 'Total', value: String(myContracts.length), icon: FileText, color: 'bg-purple-500' },
         ]}
-        className="bg-blue-50 border-blue-200"
+        columns={3}
       />
+
+      <FilterButtons
+        options={[
+          { label: 'Todos', value: 'all' },
+          { label: 'Activos', value: 'activo' },
+          { label: 'Por vencer', value: 'proximo_vencer' },
+          { label: 'Vencidos', value: 'vencido' },
+        ]}
+        activeValue={statusFilter}
+        onChange={setStatusFilter}
+      />
+
+      {filteredContracts.length > 0 ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filteredContracts.map((contract) => (
+            <ContractCard
+              key={contract.id}
+              contract={contract}
+              onView={handleViewContract}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          icon={FileText}
+          title="No hay contratos"
+          description="No tienes contratos activos"
+        />
+      )}
     </div>
   );
 }

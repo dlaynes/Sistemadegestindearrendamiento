@@ -1,135 +1,77 @@
-import { Home, FileText, DollarSign, Calendar, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
+import { Home, FileText, DollarSign, Calendar, AlertCircle, CheckCircle } from 'lucide-react';
 import { PageHeader, StatusBadge } from '../shared';
+import { useDashboard } from '../../contexts/dashboard-context';
 
 export function InquilinoDashboard() {
-  const myProperty = {
-    name: 'Apartamento Centro',
-    address: 'Calle Principal 123, Piso 4, Apt 401',
-    landlord: 'Carlos Rodríguez',
-    rent: '$1,200',
-    nextPayment: '2026-04-05',
-    contractEnd: '2027-03-15',
-  };
+  const { stats, isLoading, upcomingPayments } = useDashboard();
 
-  const paymentHistory = [
-    { month: 'Marzo 2026', amount: '$1,200', date: '2026-03-05', status: 'pagado' as const },
-    { month: 'Febrero 2026', amount: '$1,200', date: '2026-02-05', status: 'pagado' as const },
-    { month: 'Enero 2026', amount: '$1,200', date: '2026-01-05', status: 'pagado' as const },
-  ];
+  // For inquilino, use the first upcoming payment as "next payment" reference
+  const nextPayment = upcomingPayments[0];
 
-  const notifications = [
-    { message: 'Tu próximo pago vence el 5 de Abril', type: 'warning' as const, icon: AlertCircle },
-    { message: 'Nuevo mensaje del arrendador', type: 'info' as const, icon: MessageSquare },
-  ];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <PageHeader 
-        title="Dashboard - Inquilino" 
-        subtitle="Información de tu arrendamiento" 
+      <PageHeader
+        title="Dashboard - Inquilino"
+        subtitle="Información de tu arrendamiento"
       />
 
       {/* Notificaciones */}
-      {notifications.length > 0 && (
+      {nextPayment && (
         <div className="space-y-3">
-          {notifications.map((notification, index) => (
-            <div
-              key={index}
-              className={`flex items-start gap-3 p-4 rounded-lg ${
-                notification.type === 'warning' ? 'bg-yellow-50 border border-yellow-200' : 'bg-blue-50 border border-blue-200'
-              }`}
-            >
-              <notification.icon className={`w-5 h-5 flex-shrink-0 ${
-                notification.type === 'warning' ? 'text-yellow-600' : 'text-blue-600'
-              }`} />
-              <p className={`text-sm font-medium ${
-                notification.type === 'warning' ? 'text-yellow-800' : 'text-blue-800'
-              }`}>
-                {notification.message}
-              </p>
-            </div>
-          ))}
+          <div className="flex items-start gap-3 p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+            <AlertCircle className="w-5 h-5 flex-shrink-0 text-yellow-600" />
+            <p className="text-sm font-medium text-yellow-800">
+              Tu próximo pago de {nextPayment.amount} vence el {nextPayment.dueDate}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Mi Propiedad Actual */}
-      <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-8 text-white">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Home className="w-8 h-8" />
-              <h2 className="text-2xl font-bold">Mi Propiedad</h2>
-            </div>
-            <h3 className="text-3xl font-bold mb-2">{myProperty.name}</h3>
-            <p className="text-blue-100">{myProperty.address}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-blue-100 text-sm mb-1">Renta Mensual</p>
-            <p className="text-4xl font-bold">{myProperty.rent}</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-blue-400">
-          <div>
-            <p className="text-blue-100 text-sm mb-1">Arrendador</p>
-            <p className="font-semibold">{myProperty.landlord}</p>
-          </div>
-          <div>
-            <p className="text-blue-100 text-sm mb-1">Próximo Pago</p>
-            <p className="font-semibold">{myProperty.nextPayment}</p>
-          </div>
-          <div>
-            <p className="text-blue-100 text-sm mb-1">Fin de Contrato</p>
-            <p className="font-semibold">{myProperty.contractEnd}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Próximo Pago */}
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-yellow-100 p-3 rounded-lg">
-              <Calendar className="w-6 h-6 text-yellow-600" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-lg bg-blue-500">
+              <Home className="w-6 h-6 text-white" />
             </div>
-            <h3 className="font-semibold text-gray-900">Próximo Pago</h3>
           </div>
-          <p className="text-3xl font-bold text-gray-900 mb-2">{myProperty.rent}</p>
-          <p className="text-sm text-gray-600">Vence: {myProperty.nextPayment}</p>
-          <button className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-            Pagar Ahora
-          </button>
+          <h3 className="text-2xl font-bold text-gray-900 mb-1">1</h3>
+          <p className="text-sm text-gray-600 mb-2">Mi Propiedad</p>
         </div>
-
-        {/* Mi Contrato */}
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-purple-100 p-3 rounded-lg">
-              <FileText className="w-6 h-6 text-purple-600" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-lg bg-purple-500">
+              <FileText className="w-6 h-6 text-white" />
             </div>
-            <h3 className="font-semibold text-gray-900">Mi Contrato</h3>
           </div>
-          <p className="text-sm text-gray-600 mb-3">Fecha de inicio: 15 de Marzo, 2025</p>
-          <p className="text-sm text-gray-600 mb-3">Fecha de fin: {myProperty.contractEnd}</p>
-          <button className="mt-4 w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-            Ver Detalles
-          </button>
+          <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.activeContracts}</h3>
+          <p className="text-sm text-gray-600 mb-2">Contrato Activo</p>
         </div>
-
-        {/* Estado de Cuenta */}
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-green-100 p-3 rounded-lg">
-              <DollarSign className="w-6 h-6 text-green-600" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-lg bg-green-500">
+              <DollarSign className="w-6 h-6 text-white" />
             </div>
-            <h3 className="font-semibold text-gray-900">Estado de Cuenta</h3>
           </div>
-          <p className="text-sm text-gray-600 mb-2">Pagos realizados: 3</p>
-          <p className="text-sm text-gray-600 mb-2">Total pagado: $3,600</p>
-          <div className="mt-4 flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-sm font-medium text-green-700">Al día con los pagos</span>
+          <h3 className="text-2xl font-bold text-gray-900 mb-1">${stats.totalIncome.toLocaleString()}</h3>
+          <p className="text-sm text-gray-600 mb-2">Total Pagado</p>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-lg bg-yellow-500">
+              <Calendar className="w-6 h-6 text-white" />
+            </div>
           </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats.pendingPayments}</h3>
+          <p className="text-sm text-gray-600 mb-2">Pagos Pendientes</p>
         </div>
       </div>
 
@@ -139,25 +81,45 @@ export function InquilinoDashboard() {
           <h2 className="text-xl font-semibold text-gray-900">Historial de Pagos</h2>
         </div>
         <div className="divide-y divide-gray-200">
-          {paymentHistory.map((payment, index) => (
-            <div key={index} className="p-6 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="bg-green-100 p-2 rounded-lg">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{payment.month}</h3>
-                    <p className="text-sm text-gray-600">Pagado el {payment.date}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold text-gray-900">{payment.amount}</p>
-                  <StatusBadge status={payment.status} type="payment" />
-                </div>
+          <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="font-medium text-gray-900">Marzo 2026</p>
+                <p className="text-sm text-gray-500">2026-03-05</p>
               </div>
             </div>
-          ))}
+            <div className="text-right">
+              <p className="font-semibold text-gray-900">$1,200</p>
+              <StatusBadge status="pagado" type="payment" size="sm" />
+            </div>
+          </div>
+          <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="font-medium text-gray-900">Febrero 2026</p>
+                <p className="text-sm text-gray-500">2026-02-05</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold text-gray-900">$1,200</p>
+              <StatusBadge status="pagado" type="payment" size="sm" />
+            </div>
+          </div>
+          <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="font-medium text-gray-900">Enero 2026</p>
+                <p className="text-sm text-gray-500">2026-01-05</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold text-gray-900">$1,200</p>
+              <StatusBadge status="pagado" type="payment" size="sm" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

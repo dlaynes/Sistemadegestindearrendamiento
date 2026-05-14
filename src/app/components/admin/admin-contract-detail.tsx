@@ -66,9 +66,9 @@ export function AdminContractDetail() {
   ];
 
   const tenantInfoItems = [
-    { label: 'Nombre', value: contract.tenant, icon: User },
-    { label: 'Email', value: contract.tenantEmail, icon: Mail },
-    { label: 'Teléfono', value: contract.tenantPhone, icon: Phone },
+    { label: 'Nombre', value: contract.invitedTenantName, icon: User },
+    { label: 'Email', value: contract.invitedTenantEmail, icon: Mail },
+    { label: 'Teléfono', value: contract.invitedTenantPhone, icon: Phone },
   ];
 
   const propertyInfoItems = [
@@ -125,13 +125,7 @@ export function AdminContractDetail() {
             columns={1}
             items={[]}
           >
-            <ul className="space-y-2">
-              {contract.terms?.map((term, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="text-gray-900">• {term}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="whitespace-pre-wrap text-gray-900">{contract.terms}</div>
           </InfoCard>
 
           <InfoCard

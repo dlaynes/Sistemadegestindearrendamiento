@@ -17,7 +17,8 @@ export interface RelatedPayment {
 export interface Payment {
   id: string | number;
   contractId: string | number;
-  tenant?: string;
+  tenantId?: number;
+  tenantName?: string;
   tenantEmail?: string;
   property?: string;
   propertyAddress?: string;
