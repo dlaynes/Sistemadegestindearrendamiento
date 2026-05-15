@@ -26,6 +26,10 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
     let cancelled = false;
     propertyService
       .getAll()
@@ -44,7 +48,7 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [propertyService]);
+  }, [propertyService, user]);
 
   const addProperty = useCallback(
     async (property: Property) => {
@@ -92,14 +96,9 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
 
   const getMyProperties = useCallback(() => {
     if (!user) return [];
-    if (user.role === 'administrador') return properties;
-    if (user.role === 'arrendador') {
-      return properties.filter((p) =>
-        (user.properties || []).includes(String(p.id))
-      );
-    }
-    // inquilino - filter by tenant name
-    return properties.filter((p) => p.tenantId === user.id);
+    // Backend already scopes properties by role:
+    //   admin → all, arrendador → own, inquilino → via tenantId
+    return properties;
   }, [properties, user]);
 
   return (

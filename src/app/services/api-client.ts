@@ -57,6 +57,18 @@ export async function apiFetch(
     headers,
   });
 
+  if (response.status === 401 || response.status === 403) {
+    const currentPath = window.location.pathname;
+    // Avoid redirecting on auth endpoints or when already on public pages
+    const isPublicPage = currentPath === '/login' || currentPath === '/';
+    const isAuthEndpoint = path.startsWith('/auth/') || path.startsWith('/tenant/accept-invitation');
+    if (!isAuthEndpoint && !isPublicPage) {
+      clearToken();
+      localStorage.removeItem(USER_STORAGE_KEY);
+      window.location.href = '/login';
+    }
+  }
+
   if (!response.ok) {
     const text = await response.text().catch(() => 'Error');
     throw new Error(text || `HTTP ${response.status}`);

@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { Building2, Plus } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useProperty } from '../../contexts/property-context';
 import { 
   PageHeader, 
   PropertyCard, 
   SearchFilter, 
-  EmptyState, 
-  ActionButton 
+  EmptyState,
 } from '../shared';
 
 export function AdminProperties() {
