@@ -7,8 +7,8 @@ interface ContractContextType {
   contracts: Contract[];
   isLoading: boolean;
   error: string | null;
-  addContract: (contract: Contract) => Promise<void>;
-  updateContract: (id: string, contract: Contract) => Promise<void>;
+  addContract: (contract: Contract) => Promise<Contract>;
+  updateContract: (id: string, contract: Contract) => Promise<Contract>;
   deleteContract: (id: string) => Promise<void>;
   getContractById: (id: string) => Contract | undefined;
   getContractsByProperty: (propertyId: string) => Contract[];
@@ -51,6 +51,7 @@ export function ContractProvider({ children }: { children: ReactNode }) {
     async (contract: Contract) => {
       const created = await contractService.create(contract);
       setContracts((prev) => [...prev, created]);
+      return created;
     },
     [contractService]
   );
@@ -61,6 +62,7 @@ export function ContractProvider({ children }: { children: ReactNode }) {
       setContracts((prev) =>
         prev.map((c) => (String(c.id) === id ? updated : c))
       );
+      return updated;
     },
     [contractService]
   );

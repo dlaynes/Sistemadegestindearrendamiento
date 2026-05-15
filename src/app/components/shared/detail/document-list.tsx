@@ -1,7 +1,8 @@
-import { FileText, Download, Eye } from 'lucide-react';
+import { FileText, Download, Eye, Trash2 } from 'lucide-react';
 import { cn } from '../../ui/utils';
 
 export interface Document {
+  id?: string | number;
   name: string;
   size: string;
   icon?: React.ElementType;
@@ -13,7 +14,8 @@ interface DocumentListProps {
   documents: Document[];
   className?: string;
   onView?: (doc: Document) => void;
-  onDownload?: (doc: Document) => void;
+  onDownload?: (doc: Document) => void | Promise<void>;
+  onDelete?: (doc: Document) => void | Promise<void>;
   emptyMessage?: string;
 }
 
@@ -23,6 +25,7 @@ export function DocumentList({
   className,
   onView,
   onDownload,
+  onDelete,
   emptyMessage = 'No hay documentos adjuntos',
 }: DocumentListProps) {
   const DefaultIcon = FileText;
@@ -71,6 +74,15 @@ export function DocumentList({
                       title="Descargar"
                     >
                       <Download className="w-4 h-4" />
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      onClick={() => onDelete(doc)}
+                      className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                      title="Eliminar"
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   )}
                 </div>

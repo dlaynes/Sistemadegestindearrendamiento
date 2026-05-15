@@ -21,6 +21,7 @@ import { Attachment, ContractFormData } from '@/app/types/contract';
 import { useProperty } from '../../contexts/property-context';
 import { useContract } from '../../contexts/contract-context';
 import { useServices } from '../../services/service-context';
+import { LoadingOverlay } from '../shared/ui/loading-overlay';
 import type { User as UserType } from '../../types/user';
 
 
@@ -43,9 +44,10 @@ export function AdminContractWizard() {
   const { getContractById, addContract, updateContract } = useContract();
 
   const contract = isEditing && id ? getContractById(id) : undefined;
-  const { auth: authService } = useServices();
+  const { auth: authService, document: documentService } = useServices();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>(contract?.attachments || []);
   const [tenants, setTenants] = useState<UserType[]>([]);
 
@@ -138,6 +140,7 @@ export function AdminContractWizard() {
         name: file.name,
         size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
         type: file.type,
+        file,
       }));
       setAttachments([...attachments, ...newAttachments]);
     }
@@ -147,37 +150,57 @@ export function AdminContractWizard() {
     setAttachments(attachments.filter((a) => a.id !== id));
   };
 
-  const onSubmit = (data: ContractFormData) => {
-    const payload = {
-      id: id || String(Date.now()),
-      code: contract?.code || `CT-${String(Date.now()).slice(-4)}`,
-      invitedTenantName: data.invitedTenantName,
-      invitedTenantEmail: data.invitedTenantEmail,
-      invitedTenantPhone: data.invitedTenantPhone,
-      tenantId: data.tenantId,
-      propertyId: data.propertyId,
-      property: selectedProperty?.name || '',
-      propertyAddress: selectedProperty?.address || '',
-      startDate: data.startDate,
-      endDate: data.endDate,
-      duration: data.duration,
-      monthlyRent: data.monthlyRent,
-      services: data.services,
-      deposit: data.deposit,
-      contractType: data.contractType,
-      status: 'activo' as const,
-      paymentDay: data.paymentDay,
-      terms: data.terms,
-      attachments,
-    };
+  const onSubmit = async (data: ContractFormData) => {
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        id: id || String(Date.now()),
+        code: contract?.code || `CT-${String(Date.now()).slice(-4)}`,
+        invitedTenantName: data.invitedTenantName,
+        invitedTenantEmail: data.invitedTenantEmail,
+        invitedTenantPhone: data.invitedTenantPhone,
+        tenantId: data.tenantId,
+        propertyId: data.propertyId,
+        property: selectedProperty?.name || '',
+        propertyAddress: selectedProperty?.address || '',
+        startDate: data.startDate,
+        endDate: data.endDate,
+        duration: data.duration,
+        monthlyRent: data.monthlyRent,
+        services: data.services,
+        deposit: data.deposit,
+        contractType: data.contractType,
+        status: 'activo' as const,
+        paymentDay: data.paymentDay,
+        terms: data.terms,
+        attachments: attachments.map((a) => ({ id: a.id, name: a.name, size: a.size, type: a.type })),
+      };
 
-    if (isEditing && id) {
-      updateContract(id, payload);
-    } else {
-      addContract(payload);
+      let createdOrUpdatedContract;
+      if (isEditing && id) {
+        createdOrUpdatedContract = await updateContract(id, payload);
+      } else {
+        createdOrUpdatedContract = await addContract(payload);
+      }
+
+      const contractId = createdOrUpdatedContract?.id;
+      const filesToUpload: Array<{ file: File }> = [];
+      for (const a of attachments) {
+        if (a.file) filesToUpload.push({ file: a.file });
+      }
+      if (contractId && filesToUpload.length > 0) {
+        await Promise.all(
+          filesToUpload.map((a) => documentService.uploadDocument('CONTRACT', contractId, a.file))
+        );
+      }
+
+      navigate('/contratos');
+    } catch (err) {
+      console.error('Error guardando contrato:', err);
+      alert(err instanceof Error ? err.message : 'Error al guardar el contrato');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    navigate('/contratos');
   };
 
   const nextStep = () => {
@@ -222,7 +245,8 @@ export function AdminContractWizard() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <LoadingOverlay visible={isSubmitting} message={isEditing ? "Guardando cambios..." : "Creando contrato..."} />
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-blue-100 p-3 rounded-lg">
             <FileText className="w-6 h-6 text-blue-600" />
@@ -1074,7 +1098,7 @@ export function AdminContractWizard() {
             ) : (
               <button
                 type="button"
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleSubmit(onSubmit)} disabled={isSubmitting}
                 className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 <Save className="w-4 h-4" />

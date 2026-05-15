@@ -3,20 +3,22 @@ import { useParams } from 'react-router';
 import { FileText, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useServices } from '../../services';
-import { BackButton, StatusBadge, InfoCard, SidebarActions, EmptyState } from '../shared';
+import { BackButton, StatusBadge, InfoCard, SidebarActions, DocumentList, EmptyState } from '../shared';
+import type { Document as Doc } from '../shared/detail/document-list';
 import { useContract } from '../../contexts/contract-context';
 import type { Payment } from '../../types';
 
 export function InquilinoContractDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
-  const { payment: paymentService } = useServices();
+  const { payment: paymentService, document: documentService } = useServices();
 
   const { getContractById } = useContract();
   const contract = id ? getContractById(id) : undefined;
 
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoadingPayments, setIsLoadingPayments] = useState(true);
+  const [documents, setDocuments] = useState<Doc[]>([]);
 
   useEffect(() => {
     if (!contract?.id) return;
@@ -35,6 +37,37 @@ export function InquilinoContractDetail() {
       });
     return () => { cancelled = true; };
   }, [contract?.id, paymentService]);
+
+  useEffect(() => {
+    if (!contract?.id) return;
+    let cancelled = false;
+    documentService
+      .getDocuments('CONTRACT', contract.id)
+      .then((data) => {
+        if (!cancelled) {
+          setDocuments(
+            data.map((d) => ({
+              id: d.id,
+              name: d.name,
+              size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+              type: d.contentType,
+            }))
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setDocuments([]);
+      });
+    return () => { cancelled = true; };
+  }, [contract?.id, documentService]);
+
+  const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
+    try {
+      await documentService.downloadDocument(doc.id!);
+    } catch (err) {
+      console.error('Error descargando:', err);
+    }
+  };
 
   if (!contract) {
     return (
@@ -135,6 +168,12 @@ export function InquilinoContractDetail() {
               </div>
             )}
           </InfoCard>
+
+          <DocumentList
+            title="Documentos del Contrato"
+            documents={documents}
+            onDownload={handleDownload}
+          />
         </div>
 
         <div className="space-y-6">

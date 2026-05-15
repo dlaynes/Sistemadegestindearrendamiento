@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { 
   Building2, 
@@ -13,10 +14,12 @@ import {
   AlertCircle,
   Edit,
   Trash2,
-  History
+  History,
+  Upload
 } from 'lucide-react';
 import { useProperty } from '../../contexts/property-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { useServices } from '../../services';
 import { 
   BackButton, 
   StatusBadge, 
@@ -25,19 +28,77 @@ import {
   DocumentList,
   EmptyState 
 } from '../shared';
-
-
-const mockDocuments = [
-  { name: 'Ficha técnica.pdf', size: '245 KB' },
-  { name: 'Título de propiedad.pdf', size: '1.2 MB' },
-];
+import type { Document as Doc } from '../shared/detail/document-list';
 
 export function ArrendadorPropertyDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
   const { getPropertyById } = useProperty();
+  const { document: documentService } = useServices();
   
   const property = id ? getPropertyById(id) : undefined;
+
+  const [documents, setDocuments] = useState<Doc[]>([]);
+
+  useEffect(() => {
+    if (!property?.id) return;
+    let cancelled = false;
+    documentService
+      .getDocuments('PROPERTY', property.id)
+      .then((data) => {
+        if (!cancelled) {
+          setDocuments(
+            data.map((d) => ({
+              id: d.id,
+              name: d.name,
+              size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+              type: d.contentType,
+            }))
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setDocuments([]);
+      })
+
+    return () => { cancelled = true; };
+  }, [property?.id, documentService]);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !property?.id) return;
+    try {
+      await documentService.uploadDocument('PROPERTY', property.id, file);
+      const data = await documentService.getDocuments('PROPERTY', property.id);
+      setDocuments(
+        data.map((d) => ({
+          id: d.id,
+          name: d.name,
+          size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+          type: d.contentType,
+        }))
+      );
+    } catch (err) {
+      alert('Error al subir el archivo: ' + (err instanceof Error ? err.message : 'desconocido'));
+    }
+  };
+
+  const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
+    try {
+      await documentService.downloadDocument(doc.id!);
+    } catch (err) {
+      console.error('Error descargando:', err);
+    }
+  };
+
+  const handleDelete = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
+    try {
+      await documentService.deleteDocument(doc.id!);
+      setDocuments((prev) => prev.filter((d) => d.id !== doc.id!));
+    } catch (err) {
+      alert('Error al eliminar el archivo');
+    }
+  };
 
   if (!property) {
     return (
@@ -158,10 +219,19 @@ export function ArrendadorPropertyDetail() {
 
           <DocumentList
             title="Documentos"
-            documents={mockDocuments}
-            onView={(doc) => console.log('View:', doc)}
-            onDownload={(doc) => console.log('Download:', doc)}
+            documents={documents}
+            onDownload={handleDownload}
+            onDelete={handleDelete}
           />
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <label className="flex items-center gap-2 text-blue-600 hover:text-blue-700 cursor-pointer font-medium">
+              <Upload className="w-4 h-4" />
+              <span>Subir documento</span>
+              <input type="file" className="hidden" onChange={handleUpload} />
+            </label>
+            <p className="text-xs text-gray-500 mt-1">Máx. 4MB. Imágenes, PDF, Word, Excel o TXT.</p>
+          </div>
 
           <SidebarActions
             title="Acciones"
