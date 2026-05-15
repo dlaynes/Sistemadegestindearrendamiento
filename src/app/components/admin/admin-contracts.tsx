@@ -35,7 +35,7 @@ export function AdminContracts() {
       <PageHeader 
         title="Contratos" 
         subtitle="Administra los contratos de arrendamiento"
-        action={
+        /* action={
           <ActionButton 
             variant="primary" 
             icon={Plus}
@@ -43,7 +43,7 @@ export function AdminContracts() {
           >
             Agregar Contrato
           </ActionButton>
-        }
+        } */
       />
 
       <SummaryCards

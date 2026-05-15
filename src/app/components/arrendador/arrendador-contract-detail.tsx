@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { 
   FileText, 
@@ -13,31 +14,112 @@ import {
   Edit,
   Trash2,
   Download,
-  FileDown
+  FileDown,
+  Upload
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { useServices } from '../../services';
 import { 
   BackButton, 
   StatusBadge, 
   InfoCard, 
   SidebarActions, 
+  DocumentList,
   EmptyState,
   getDaysUntilExpiration
 } from '../shared';
+import type { Document as Doc } from '../shared/detail/document-list';
 import { useContract } from '../../contexts/contract-context';
-
-const mockPaymentHistory = [
-  { month: 'Marzo 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-03-04' },
-  { month: 'Febrero 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-02-03' },
-  { month: 'Enero 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-01-04' },
-];
+import type { Payment } from '../../types';
 
 export function ArrendadorContractDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
+  const { payment: paymentService, document: documentService } = useServices();
   
   const { getContractById } = useContract();
   const contract = id ? getContractById(id) : undefined;
+
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [isLoadingPayments, setIsLoadingPayments] = useState(true);
+  const [documents, setDocuments] = useState<Doc[]>([]);
+
+  useEffect(() => {
+    if (!contract?.id) return;
+    let cancelled = false;
+    setIsLoadingPayments(true);
+    paymentService
+      .getByContract(contract.id)
+      .then((data) => {
+        if (!cancelled) setPayments(data);
+      })
+      .catch(() => {
+        if (!cancelled) setPayments([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingPayments(false);
+      });
+    return () => { cancelled = true; };
+  }, [contract?.id, paymentService]);
+
+  useEffect(() => {
+    if (!contract?.id) return;
+    let cancelled = false;
+    documentService
+      .getDocuments('CONTRACT', contract.id)
+      .then((data) => {
+        if (!cancelled) {
+          setDocuments(
+            data.map((d) => ({
+              id: d.id,
+              name: d.name,
+              size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+              type: d.contentType,
+            }))
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setDocuments([]);
+      });
+    return () => { cancelled = true; };
+  }, [contract?.id, documentService]);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !contract?.id) return;
+    try {
+      await documentService.uploadDocument('CONTRACT', contract.id, file);
+      const data = await documentService.getDocuments('CONTRACT', contract.id);
+      setDocuments(
+        data.map((d) => ({
+          id: d.id,
+          name: d.name,
+          size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+          type: d.contentType,
+        }))
+      );
+    } catch (err) {
+      alert('Error al subir el archivo: ' + (err instanceof Error ? err.message : 'desconocido'));
+    }
+  };
+
+  const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
+    try {
+      await documentService.downloadDocument(doc.id!);
+    } catch (err) {
+      console.error('Error descargando:', err);
+    }
+  };
+
+  const handleDelete = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
+    try {
+      await documentService.deleteDocument(doc.id!);
+      setDocuments((prev) => prev.filter((d) => d.id !== doc.id!));
+    } catch (err) {
+      alert('Error al eliminar el archivo');
+    }
+  };
 
   if (!contract) {
     return (
@@ -75,6 +157,15 @@ export function ArrendadorContractDetail() {
     { label: 'Propiedad', value: contract.property, icon: Building2 },
     { label: 'Dirección', value: contract.propertyAddress, icon: Building2 },
   ];
+
+  const toMonthName = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleString('es', { month: 'long', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -130,31 +221,53 @@ export function ArrendadorContractDetail() {
             title="Historial de Pagos"
             icon={DollarSign}
             columns={1} items={[]}          >
-            <div className="space-y-3">
-              {mockPaymentHistory.map((payment, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    {payment.status === 'pagado' ? (
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <AlertCircle className="w-5 h-5 text-red-600" />
-                    )}
-                    <div>
-                      <p className="font-medium text-gray-900">{payment.month}</p>
-                      <p className="text-sm text-gray-600">{payment.date}</p>
+            {isLoadingPayments ? (
+              <p className="text-sm text-gray-500">Cargando pagos...</p>
+            ) : payments.length === 0 ? (
+              <p className="text-sm text-gray-500">No hay pagos registrados.</p>
+            ) : (
+              <div className="space-y-3">
+                {payments.map((payment) => (
+                  <div
+                    key={payment.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      {payment.status === 'pagado' ? (
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-5 h-5 text-red-600" />
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-900">{toMonthName(payment.dueDate)}</p>
+                        <p className="text-sm text-gray-600">{payment.dueDate}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">{payment.amount}</p>
+                      <StatusBadge status={payment.status} type="payment" size="sm" />
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">{payment.amount}</p>
-                    <StatusBadge status={payment.status} type="payment" size="sm" />
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </InfoCard>
+
+          <DocumentList
+            title="Documentos del Contrato"
+            documents={documents}
+            onDownload={handleDownload}
+            onDelete={handleDelete}
+          />
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <label className="flex items-center gap-2 text-blue-600 hover:text-blue-700 cursor-pointer font-medium">
+              <Upload className="w-4 h-4" />
+              <span>Subir documento</span>
+              <input type="file" className="hidden" onChange={handleUpload} />
+            </label>
+            <p className="text-xs text-gray-500 mt-1">Máx. 4MB. Imágenes, PDF, Word, Excel o TXT.</p>
+          </div>
         </div>
 
         <div className="space-y-6">

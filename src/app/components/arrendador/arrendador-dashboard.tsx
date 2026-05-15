@@ -6,10 +6,10 @@ export function ArrendadorDashboard() {
   const { stats, isLoading, upcomingPayments } = useDashboard();
 
   const dashboardStats = [
-    { label: 'Mis Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500', change: '+1 este mes' },
-    { label: 'Contratos Activos', value: String(stats.activeContracts), icon: FileText, color: 'bg-purple-500', change: '2 por renovar' },
-    { label: 'Ingresos del Mes', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-green-500', change: '+8% vs mes anterior' },
-    { label: 'Inquilinos Activos', value: String(stats.activeContracts), icon: Users, color: 'bg-yellow-500', change: 'Todos al día' },
+    { label: 'Mis Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500' },
+    { label: 'Contratos Activos', value: String(stats.activeContracts), icon: FileText, color: 'bg-purple-500' },
+    { label: 'Ingresos del Mes', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-green-500' },
+    { label: 'Inquilinos Activos', value: String(stats.activeContracts), icon: Users, color: 'bg-yellow-500' },
   ];
 
   if (isLoading) {
@@ -36,7 +36,6 @@ export function ArrendadorDashboard() {
             value={stat.value}
             icon={stat.icon}
             color={stat.color}
-            change={stat.change}
           />
         ))}
       </div>

@@ -189,7 +189,7 @@ export function AdminPayments() {
               {filteredPayments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900">{payment.tenant}</div>
+                    <div className="font-medium text-gray-900">{payment.tenantName}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-gray-600">{payment.property}</div>

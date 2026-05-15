@@ -11,6 +11,12 @@ interface AuthContextType extends AuthState {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const USER_STORAGE_KEY = 'rentmanager_user';
+
+function normalizeRole(role: string): UserRole {
+  return role.toLowerCase() as UserRole;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { auth: authService } = useServices();
   const [authState, setAuthState] = useState<AuthState>({
@@ -22,9 +28,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkSession = () => {
       try {
-        const savedUser = localStorage.getItem('rentmanager_user');
+        const savedUser = localStorage.getItem(USER_STORAGE_KEY);
         if (savedUser) {
-          const user = JSON.parse(savedUser) as User;
+          const parsed = JSON.parse(savedUser) as User;
+          const user: User = { ...parsed, role: normalizeRole(parsed.role) };
           setAuthState({
             user,
             isAuthenticated: true,
@@ -51,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: true,
         isLoading: false,
       });
-      localStorage.setItem('rentmanager_user', JSON.stringify(user));
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
       return user;
     } catch (error) {
       console.error('Error en login:', error);
@@ -67,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: false,
       isLoading: false,
     });
-    localStorage.removeItem('rentmanager_user');
+    localStorage.removeItem(USER_STORAGE_KEY);
     window.location.href = '/login';
   };
 
@@ -82,11 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         String(authState.user.id),
         userData
       );
+      const user: User = { ...updatedUser, role: normalizeRole(updatedUser.role) };
       setAuthState((prev) => ({
         ...prev,
-        user: updatedUser,
+        user,
       }));
-      localStorage.setItem('rentmanager_user', JSON.stringify(updatedUser));
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
     } catch (error) {
       console.error('Error al actualizar usuario:', error);
     }

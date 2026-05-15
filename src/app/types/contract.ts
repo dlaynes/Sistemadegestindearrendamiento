@@ -58,6 +58,7 @@ export interface Contract {
 }
 
 export type Attachment = {
+  file?: File;
   id: number;
   name: string;
   size: string;

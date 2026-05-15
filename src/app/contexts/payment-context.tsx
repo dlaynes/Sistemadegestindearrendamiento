@@ -115,7 +115,7 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
       return payments;
     }
     // inquilino - filter by tenant name
-    return payments.filter((p) => p.tenant === user.name);
+    return payments.filter((p) => p.tenantName === user.name);
   }, [payments, user]);
 
   return (

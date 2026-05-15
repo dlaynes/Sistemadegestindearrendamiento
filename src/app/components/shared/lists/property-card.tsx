@@ -59,10 +59,10 @@ export function PropertyCard({
           </div>
         </div>
         
-        {property.tenant && (
+        {property.tenantName && (
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
             <MapPin className="w-4 h-4" />
-            <span>Inquilino: {property.tenant}</span>
+            <span>Inquilino: {property.tenantName}</span>
           </div>
         )}
         

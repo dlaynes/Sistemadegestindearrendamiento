@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { 
   Building2, 
@@ -10,10 +11,11 @@ import {
   FileText,
   Calendar,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react';
 import { useProperty } from '../../contexts/property-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { useServices } from '../../services';
 import { 
   BackButton, 
   StatusBadge, 
@@ -21,19 +23,48 @@ import {
   DocumentList,
   EmptyState 
 } from '../shared';
-
-
-const mockDocuments = [
-  { name: 'Contrato de arrendamiento.pdf', size: '1.5 MB' },
-  { name: 'Reglamento interno.pdf', size: '320 KB' },
-];
+import type { Document as Doc } from '../shared/detail/document-list';
 
 export function InquilinoPropertyDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
   const { getPropertyById } = useProperty();
+  const { document: documentService } = useServices();
   
   const property = id ? getPropertyById(id) : undefined;
+
+  const [documents, setDocuments] = useState<Doc[]>([]);
+
+  useEffect(() => {
+    if (!property?.id) return;
+    let cancelled = false;
+    documentService
+      .getDocuments('PROPERTY', property.id)
+      .then((data) => {
+        if (!cancelled) {
+          setDocuments(
+            data.map((d) => ({
+              id: d.id,
+              name: d.name,
+              size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
+              type: d.contentType,
+            }))
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setDocuments([]);
+      });
+    return () => { cancelled = true; };
+  }, [property?.id, documentService]);
+
+  const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
+    try {
+      await documentService.downloadDocument(doc.id!);
+    } catch (err) {
+      console.error('Error descargando:', err);
+    }
+  };
 
   if (!property) {
     return (
@@ -42,8 +73,8 @@ export function InquilinoPropertyDetail() {
         title="Propiedad no encontrada"
         description="La propiedad que buscas no existe"
         action={{
-          label: "Volver a Propiedades",
-          onClick: () => navigate('/propiedades')
+          label: 'Volver a Propiedades',
+          onClick: () => navigate('/propiedades'),
         }}
       />
     );
@@ -125,7 +156,7 @@ export function InquilinoPropertyDetail() {
               icon={User}
               items={[
                 { label: 'Estado', value: 'Arriendo activo' },
-                { label: 'Inquilino', value: property.tenant || 'Yo' },
+                { label: 'Inquilino', value: property.tenantName || 'Yo' },
               ]}
             >
               <button 
@@ -140,23 +171,15 @@ export function InquilinoPropertyDetail() {
               title="Información"
               icon={AlertCircle}
               items={[
-                { label: 'Disponibilidad', value: 'Disponible para arriendo' },
+                { label: 'Estado', value: 'Propiedad disponible' },
               ]}
-            >
-              <button 
-                onClick={() => navigate(`/contratos/nuevo`)}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Solicitar Visita
-              </button>
-            </InfoCard>
+            />
           )}
 
           <DocumentList
             title="Documentos"
-            documents={mockDocuments}
-            onView={(doc) => console.log('View:', doc)}
-            onDownload={(doc) => console.log('Download:', doc)}
+            documents={documents}
+            onDownload={handleDownload}
           />
         </div>
       </div>

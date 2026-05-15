@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { 
@@ -7,75 +8,75 @@ import {
   Building2
 } from 'lucide-react';
 import type { User as UserType } from '../../types';
+import { useServices } from '../../services';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader } from '../shared/dashboard/page-header';
-
-// Mock data - debería coincidir con el de users.tsx
-const mockUsers: (UserType & { properties?: string[] })[] = [
-  {
-    id: '1',
-    name: 'Admin Principal',
-    email: 'admin@rentmanager.com',
-    role: 'administrador',
-    status: 'activo',
-    lastLogin: '2026-04-12 10:30:00',
-    avatar: 'AP',
-    properties: ['1', '2', '5'],
-  },
-  {
-    id: '2',
-    name: 'Carlos Rodríguez',
-    email: 'carlos@rentmanager.com',
-    role: 'arrendador',
-    status: 'activo',
-    lastLogin: '2026-04-11 16:45:00',
-    avatar: 'CR',
-    properties: ['1', '2', '5'],
-  },
-  {
-    id: '3',
-    name: 'Juan Pérez',
-    email: 'juan@email.com',
-    role: 'inquilino',
-    status: 'activo',
-    lastLogin: '2026-04-10 09:15:00',
-    avatar: 'JP',
-    properties: ['1'],
-  },
-];
 
 export function AdminUserForm() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
   const isEditing = !!id;
+  const { auth: authService } = useServices();
   
-  // Buscar el usuario si estamos editando
-  const user = isEditing ? mockUsers.find(u => u.id === id) : null;
+  const [user, setUser] = useState<(UserType & { properties?: string[] }) | null>(null);
+  const [isLoading, setIsLoading] = useState(isEditing);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<UserType>({
-    defaultValues: isEditing && user ? {
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      status: user.status,
-      properties: user.properties || [],
-    } : {
+  useEffect(() => {
+    if (!isEditing || !id) {
+      setIsLoading(false);
+      return;
+    }
+    let cancelled = false;
+    authService
+      .getById(id)
+      .then((data) => {
+        if (!cancelled) setUser(data as (UserType & { properties?: string[] }) | null);
+      })
+      .catch(() => {
+        if (!cancelled) setUser(null);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id, isEditing, authService]);
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<UserType>({
+    defaultValues: {
       role: 'arrendador',
       status: 'activo',
     }
   });
 
-  const onSubmit = (data: UserType) => {
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        properties: user.properties || [],
+      });
+    }
+  }, [user, reset]);
+
+  const onSubmit = async (data: UserType) => {
     const formData = {
       ...data,
-      avatar: data.name.substring(0, 2).toUpperCase(),
+      avatar: data.name?.substring(0, 2).toUpperCase(),
     };
-    
-    console.log(isEditing ? 'Actualizando usuario:' : 'Creando usuario:', formData);
-    
-    // Aquí iría la lógica para guardar en el backend
-    // Por ahora solo simulamos y redirigimos
-    navigate('/usuarios');
+
+    try {
+      if (isEditing && id) {
+        await authService.updateUser(id, formData);
+      } else {
+        // Note: backend create endpoint exists but is not wired in ApiAuthService yet
+        console.log('Creando usuario:', formData);
+      }
+      navigate('/usuarios');
+    } catch (err) {
+      console.error('Error guardando usuario:', err);
+    }
   };
 
   const userRoles = [
@@ -84,11 +85,22 @@ export function AdminUserForm() {
     'inquilino'
   ];
 
-  // Obtener todas las propiedades existentes para mostrarlas en modo edición
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate('/usuarios')} className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Volver</span>
+          </button>
+        </div>
+        <p className="text-gray-600">Cargando usuario...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate('/usuarios')}
@@ -109,7 +121,6 @@ export function AdminUserForm() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Información Básica */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Información Básica</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -142,7 +153,7 @@ export function AdminUserForm() {
                     }
                   })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="ej. juan@email.com"
+                  placeholder="ej. maria@email.com"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -151,7 +162,6 @@ export function AdminUserForm() {
             </div>
           </div>
 
-          {/* Rol y Estado */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Rol y Estado</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,11 +201,9 @@ export function AdminUserForm() {
             </div>
           </div>
 
-          {/* Propiedades */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Propiedades Asignadas</h3>
             <div className="space-y-4">
-              {/* Solo mostrar propiedades en modo edición, no permitir agregar en modo creación */}
               {isEditing && user ? (
                 <div className="text-sm text-gray-600">
                   <p className="mb-2">Propiedades actuales asignadas al usuario:</p>
@@ -219,20 +227,7 @@ export function AdminUserForm() {
                   </p>
                 </div>
               ) : (
-                // Modo creación: mostrar propiedades existentes disponibles pero deshabilitadas
                 <div className="text-sm text-gray-600">
-                  {/*<p className="mb-2">Propiedades disponibles en el sistema:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {allProperties.map((propId) => (
-                      <div
-                        key={propId}
-                        className="flex items-center gap-2 px-3 py-2 bg-gray-50 text-gray-400 rounded-lg border border-gray-200 cursor-not-allowed"
-                      >
-                        <Building2 className="w-4 h-4 text-gray-400" />
-                        <span className="font-medium">#{propId}</span>
-                      </div>
-                    ))}
-                  </div>*/}
                   <p className="mt-2 text-xs text-gray-500">
                     Nota: Para asignar propiedades a nuevos usuarios, ingresa al panel de arrendador y crea las propiedades desde allí.
                   </p>
@@ -241,7 +236,6 @@ export function AdminUserForm() {
             </div>
           </div>
 
-          {/* Botones de acción */}
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
             <button
               type="button"

@@ -179,7 +179,7 @@ export function ArrendadorPaymentDetail() {
                   <h3 className="font-semibold text-gray-900">Inquilino</h3>
                 </div>
                 <div className="space-y-2">
-                  <p className="font-medium text-gray-900">{payment.tenant}</p>
+                  <p className="font-medium text-gray-900">{payment.tenantName}</p>
                   <p className="text-sm text-gray-600">{payment.tenantEmail}</p>
                   <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
                     Ver perfil →

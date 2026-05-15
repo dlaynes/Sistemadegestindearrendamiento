@@ -8,10 +8,10 @@ export function AdminDashboard() {
   const { stats, recentActivity, isLoading } = useDashboard();
 
   const dashboardStats = [
-    { label: 'Total Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500', change: '+3 este mes' },
-    { label: 'Total Contratos', value: String(stats.totalContracts), icon: FileText, color: 'bg-purple-500', change: '+2 este mes' },
-    { label: 'Total Usuarios', value: String(stats.totalUsers), icon: Users, color: 'bg-green-500', change: '+5 este mes' },
-    { label: 'Ingresos Totales', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500', change: '+12% este mes' },
+    { label: 'Total Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500' },
+    { label: 'Total Contratos', value: String(stats.totalContracts), icon: FileText, color: 'bg-purple-500' },
+    { label: 'Total Usuarios', value: String(stats.totalUsers), icon: Users, color: 'bg-green-500' },
+    { label: 'Ingresos Totales', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500' },
   ];
 
   const alerts : { message: string; type: AlertType }[] = [
@@ -51,7 +51,6 @@ export function AdminDashboard() {
             value={stat.value}
             icon={stat.icon}
             color={stat.color}
-            change={stat.change}
           />
         ))}
       </div>

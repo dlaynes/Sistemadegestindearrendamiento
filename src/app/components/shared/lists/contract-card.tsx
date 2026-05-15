@@ -52,7 +52,7 @@ export function ContractCard({
           <User className="w-4 h-4 text-gray-400" />
           <div>
             <p className="text-xs text-gray-500">Inquilino</p>
-            <p className="text-sm font-medium text-gray-900">{contract.tenant}</p>
+            <p className="text-sm font-medium text-gray-900">{contract.tenantName}</p>
           </div>
         </div>
         
