@@ -153,7 +153,7 @@ export function AdminUserForm() {
                     }
                   })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="ej. juan@email.com"
+                  placeholder="ej. maria@email.com"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>

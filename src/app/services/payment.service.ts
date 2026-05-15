@@ -1,6 +1,5 @@
 import type { Payment, PaymentStatus, PaymentMethod } from '../types/payment';
-import { apiGet, apiPost, apiPut, apiDelete } from './api-client';
-import type { UserRole } from '../types/user';
+import { apiGet, apiPost, apiPut, apiDelete, getStoredRole } from './api-client';
 
 export interface PaymentService {
   getAll(): Promise<Payment[]>;
@@ -16,18 +15,8 @@ export interface PaymentService {
   delete(id: string): Promise<void>;
 }
 
-function getRole(): UserRole | null {
-  const raw = localStorage.getItem('user');
-  if (!raw) return null;
-  try {
-    return (JSON.parse(raw) as { role: UserRole }).role;
-  } catch {
-    return null;
-  }
-}
-
 function getPrefix(): string {
-  const role = getRole();
+  const role = getStoredRole();
   if (role === 'administrador') return '/admin';
   if (role === 'arrendador') return '/landlord';
   if (role === 'inquilino') return '/tenant';
@@ -40,7 +29,7 @@ export class ApiPaymentService implements PaymentService {
   }
 
   async getById(id: string): Promise<Payment | undefined> {
-    if (getRole() === 'administrador') {
+    if (getStoredRole() === 'administrador') {
       try {
         return await apiGet<Payment>(`/admin/payments/${id}`);
       } catch {

@@ -1,4 +1,28 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+import type { UserRole } from '../types/user';
+
+const USER_STORAGE_KEY = 'rentmanager_user';
+
+export function getStoredRole(): UserRole | null {
+  const raw = localStorage.getItem(USER_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    return (JSON.parse(raw) as { role: string }).role.toLowerCase() as UserRole;
+  } catch {
+    return null;
+  }
+}
+
+export function getStoredUserId(): string | number | null {
+  const raw = localStorage.getItem(USER_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    return (JSON.parse(raw) as { id: string | number }).id;
+  } catch {
+    return null;
+  }
+}
+
+const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 export function getToken(): string | null {
   return localStorage.getItem('token');

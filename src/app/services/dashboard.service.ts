@@ -1,8 +1,8 @@
-import type { User, UserRole } from '../types/user';
+import type { User } from '../types/user';
 import type { Property } from '../types/property';
 import type { Contract } from '../types/contract';
 import type { Payment } from '../types/payment';
-import { apiGet } from './api-client';
+import { apiGet, getStoredRole } from './api-client';
 
 export interface DashboardStats {
   totalProperties: number;
@@ -46,18 +46,8 @@ export interface DashboardService {
   getUpcomingPayments(user: User): Promise<UpcomingPayment[]>;
 }
 
-function getRole(): UserRole | null {
-  const raw = localStorage.getItem('user');
-  if (!raw) return null;
-  try {
-    return (JSON.parse(raw) as { role: UserRole }).role;
-  } catch {
-    return null;
-  }
-}
-
 function getPrefix(): string {
-  const role = getRole();
+  const role = getStoredRole();
   if (role === 'administrador') return '/admin';
   if (role === 'arrendador') return '/landlord';
   if (role === 'inquilino') return '/tenant';
@@ -65,7 +55,7 @@ function getPrefix(): string {
 }
 
 function getStatsPath(): string {
-  const role = getRole();
+  const role = getStoredRole();
   if (role === 'administrador') return '/admin/dashboard/stats';
   if (role === 'arrendador') return '/landlord/stats';
   if (role === 'inquilino') return '/tenant/stats';
@@ -123,7 +113,7 @@ export class ApiDashboardService implements DashboardService {
   }
 
   private async fetchMyProperties(): Promise<Property[]> {
-    const role = getRole();
+    const role = getStoredRole();
     if (role === 'inquilino') return [];
     return apiGet<Property[]>(`${getPrefix()}/properties`);
   }

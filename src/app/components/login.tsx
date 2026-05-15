@@ -21,7 +21,7 @@ export function Login() {
       // Redirigir según el rol del usuario
 
       if (user) {
-        navigate(`/${user.role}/dashboard`);
+        navigate(`/${user.role.toLowerCase()}/dashboard`);
       }
     } catch {
       setError('Credenciales inválidas. Por favor intenta de nuevo.');
@@ -112,15 +112,15 @@ export function Login() {
             <div className="space-y-2 text-xs">
               <div className="flex justify-between items-center p-2 bg-white rounded border border-gray-200">
                 <span className="font-medium text-gray-900">Administrador:</span>
-                <code className="text-gray-600">admin@rentmanager.com / admin123</code>
+                <code className="text-gray-600">admin@example.com / admin123</code>
               </div>
               <div className="flex justify-between items-center p-2 bg-white rounded border border-gray-200">
                 <span className="font-medium text-gray-900">Arrendador:</span>
-                <code className="text-gray-600">carlos@rentmanager.com / arrendador123</code>
+                <code className="text-gray-600">arrendador@example.com / landlord123</code>
               </div>
               <div className="flex justify-between items-center p-2 bg-white rounded border border-gray-200">
                 <span className="font-medium text-gray-900">Inquilino:</span>
-                <code className="text-gray-600">juan@email.com / inquilino123</code>
+                <code className="text-gray-600">inquilino@example.com / tenant123</code>
               </div>
             </div>
           </div>

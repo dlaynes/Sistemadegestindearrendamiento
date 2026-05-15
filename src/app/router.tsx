@@ -56,7 +56,7 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode;
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    return <Navigate to={`/${user.role}/dashboard`} replace />;
+    return <Navigate to={`/${user.role.toLowerCase()}/dashboard`} replace />;
   }
 
   return <>{children}</>;

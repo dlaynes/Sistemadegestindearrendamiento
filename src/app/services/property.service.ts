@@ -1,6 +1,5 @@
 import type { Property } from '../types/property';
-import { apiGet, apiPost, apiPut, apiDelete } from './api-client';
-import type { UserRole } from '../types/user';
+import { apiGet, apiPost, apiPut, apiDelete, getStoredRole } from './api-client';
 
 export interface PropertyService {
   getAll(): Promise<Property[]>;
@@ -12,18 +11,8 @@ export interface PropertyService {
   delete(id: string | number): Promise<void>;
 }
 
-function getRole(): UserRole | null {
-  const raw = localStorage.getItem('user');
-  if (!raw) return null;
-  try {
-    return (JSON.parse(raw) as { role: UserRole }).role;
-  } catch {
-    return null;
-  }
-}
-
 function getPrefix(): string {
-  const role = getRole();
+  const role = getStoredRole();
   if (role === 'administrador') return '/admin';
   if (role === 'arrendador') return '/landlord';
   return '/landlord';

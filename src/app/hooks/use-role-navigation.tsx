@@ -9,19 +9,19 @@ export function useRoleNavigation() {
     if (!user) return;
     
     // Si la ruta ya empieza con el rol, navegar directamente
-    if (path.startsWith(`/${user.role}`)) {
+    if (path.startsWith(`/${user.role.toLowerCase()}`)) {
       navigate(path);
       return;
     }
     
     // Si la ruta empieza con /, agregar el prefijo del rol
     if (path.startsWith('/')) {
-      navigate(`/${user.role}${path}`);
+      navigate(`/${user.role.toLowerCase()}${path}`);
       return;
     }
     
     // Si no empieza con /, agregar tanto el rol como la barra
-    navigate(`/${user.role}/${path}`);
+    navigate(`/${user.role.toLowerCase()}/${path}`);
   };
 
   return navigateWithRole;

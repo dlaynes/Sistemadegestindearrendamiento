@@ -13,29 +13,35 @@ export interface AuthService {
   acceptInvitation(token: string, name: string, password: string): Promise<AuthResponse>;
 }
 
+const USER_STORAGE_KEY = 'rentmanager_user';
+
+function normalizeRole(role: string): UserRole {
+  return role.toLowerCase() as UserRole;
+}
 
 function getRole(): UserRole | null {
-  const raw = localStorage.getItem('user');
+  const raw = localStorage.getItem(USER_STORAGE_KEY);
   if (!raw) return null;
   try {
-    return (JSON.parse(raw) as { role: UserRole }).role;
+    return normalizeRole((JSON.parse(raw) as { role: string }).role);
   } catch {
     return null;
   }
 }
 
 function getStoredUser(): User | null {
-  const raw = localStorage.getItem('user');
+  const raw = localStorage.getItem(USER_STORAGE_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as User;
+    const parsed = JSON.parse(raw) as User;
+    return { ...parsed, role: normalizeRole(parsed.role) };
   } catch {
     return null;
   }
 }
 
 function setStoredUser(user: User): void {
-  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
 }
 
 export class ApiAuthService implements AuthService {
@@ -58,7 +64,7 @@ export class ApiAuthService implements AuthService {
       id: response.id,
       name: response.name,
       email: response.email,
-      role: response.role,
+      role: normalizeRole(response.role),
       status: 'activo',
       avatar: response.avatar,
     };
@@ -68,7 +74,7 @@ export class ApiAuthService implements AuthService {
 
   async logout(): Promise<void> {
     clearToken();
-    localStorage.removeItem('user');
+    localStorage.removeItem(USER_STORAGE_KEY);
   }
 
   async getSession(): Promise<User | null> {
@@ -85,7 +91,6 @@ export class ApiAuthService implements AuthService {
     return apiPut<User>(`/admin/users/${userId}`, userData);
   }
 
-
   async getTenants(): Promise<User[]> {
     const role = getRole();
     if (role === 'administrador') {
@@ -96,7 +101,6 @@ export class ApiAuthService implements AuthService {
   }
 
   async acceptInvitation(token: string, name: string, password: string): Promise<AuthResponse> {
-    // Public endpoint: no Bearer token
     const res = await apiFetch('/tenant/accept-invitation', {
       method: 'POST',
       body: JSON.stringify({ token, name, password }),
@@ -107,7 +111,7 @@ export class ApiAuthService implements AuthService {
       id: response.id,
       name: response.name,
       email: response.email,
-      role: response.role,
+      role: normalizeRole(response.role),
       status: 'activo',
       avatar: response.avatar,
     };

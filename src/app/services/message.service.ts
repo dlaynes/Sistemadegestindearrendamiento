@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiPut } from './api-client';
+import { apiGet, apiPost, apiPut, getStoredUserId } from './api-client';
 
 export interface Conversation {
   id: string | number;
@@ -15,7 +15,7 @@ export interface Message {
   sender: 'me' | 'other';
   content: string;
   timestamp: string;
-  read: boolean;
+  seen: boolean;
 }
 
 export interface MessageService {
@@ -24,16 +24,6 @@ export interface MessageService {
   getMessages(conversationId: string | number): Promise<Message[]>;
   sendMessage(conversationId: string | number, content: string): Promise<Message>;
   markAsRead(conversationId: string | number): Promise<void>;
-}
-
-function getCurrentUserId(): string | number | null {
-  const raw = localStorage.getItem('user');
-  if (!raw) return null;
-  try {
-    return (JSON.parse(raw) as { id: string | number }).id;
-  } catch {
-    return null;
-  }
 }
 
 export class ApiMessageService implements MessageService {
@@ -82,14 +72,14 @@ export class ApiMessageService implements MessageService {
   }
 
   async getMessages(conversationId: string | number): Promise<Message[]> {
-    const currentUserId = getCurrentUserId();
+    const currentUserId = getStoredUserId();
     const data = await apiGet<Array<{
       id: number;
       senderId: number;
       senderName: string;
       content: string;
       timestamp: string;
-      read: boolean;
+      seen: boolean;
     }>>(`/conversations/${conversationId}/messages`);
 
     return data.map((m) => ({
@@ -97,19 +87,19 @@ export class ApiMessageService implements MessageService {
       sender: String(m.senderId) === String(currentUserId) ? 'me' : 'other',
       content: m.content,
       timestamp: m.timestamp,
-      read: m.read,
+      seen: m.seen,
     }));
   }
 
   async sendMessage(conversationId: string | number, content: string): Promise<Message> {
-    const currentUserId = getCurrentUserId();
+    const currentUserId = getStoredUserId();
     const m = await apiPost<{
       id: number;
       senderId: number;
       senderName: string;
       content: string;
       timestamp: string;
-      read: boolean;
+      seen: boolean;
     }>(`/conversations/${conversationId}/messages`, { content });
 
     return {
@@ -117,7 +107,7 @@ export class ApiMessageService implements MessageService {
       sender: String(m.senderId) === String(currentUserId) ? 'me' : 'other',
       content: m.content,
       timestamp: m.timestamp,
-      read: m.read,
+      seen: m.seen,
     };
   }
 
