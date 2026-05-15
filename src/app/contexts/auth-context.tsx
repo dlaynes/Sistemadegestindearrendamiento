@@ -23,6 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user: null,
     isAuthenticated: false,
     isLoading: true,
+    isAuthReady: false,
   });
 
   useEffect(() => {
@@ -36,13 +37,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             user,
             isAuthenticated: true,
             isLoading: false,
+            isAuthReady: true,
           });
         } else {
-          setAuthState((prev) => ({ ...prev, isLoading: false }));
+          setAuthState({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+            isAuthReady: true,
+          });
         }
       } catch (error) {
         console.error('Error al verificar sesión:', error);
-        setAuthState((prev) => ({ ...prev, isLoading: false }));
+        setAuthState({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          isAuthReady: true,
+        });
       }
     };
 
@@ -57,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isAuthenticated: true,
         isLoading: false,
+        isAuthReady: true,
       });
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
       return user;
@@ -73,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: null,
       isAuthenticated: false,
       isLoading: false,
+      isAuthReady: true,
     });
     localStorage.removeItem(USER_STORAGE_KEY);
     window.location.href = '/login';

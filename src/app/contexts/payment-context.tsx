@@ -28,6 +28,10 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
     let cancelled = false;
     paymentService
       .getAll()
@@ -46,7 +50,7 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [paymentService]);
+  }, [paymentService, user]);
 
   const addPayment = useCallback(
     async (payment: Payment) => {

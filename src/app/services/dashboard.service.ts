@@ -57,7 +57,7 @@ function getPrefix(): string {
 function getStatsPath(): string {
   const role = getStoredRole();
   if (role === 'administrador') return '/admin/dashboard/stats';
-  if (role === 'arrendador') return '/landlord/stats';
+  if (role === 'arrendador') return '/landlord/dashboard/stats';
   if (role === 'inquilino') return '/tenant/stats';
   return '/landlord/stats';
 }

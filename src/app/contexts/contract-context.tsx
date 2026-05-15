@@ -27,6 +27,10 @@ export function ContractProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
     let cancelled = false;
     contractService
       .getAll()
@@ -45,7 +49,7 @@ export function ContractProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [contractService]);
+  }, [contractService, user]);
 
   const addContract = useCallback(
     async (contract: Contract) => {

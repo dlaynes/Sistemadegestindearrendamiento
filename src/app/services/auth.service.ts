@@ -97,7 +97,7 @@ export class ApiAuthService implements AuthService {
       const all = await this.getAllUsers();
       return all.filter((u) => u.role === 'inquilino');
     }
-    return apiGet<User[]>('/landlord/tenants');
+    return apiGet<User[]>('/landlord/tenants/tenants');
   }
 
   async acceptInvitation(token: string, name: string, password: string): Promise<AuthResponse> {

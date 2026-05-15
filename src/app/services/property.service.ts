@@ -15,6 +15,7 @@ function getPrefix(): string {
   const role = getStoredRole();
   if (role === 'administrador') return '/admin';
   if (role === 'arrendador') return '/landlord';
+  if (role === 'inquilino') return '/tenant';
   return '/landlord';
 }
 
