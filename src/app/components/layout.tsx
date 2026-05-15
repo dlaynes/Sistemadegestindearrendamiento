@@ -147,6 +147,7 @@ export function Layout() {
               </div>
             )}
             <button
+              type="button"
               onClick={logout}
               className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
             >
@@ -210,6 +211,7 @@ export function Layout() {
               </div>
             )}
             <button
+              type="button"
               onClick={logout}
               className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
             >

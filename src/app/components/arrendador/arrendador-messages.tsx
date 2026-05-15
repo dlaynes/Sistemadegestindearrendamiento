@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { MessageSquare, User } from 'lucide-react';
+import { toast } from 'sonner';
 import { MessagesInterface, SummaryCards } from '../shared';
-import type { Conversation, Message } from '../shared/messages/messages-interface';
+import type { Conversation, Message, Contact } from '../shared/messages/messages-interface';
 import { useServices } from '../../services';
 
 export function ArrendadorMessages() {
-  const { message: messageService } = useServices();
+  const { message: messageService, auth: authService } = useServices();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
@@ -13,6 +14,7 @@ export function ArrendadorMessages() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [tenants, setTenants] = useState<Contact[]>([]);
 
   const fetchConversations = useCallback(async () => {
     try {
@@ -25,9 +27,27 @@ export function ArrendadorMessages() {
     }
   }, [messageService]);
 
+  const fetchTenants = useCallback(async () => {
+    try {
+      const data = await authService.getTenants();
+      setTenants(
+        data.map((t) => ({
+          id: t.id,
+          name: t.name,
+          subtitle: t.email,
+          avatar: t.name.substring(0, 2).toUpperCase(),
+        }))
+      );
+    } catch (err) {
+      console.error('Error cargando inquilinos:', err);
+      toast.error('Error al cargar la lista de inquilinos');
+    }
+  }, [authService]);
+
   useEffect(() => {
     fetchConversations();
-  }, [fetchConversations]);
+    fetchTenants();
+  }, [fetchConversations, fetchTenants]);
 
   const fetchMessages = useCallback(async (conversationId: string | number) => {
     try {
@@ -73,6 +93,27 @@ export function ArrendadorMessages() {
     }
   }, [newMessage, selectedConversation, messageService]);
 
+  const handleStartConversation = useCallback(
+    async (contact: Contact) => {
+      try {
+        const conversation = await messageService.startConversation(contact.id);
+        toast.success(`Conversación iniciada con ${contact.name}`);
+        setConversations((prev) => {
+          const exists = prev.find((c) => String(c.id) === String(conversation.id));
+          if (exists) return prev;
+          return [conversation, ...prev];
+        });
+        setSelectedConversation(conversation);
+        await fetchMessages(conversation.id);
+        setSearchTerm('');
+      } catch (err) {
+        console.error('Error iniciando conversación:', err);
+        toast.error('Error al iniciar la conversación');
+      }
+    },
+    [messageService, fetchMessages]
+  );
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -102,12 +143,15 @@ export function ArrendadorMessages() {
         onSendMessage={handleSendMessage}
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
+        contacts={tenants}
+        onStartConversation={handleStartConversation}
       />
 
       <SummaryCards
         cards={[
           { label: 'Conversaciones Activas', value: String(conversations.length), icon: MessageSquare, color: 'bg-blue-500' },
           { label: 'Mensajes Sin Leer', value: String(conversations.reduce((sum, c) => sum + c.unread, 0)), icon: User, color: 'bg-orange-500' },
+          { label: 'Inquilinos Disponibles', value: String(tenants.length), icon: User, color: 'bg-green-500' },
         ]}
         columns={3}
       />

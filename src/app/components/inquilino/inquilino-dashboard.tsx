@@ -1,11 +1,10 @@
-import { Home, FileText, DollarSign, Calendar, AlertCircle, CheckCircle } from 'lucide-react';
+import { Home, FileText, DollarSign, Calendar, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { PageHeader, StatusBadge } from '../shared';
 import { useDashboard } from '../../contexts/dashboard-context';
 
 export function InquilinoDashboard() {
-  const { stats, isLoading, upcomingPayments } = useDashboard();
+  const { stats, isLoading, upcomingPayments, myProperties, myPayments } = useDashboard();
 
-  // For inquilino, use the first upcoming payment as "next payment" reference
   const nextPayment = upcomingPayments[0];
 
   if (isLoading) {
@@ -43,7 +42,7 @@ export function InquilinoDashboard() {
               <Home className="w-6 h-6 text-white" />
             </div>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-1">1</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-1">{myProperties.length}</h3>
           <p className="text-sm text-gray-600 mb-2">Mi Propiedad</p>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -81,45 +80,38 @@ export function InquilinoDashboard() {
           <h2 className="text-xl font-semibold text-gray-900">Historial de Pagos</h2>
         </div>
         <div className="divide-y divide-gray-200">
-          <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <div>
-                <p className="font-medium text-gray-900">Marzo 2026</p>
-                <p className="text-sm text-gray-500">2026-03-05</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold text-gray-900">$1,200</p>
-              <StatusBadge status="pagado" type="payment" size="sm" />
-            </div>
-          </div>
-          <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <div>
-                <p className="font-medium text-gray-900">Febrero 2026</p>
-                <p className="text-sm text-gray-500">2026-02-05</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold text-gray-900">$1,200</p>
-              <StatusBadge status="pagado" type="payment" size="sm" />
-            </div>
-          </div>
-          <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <div>
-                <p className="font-medium text-gray-900">Enero 2026</p>
-                <p className="text-sm text-gray-500">2026-01-05</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold text-gray-900">$1,200</p>
-              <StatusBadge status="pagado" type="payment" size="sm" />
-            </div>
-          </div>
+          {myPayments.length > 0 ? (
+            myPayments.map((payment) => {
+              const statusIcon =
+                payment.status === 'pagado' ? (
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                ) : payment.status === 'pendiente' ? (
+                  <Clock className="w-5 h-5 text-yellow-600" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 text-red-600" />
+                );
+              return (
+                <div
+                  key={payment.id}
+                  className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    {statusIcon}
+                    <div>
+                      <p className="font-medium text-gray-900">{payment.property || 'Propiedad'}</p>
+                      <p className="text-sm text-gray-500">{payment.dueDate}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">${Number(payment.amount).toLocaleString()}</p>
+                    <StatusBadge status={payment.status} type="payment" size="sm" />
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="p-8 text-center text-gray-500">No hay pagos registrados</div>
+          )}
         </div>
       </div>
     </div>
