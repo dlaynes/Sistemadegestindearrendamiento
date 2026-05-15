@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { 
   FileText, 
@@ -16,6 +17,7 @@ import {
   FileDown
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
+import { useServices } from '../../services';
 import { 
   BackButton, 
   StatusBadge, 
@@ -25,19 +27,36 @@ import {
   getDaysUntilExpiration
 } from '../shared';
 import { useContract } from '../../contexts/contract-context';
-
-const mockPaymentHistory = [
-  { month: 'Marzo 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-03-04' },
-  { month: 'Febrero 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-02-03' },
-  { month: 'Enero 2026', amount: '$3,200', status: 'pagado' as const, date: '2026-01-04' },
-];
+import type { Payment } from '../../types';
 
 export function AdminContractDetail() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
+  const { payment: paymentService } = useServices();
   
   const { getContractById } = useContract();
   const contract = id ? getContractById(id) : undefined;
+
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [isLoadingPayments, setIsLoadingPayments] = useState(true);
+
+  useEffect(() => {
+    if (!contract?.id) return;
+    let cancelled = false;
+    setIsLoadingPayments(true);
+    paymentService
+      .getByContract(contract.id)
+      .then((data) => {
+        if (!cancelled) setPayments(data);
+      })
+      .catch(() => {
+        if (!cancelled) setPayments([]);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingPayments(false);
+      });
+    return () => { cancelled = true; };
+  }, [contract?.id, paymentService]);
 
   if (!contract) {
     return (
@@ -75,6 +94,15 @@ export function AdminContractDetail() {
     { label: 'Propiedad', value: contract.property, icon: Building2 },
     { label: 'Dirección', value: contract.propertyAddress, icon: Building2 },
   ];
+
+  const toMonthName = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleString('es', { month: 'long', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -134,30 +162,36 @@ export function AdminContractDetail() {
             columns={1}
             items={[]}
           >
-            <div className="space-y-3">
-              {mockPaymentHistory.map((payment, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    {payment.status === 'pagado' ? (
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <AlertCircle className="w-5 h-5 text-red-600" />
-                    )}
-                    <div>
-                      <p className="font-medium text-gray-900">{payment.month}</p>
-                      <p className="text-sm text-gray-600">{payment.date}</p>
+            {isLoadingPayments ? (
+              <p className="text-sm text-gray-500">Cargando pagos...</p>
+            ) : payments.length === 0 ? (
+              <p className="text-sm text-gray-500">No hay pagos registrados.</p>
+            ) : (
+              <div className="space-y-3">
+                {payments.map((payment) => (
+                  <div
+                    key={payment.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      {payment.status === 'pagado' ? (
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-5 h-5 text-red-600" />
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-900">{toMonthName(payment.dueDate)}</p>
+                        <p className="text-sm text-gray-600">{payment.dueDate}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">{payment.amount}</p>
+                      <StatusBadge status={payment.status} type="payment" size="sm" />
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">{payment.amount}</p>
-                    <StatusBadge status={payment.status} type="payment" size="sm" />
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </InfoCard>
         </div>
 

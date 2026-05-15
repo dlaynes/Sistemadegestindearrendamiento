@@ -4,11 +4,13 @@ import type { PropertyService } from './property.service';
 import type { ContractService } from './contract.service';
 import type { PaymentService } from './payment.service';
 import type { DashboardService } from './dashboard.service';
+import type { MessageService } from './message.service';
 import { ApiAuthService } from './auth.service';
 import { ApiPropertyService } from './property.service';
 import { ApiContractService } from './contract.service';
 import { ApiPaymentService } from './payment.service';
 import { ApiDashboardService } from './dashboard.service';
+import { ApiMessageService } from './message.service';
 
 export interface Services {
   auth: AuthService;
@@ -16,6 +18,7 @@ export interface Services {
   contract: ContractService;
   payment: PaymentService;
   dashboard: DashboardService;
+  message: MessageService;
 }
 
 export function createServices(): Services {
@@ -25,6 +28,7 @@ export function createServices(): Services {
     contract: new ApiContractService(),
     payment: new ApiPaymentService(),
     dashboard: new ApiDashboardService(),
+    message: new ApiMessageService(),
   };
 }
 

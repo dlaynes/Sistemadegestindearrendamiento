@@ -4,16 +4,16 @@ import { cn } from '../../ui/utils';
 export interface Conversation {
   id: string | number;
   name: string;
-  property: string;
-  lastMessage: string;
-  timestamp: string;
+  property?: string;
+  lastMessage?: string;
+  timestamp?: string;
   unread: number;
-  avatar: string;
+  avatar?: string;
 }
 
 export interface Message {
   id: string | number;
-  sender: 'tenant' | 'owner' | 'me';
+  sender: 'me' | 'other';
   content: string;
   timestamp: string;
 }
@@ -64,7 +64,7 @@ export function MessagesInterface({
   const filteredConversations = conversations.filter(
     (conv) =>
       conv.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      conv.property.toLowerCase().includes(searchValue.toLowerCase())
+      (conv.property?.toLowerCase() || '').includes(searchValue.toLowerCase())
   );
 
   return (
@@ -103,7 +103,7 @@ export function MessagesInterface({
               >
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium flex-shrink-0">
-                    {conversation.avatar}
+                    {conversation.avatar || conversation.name.substring(0, 2).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
@@ -116,13 +116,15 @@ export function MessagesInterface({
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500 truncate">
-                      {conversation.property}
-                    </p>
+                    {conversation.property && (
+                      <p className="text-sm text-gray-500 truncate">
+                        {conversation.property}
+                      </p>
+                    )}
                     <p className="text-sm text-gray-600 truncate mt-1">
-                      {conversation.lastMessage}
+                      {conversation.lastMessage || 'Sin mensajes'}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">{conversation.timestamp}</p>
+                    <p className="text-xs text-gray-400 mt-1">{conversation.timestamp || ''}</p>
                   </div>
                 </div>
               </div>
@@ -136,11 +138,13 @@ export function MessagesInterface({
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
-                    {selectedConversation.avatar}
+                    {selectedConversation.avatar || selectedConversation.name.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">{selectedConversation.name}</h3>
-                    <p className="text-sm text-gray-500">{selectedConversation.property}</p>
+                    {selectedConversation.property && (
+                      <p className="text-sm text-gray-500">{selectedConversation.property}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -151,7 +155,7 @@ export function MessagesInterface({
                     key={message.id}
                     className={cn(
                       'flex',
-                      message.sender === 'me' || message.sender === 'owner'
+                      message.sender === 'me'
                         ? 'justify-end'
                         : 'justify-start'
                     )}
@@ -159,7 +163,7 @@ export function MessagesInterface({
                     <div
                       className={cn(
                         'max-w-[70%] p-3 rounded-lg',
-                        message.sender === 'me' || message.sender === 'owner'
+                        message.sender === 'me'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-900'
                       )}
@@ -168,7 +172,7 @@ export function MessagesInterface({
                       <p
                         className={cn(
                           'text-xs mt-1',
-                          message.sender === 'me' || message.sender === 'owner'
+                          message.sender === 'me'
                             ? 'text-blue-100'
                             : 'text-gray-500'
                         )}
@@ -186,7 +190,7 @@ export function MessagesInterface({
                     type="text"
                     value={newMessage}
                     onChange={(e) => onNewMessageChange(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyDown={handleKeyPress}
                     placeholder="Escribe un mensaje..."
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />

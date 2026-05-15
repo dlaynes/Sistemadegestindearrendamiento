@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { useContract } from '../../contexts/contract-context';
+import { useServices } from '../../services';
 import {
   DollarSign,
   ArrowLeft,
@@ -11,7 +12,7 @@ import {
   X,
   AlertCircle,
 } from 'lucide-react';
-
+import type { Payment } from '../../types';
 
 type PaymentFormData = {
   contractId: number;
@@ -36,16 +37,17 @@ type Attachment = {
 export function InquilinoPaymentForm() {
   const { contractId } = useParams();
   const navigate = useNavigate();
+  const { payment: paymentService } = useServices();
 
   const { getContractById } = useContract();
   const contract = contractId ? getContractById(contractId) : undefined;
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     watch,
-
     formState: { errors },
   } = useForm<PaymentFormData>({
     defaultValues: {
@@ -96,19 +98,29 @@ export function InquilinoPaymentForm() {
     setAttachments(attachments.filter((a) => a.id !== id));
   };
 
-  const onSubmit = (data: PaymentFormData) => {
-    const formData = {
-      ...data,
-      totalAmount,
-      attachments,
-    };
+  const onSubmit = async (data: PaymentFormData) => {
+    setIsSubmitting(true);
+    try {
+      const paymentData: Partial<Payment> = {
+        contractId: data.contractId,
+        amount: `$${totalAmount.toLocaleString()}`,
+        status: 'pagado',
+        method: data.paymentMethod,
+        dueDate: data.paymentDate,
+        paidDate: data.paymentDate,
+        referenceNumber: data.reference,
+        notes: data.notes,
+        property: contract.property,
+      };
 
-    console.log('Registrando pago:', formData);
-
-    // Aquí iría la lógica para guardar en el backend
-    // Generar ID único para el pago (en prod vendría del backend)
-    const newPaymentId = Number(contractId) + 1000; // Simulado para testing
-    navigate(`/pagos/${newPaymentId}`);
+      const created = await paymentService.create(paymentData as Payment);
+      navigate(`/pagos/${created.id}`);
+    } catch (err) {
+      console.error('Error registrando pago:', err);
+      alert('Ocurrió un error al registrar el pago. Inténtalo de nuevo.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const months = [
@@ -131,7 +143,6 @@ export function InquilinoPaymentForm() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
@@ -150,12 +161,11 @@ export function InquilinoPaymentForm() {
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">Registrar Pago</h1>
             <p className="text-gray-600">
-              Contrato #{contractId?.toString().padStart(4, '0')} - {contract.tenant}
+              Contrato #{contractId?.toString().padStart(4, '0')} - {contract.tenantName}
             </p>
           </div>
         </div>
 
-        {/* Contract Info Card */}
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
@@ -167,190 +177,168 @@ export function InquilinoPaymentForm() {
               <p className="text-blue-900 font-semibold">${contract.monthlyRent.toLocaleString()}</p>
             </div>
             <div>
-              <span className="text-blue-700 font-medium">Día de pago:</span>
-              <p className="text-blue-900 font-semibold">Día {contract.paymentDay} de cada mes</p>
+              <span className="text-blue-700 font-medium">Inquilino:</span>
+              <p className="text-blue-900 font-semibold">{contract.tenantName}</p>
             </div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Payment Period */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Período de Pago</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Mes *</label>
-                <select
-                  {...register('month', { required: 'El mes es requerido' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {months.map((month) => (
-                    <option key={month} value={month}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
-                {errors.month && (
-                  <p className="mt-1 text-sm text-red-600">{errors.month.message}</p>
-                )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Monto Base de Renta *
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  {...register('baseRent', { required: 'El monto es requerido', min: 0 })}
+                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0.00"
+                />
               </div>
+              {errors.baseRent && (
+                <p className="mt-1 text-sm text-red-600">{errors.baseRent.message}</p>
+              )}
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Año *</label>
-                <select
-                  {...register('year', { required: 'El año es requerido' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {years.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-                {errors.year && <p className="mt-1 text-sm text-red-600">{errors.year.message}</p>}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Servicios Adicionales
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  {...register('services', { min: 0 })}
+                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0.00"
+                />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Cargo por Mora
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  {...register('lateFee', { min: 0 })}
+                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Fecha de Pago *
+              </label>
+              <input
+                type="date"
+                {...register('paymentDate', { required: 'La fecha es requerida' })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {errors.paymentDate && (
+                <p className="mt-1 text-sm text-red-600">{errors.paymentDate.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Mes de Pago *
+              </label>
+              <select
+                {...register('month', { required: 'El mes es requerido' })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {months.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Año *
+              </label>
+              <select
+                {...register('year', { required: 'El año es requerido' })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {years.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* Payment Details */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Detalles del Pago</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Fecha de pago *
-                </label>
-                <input
-                  type="date"
-                  {...register('paymentDate', { required: 'La fecha es requerida' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.paymentDate && (
-                  <p className="mt-1 text-sm text-red-600">{errors.paymentDate.message}</p>
-                )}
-              </div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Método de Pago *
+            </label>
+            <select
+              {...register('paymentMethod', { required: 'El método es requerido' })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="transferencia">Transferencia Bancaria</option>
+              <option value="efectivo">Efectivo</option>
+              <option value="cheque">Cheque</option>
+              <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+            </select>
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Método de pago *
-                </label>
-                <select
-                  {...register('paymentMethod', { required: 'El método es requerido' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="transferencia">Transferencia Bancaria</option>
-                  <option value="efectivo">Efectivo</option>
-                  <option value="cheque">Cheque</option>
-                  <option value="tarjeta">Tarjeta de Crédito/Débito</option>
-                </select>
-                {errors.paymentMethod && (
-                  <p className="mt-1 text-sm text-red-600">{errors.paymentMethod.message}</p>
-                )}
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Número de Referencia / Transacción
+            </label>
+            <input
+              type="text"
+              {...register('reference')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ej: TRANS-123456789"
+            />
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Renta mensual básica ($) *
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  {...register('baseRent', {
-                    required: 'El monto es requerido',
-                    min: { value: 0, message: 'Debe ser mayor a 0' },
-                  })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.baseRent && (
-                  <p className="mt-1 text-sm text-red-600">{errors.baseRent.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Servicios ($)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  {...register('services')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="0.00"
-                />
-                <p className="mt-1 text-xs text-gray-500">Opcional, solo si aplica</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cargo por mora ($)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  {...register('lateFee')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="0.00"
-                />
-                <p className="mt-1 text-xs text-gray-500">Opcional, solo si aplica</p>
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Referencia o número de transacción
-                </label>
-                <input
-                  type="text"
-                  {...register('reference')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ej: TRANS-123456789"
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  Número de referencia bancaria, cheque, etc.
-                </p>
-              </div>
-            </div>
-
-            {/* Total Amount Summary */}
-            {((watchedData.services && watchedData.services > 0) || (watchedData.lateFee && watchedData.lateFee > 0)) && (
-              <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                <div className="space-y-2 text-sm">
+          {totalAmount > 0 && (
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-3">Resumen</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Renta Base:</span>
+                  <span className="font-medium text-gray-900">
+                    ${watchedData.baseRent?.toLocaleString()}
+                  </span>
+                </div>
+                {watchedData.services && watchedData.services > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Renta mensual b��sica:</span>
+                    <span className="text-gray-600">Servicios:</span>
                     <span className="font-medium text-gray-900">
-                      ${watchedData.baseRent?.toLocaleString()}
+                      ${watchedData.services?.toLocaleString()}
                     </span>
                   </div>
-                  {watchedData.services && watchedData.services > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Servicios:</span>
-                      <span className="font-medium text-gray-900">
-                        ${watchedData.services?.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                  {watchedData.lateFee && watchedData.lateFee > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Cargo por mora:</span>
-                      <span className="font-medium text-red-600">
-                        ${watchedData.lateFee?.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                  <div className="pt-2 border-t border-gray-300 flex justify-between">
-                    <span className="font-semibold text-gray-900">Total:</span>
-                    <span className="font-bold text-gray-900 text-lg">
-                      ${totalAmount.toLocaleString()}
+                )}
+                {watchedData.lateFee && watchedData.lateFee > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Cargo por mora:</span>
+                    <span className="font-medium text-red-600">
+                      ${watchedData.lateFee?.toLocaleString()}
                     </span>
                   </div>
+                )}
+                <div className="pt-2 border-t border-gray-300 flex justify-between">
+                  <span className="font-semibold text-gray-900">Total:</span>
+                  <span className="font-bold text-gray-900 text-lg">
+                    ${totalAmount.toLocaleString()}
+                  </span>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Comprobante */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Comprobante de Pago (Opcional)
@@ -410,7 +398,6 @@ export function InquilinoPaymentForm() {
             )}
           </div>
 
-          {/* Notes */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Notas Adicionales</h3>
             <textarea
@@ -421,7 +408,6 @@ export function InquilinoPaymentForm() {
             />
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center justify-between pt-6 border-t border-gray-200">
             <button
               type="button"
@@ -433,14 +419,11 @@ export function InquilinoPaymentForm() {
 
             <button
               type="submit"
-              className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-              onClick={() => {
-                console.log('Enviando formulario...');
-                onSubmit(watchedData);
-              }}
+              disabled={isSubmitting}
+              className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
-              Registrar Pago
+              {isSubmitting ? 'Registrando...' : 'Registrar Pago'}
             </button>
           </div>
         </form>

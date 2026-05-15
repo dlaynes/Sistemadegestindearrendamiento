@@ -109,7 +109,7 @@ export function ContractProvider({ children }: { children: ReactNode }) {
       });
     }
     // inquilino - filter by tenant name
-    return contracts.filter((c) => c.tenant === user.name);
+    return contracts.filter((c) => c.tenantName === user.name);
   }, [contracts, user]);
 
   return (

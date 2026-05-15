@@ -1,72 +1,106 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MessageSquare, User } from 'lucide-react';
 import { MessagesInterface, SummaryCards } from '../shared';
-
-const mockConversations : { id: number | string; name: string; property: string; lastMessage: string; timestamp: string; unread: number; avatar: string }[] = [
-  {
-    id: 1,
-    name: 'Carlos Rodríguez',
-    property: 'Apartamento Centro #101',
-    lastMessage: 'Gracias por la rápida respuesta',
-    timestamp: '2026-03-27 10:30',
-    unread: 0,
-    avatar: 'CR',
-  },
-];
-
-const mockMessages : { id: number | string; sender: 'me' | 'tenant'; content: string; timestamp: string }[] = [
-  {
-    id: 1,
-    sender: 'me' as const,
-    content: 'Hola, buenos días. Tengo una consulta sobre el pago de este mes.',
-    timestamp: '2026-03-27 09:00',
-  },
-  {
-    id: 2,
-    sender: 'tenant' as const,
-    content: 'Buenos días, con gusto te ayudo. ¿Cuál es tu consulta?',
-    timestamp: '2026-03-27 09:15',
-  },
-  {
-    id: 3,
-    sender: 'me' as const,
-    content: '¿Puedo hacer el pago el día 8 en lugar del día 5? Tengo un pequeño retraso con mi nómina.',
-    timestamp: '2026-03-27 09:18',
-  },
-  {
-    id: 4,
-    sender: 'tenant' as const,
-    content: 'No hay problema. Puedes realizar el pago hasta el día 8. Te confirmo recibido cuando lo proceses.',
-    timestamp: '2026-03-27 09:25',
-  },
-  {
-    id: 5,
-    sender: 'me' as const,
-    content: 'Gracias por la rápida respuesta',
-    timestamp: '2026-03-27 10:30',
-  },
-];
+import type { Conversation, Message } from '../shared/messages/messages-interface';
+import { useServices } from '../../services';
 
 export function InquilinoMessages() {
-  const [selectedConversation, setSelectedConversation] = useState(mockConversations[0]);
+  const { message: messageService } = useServices();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      console.log('Enviando mensaje:', newMessage);
-      setNewMessage('');
+  const fetchConversations = useCallback(async () => {
+    try {
+      const data = await messageService.getConversations();
+      setConversations(data);
+      if (data.length > 0 && !selectedConversation) {
+        setSelectedConversation(data[0]);
+        await fetchMessages(data[0].id);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error cargando conversaciones');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [messageService]);
+
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
+
+  const fetchMessages = useCallback(async (conversationId: string | number) => {
+    try {
+      const data = await messageService.getMessages(conversationId);
+      setMessages(data);
+    } catch (err) {
+      console.error('Error cargando mensajes:', err);
+    }
+  }, [messageService]);
+
+  const handleSelectConversation = useCallback(async (conversation: Conversation) => {
+    setSelectedConversation(conversation);
+    await fetchMessages(conversation.id);
+    if (conversation.unread > 0) {
+      try {
+        await messageService.markAsRead(conversation.id);
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.id === conversation.id ? { ...c, unread: 0 } : c
+          )
+        );
+      } catch {
+        // ignore
+      }
+    }
+  }, [fetchMessages, messageService]);
+
+  const handleSendMessage = useCallback(async () => {
+    if (!newMessage.trim() || !selectedConversation) return;
+    try {
+      const sent = await messageService.sendMessage(selectedConversation.id, newMessage.trim());
+      setMessages((prev) => [...prev, sent]);
+      setNewMessage('');
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === selectedConversation.id
+            ? { ...c, lastMessage: sent.content, timestamp: sent.timestamp }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error('Error enviando mensaje:', err);
+    }
+  }, [newMessage, selectedConversation, messageService]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <MessagesInterface
         role="inquilino"
-        conversations={mockConversations}
-        messages={mockMessages}
-        selectedConversationId={selectedConversation.id}
-        onSelectConversation={setSelectedConversation}
+        conversations={conversations}
+        messages={messages}
+        selectedConversationId={selectedConversation?.id ?? 0}
+        onSelectConversation={handleSelectConversation}
         newMessage={newMessage}
         onNewMessageChange={setNewMessage}
         onSendMessage={handleSendMessage}
@@ -74,12 +108,10 @@ export function InquilinoMessages() {
         onSearchChange={setSearchTerm}
       />
 
-      {/* Quick Stats */}
       <SummaryCards
         cards={[
-          { label: 'Mensajes Enviados', value: '12', icon: MessageSquare, color: 'bg-blue-500' },
-          { label: 'Respuestas Recibidas', value: '10', icon: User, color: 'bg-green-500' },
-          { label: 'Tiempo Promedio', value: '20 min', icon: MessageSquare, color: 'bg-orange-500' },
+          { label: 'Conversaciones Activas', value: String(conversations.length), icon: MessageSquare, color: 'bg-blue-500' },
+          { label: 'Mensajes Sin Leer', value: String(conversations.reduce((sum, c) => sum + c.unread, 0)), icon: User, color: 'bg-orange-500' },
         ]}
         columns={3}
       />

@@ -1,68 +1,100 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MessageSquare, User } from 'lucide-react';
 import { MessagesInterface, SummaryCards } from '../shared';
 import type { Conversation, Message } from '../shared/messages/messages-interface';
-
-const mockConversations: Conversation[] = [
-  {
-    id: 1,
-    name: 'Juan Pérez',
-    property: 'Apartamento Centro #101',
-    lastMessage: 'Gracias por la rápida respuesta',
-    timestamp: '2026-03-27 10:30',
-    unread: 0,
-    avatar: 'JP',
-  },
-  {
-    id: 2,
-    name: 'Ana Martínez',
-    property: 'Casa Residencial #102',
-    lastMessage: 'Buenos días, necesito reportar un problema',
-    timestamp: '2026-03-27 09:15',
-    unread: 2,
-    avatar: 'AM',
-  },
-];
-
-const mockMessages: Message[] = [
-  {
-    id: 1,
-    sender: 'tenant',
-    content: 'Hola, buenos días. Tengo una consulta sobre el pago de este mes.',
-    timestamp: '2026-03-27 09:00',
-  },
-  {
-    id: 2,
-    sender: 'owner',
-    content: 'Buenos días Juan, con gusto te ayudo. ¿Cuál es tu consulta?',
-    timestamp: '2026-03-27 09:15',
-  },
-];
+import { useServices } from '../../services';
 
 export function ArrendadorMessages() {
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(
-    mockConversations[0]
-  );
+  const { message: messageService } = useServices();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      console.log('Enviando mensaje:', newMessage);
-      setNewMessage('');
+  const fetchConversations = useCallback(async () => {
+    try {
+      const data = await messageService.getConversations();
+      setConversations(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error cargando conversaciones');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [messageService]);
 
-  const handleSelectConversation = (conversation: Conversation) => {
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
+
+  const fetchMessages = useCallback(async (conversationId: string | number) => {
+    try {
+      const data = await messageService.getMessages(conversationId);
+      setMessages(data);
+    } catch (err) {
+      console.error('Error cargando mensajes:', err);
+    }
+  }, [messageService]);
+
+  const handleSelectConversation = useCallback(async (conversation: Conversation) => {
     setSelectedConversation(conversation);
-  };
+    await fetchMessages(conversation.id);
+    if (conversation.unread > 0) {
+      try {
+        await messageService.markAsRead(conversation.id);
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.id === conversation.id ? { ...c, unread: 0 } : c
+          )
+        );
+      } catch {
+        // ignore
+      }
+    }
+  }, [fetchMessages, messageService]);
+
+  const handleSendMessage = useCallback(async () => {
+    if (!newMessage.trim() || !selectedConversation) return;
+    try {
+      const sent = await messageService.sendMessage(selectedConversation.id, newMessage.trim());
+      setMessages((prev) => [...prev, sent]);
+      setNewMessage('');
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === selectedConversation.id
+            ? { ...c, lastMessage: sent.content, timestamp: sent.timestamp }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error('Error enviando mensaje:', err);
+    }
+  }, [newMessage, selectedConversation, messageService]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <MessagesInterface
         role="arrendador"
-        conversations={mockConversations}
-        messages={mockMessages}
+        conversations={conversations}
+        messages={messages}
         selectedConversationId={selectedConversation?.id ?? 0}
         onSelectConversation={handleSelectConversation}
         newMessage={newMessage}
@@ -74,9 +106,8 @@ export function ArrendadorMessages() {
 
       <SummaryCards
         cards={[
-          { label: 'Conversaciones Activas', value: '5', icon: MessageSquare, color: 'bg-blue-500' },
-          { label: 'Tiempo de Respuesta', value: '15 min', icon: User, color: 'bg-green-500' },
-          { label: 'Mensajes Sin Leer', value: '3', icon: MessageSquare, color: 'bg-orange-500' },
+          { label: 'Conversaciones Activas', value: String(conversations.length), icon: MessageSquare, color: 'bg-blue-500' },
+          { label: 'Mensajes Sin Leer', value: String(conversations.reduce((sum, c) => sum + c.unread, 0)), icon: User, color: 'bg-orange-500' },
         ]}
         columns={3}
       />

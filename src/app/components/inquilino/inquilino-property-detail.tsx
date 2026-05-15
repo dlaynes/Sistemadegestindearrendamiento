@@ -125,7 +125,7 @@ export function InquilinoPropertyDetail() {
               icon={User}
               items={[
                 { label: 'Estado', value: 'Arriendo activo' },
-                { label: 'Inquilino', value: property.tenant || 'Yo' },
+                { label: 'Inquilino', value: property.tenantName || 'Yo' },
               ]}
             >
               <button 
