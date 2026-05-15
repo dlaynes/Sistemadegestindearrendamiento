@@ -32,7 +32,7 @@ export function AdminProperties() {
       <PageHeader 
         title="Propiedades" 
         subtitle="Administra tu portafolio de propiedades"
-        action={
+        /*action={
           <ActionButton 
             variant="primary" 
             icon={Plus}
@@ -40,7 +40,7 @@ export function AdminProperties() {
           >
             Agregar Propiedad
           </ActionButton>
-        }
+        }*/
       />
 
       <SearchFilter
