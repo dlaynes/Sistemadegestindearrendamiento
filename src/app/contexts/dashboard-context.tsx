@@ -2,12 +2,18 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode 
 import { useAuth } from './auth-context';
 import { useServices } from '../services';
 import type { DashboardData, DashboardStats, ActivityItem, UpcomingPayment } from '../services/dashboard.service';
+import type { Property } from '../types/property';
+import type { Contract } from '../types/contract';
+import type { Payment } from '../types/payment';
 
 interface DashboardContextType {
   data: DashboardData | null;
   stats: DashboardStats;
   recentActivity: ActivityItem[];
   upcomingPayments: UpcomingPayment[];
+  myProperties: Property[];
+  myContracts: Contract[];
+  myPayments: Payment[];
   isLoading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
@@ -61,6 +67,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const stats = data?.stats || defaultStats;
   const recentActivity = data?.recentActivity || [];
   const upcomingPayments = data?.upcomingPayments || [];
+  const myProperties = data?.myProperties || [];
+  const myContracts = data?.myContracts || [];
+  const myPayments = data?.myPayments || [];
 
   return (
     <DashboardContext.Provider
@@ -69,6 +78,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         stats,
         recentActivity,
         upcomingPayments,
+        myProperties,
+        myContracts,
+        myPayments,
         isLoading,
         error,
         refresh,

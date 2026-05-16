@@ -113,8 +113,6 @@ export class ApiDashboardService implements DashboardService {
   }
 
   private async fetchMyProperties(): Promise<Property[]> {
-    const role = getStoredRole();
-    if (role === 'inquilino') return [];
     return apiGet<Property[]>(`${getPrefix()}/properties`);
   }
 

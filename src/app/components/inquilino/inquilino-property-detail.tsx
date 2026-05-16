@@ -68,6 +68,14 @@ export function InquilinoPropertyDetail() {
 
   if (!property) {
     return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!property) {
+    return (
       <EmptyState
         icon={Building2}
         title="Propiedad no encontrada"
@@ -133,7 +141,7 @@ export function InquilinoPropertyDetail() {
             icon={CheckCircle}
             columns={2} items={[]}          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {property.amenities.map((amenity, index) => (
+              {(property.amenities || []).map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <CheckCircle className="w-5 h-5 text-green-600" />
                   <span className="text-gray-700">{amenity}</span>

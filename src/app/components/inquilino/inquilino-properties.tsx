@@ -7,6 +7,7 @@ import {
   SearchFilter,
   EmptyState,
 } from '../shared';
+import { useRoleNavigation } from '@/app/hooks/use-role-navigation';
 
 export function InquilinoProperties() {
   const { getMyProperties, isLoading } = useProperty();
@@ -14,6 +15,7 @@ export function InquilinoProperties() {
   const [statusFilter, setStatusFilter] = useState('');
 
   const myProperties = getMyProperties();
+  const navigate = useRoleNavigation();
 
   const filteredProperties = myProperties.filter((property) => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,7 +57,7 @@ export function InquilinoProperties() {
               key={property.id}
               property={property}
               onView={(p) => {
-                window.location.href = `/${'inquilino'}/propiedades/${p.id}`;
+                navigate(`/propiedades/${p.id}`);
               }}
             />
           ))}

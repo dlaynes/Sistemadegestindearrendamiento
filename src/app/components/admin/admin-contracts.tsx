@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { FileText, Calendar, Clock, Plus } from 'lucide-react';
+import { FileText, Calendar, Clock } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { 
   PageHeader, 
   ContractCard, 
   FilterButtons, 
   SummaryCards, 
-  EmptyState, 
-  ActionButton 
+  EmptyState,
 } from '../shared';
 import type { ContractListItem } from '../../types';
 import { useContract } from '../../contexts/contract-context';
