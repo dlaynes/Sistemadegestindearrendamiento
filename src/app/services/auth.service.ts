@@ -105,17 +105,10 @@ export class ApiAuthService implements AuthService {
       method: 'POST',
       body: JSON.stringify({ token, name, password }),
     });
-    const response = (await res.json()) as AuthResponse;
-    setToken(response.token);
-    const user: User = {
-      id: response.id,
-      name: response.name,
-      email: response.email,
-      role: normalizeRole(response.role),
-      status: 'activo',
-      avatar: response.avatar,
-    };
-    setStoredUser(user);
-    return response;
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({ message: 'Error al crear la cuenta' }));
+      throw new Error(body.message || 'Error al crear la cuenta');
+    }
+    return (await res.json()) as AuthResponse;
   }
 }

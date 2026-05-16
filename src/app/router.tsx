@@ -36,6 +36,7 @@ import { ArrendadorMessages } from './components/arrendador/arrendador-messages'
 import { InquilinoMessages } from './components/inquilino/inquilino-messages';
 import { InquilinoPaymentDetail } from './components/inquilino/inquilino-payment-detail';
 import { AdminReports } from './components/admin/admin-reports';
+import { InvitationAccept } from './components/invitation-accept';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -74,6 +75,7 @@ export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/invitation" element={<InvitationAccept />} />
         <Route path="/login" element={<Login />} />
         
         {/* Rutas de Administrador */}
@@ -139,8 +141,6 @@ export function AppRouter() {
         {/* Ruta raíz - Página de bienvenida */}
         <Route path="/" element={<Welcome />} />
         
-        {/* Ruta de login */}
-        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
