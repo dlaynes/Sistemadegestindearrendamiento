@@ -22,7 +22,8 @@ export function getStoredUserId(): string | number | null {
   }
 }
 
-const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8080/api';
+// Backend API base URL - configure via VITE_API_BASE_URL in .env
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 export function getToken(): string | null {
   return localStorage.getItem('token');
