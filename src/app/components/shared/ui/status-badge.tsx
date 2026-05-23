@@ -48,7 +48,7 @@ export function StatusBadge({
       case 'user':
         return getUserStatusColor(status as UserStatus);
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-foreground';
     }
   };
 

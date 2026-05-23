@@ -7,6 +7,7 @@ import {
   FilterButtons,
   SummaryCards,
   EmptyState,
+  TableListSkeleton,
 } from '../shared';
 import type { ContractListItem } from '../../types';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
@@ -27,11 +28,7 @@ export function InquilinoContracts() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <TableListSkeleton />;
   }
 
   return (
@@ -43,9 +40,9 @@ export function InquilinoContracts() {
 
       <SummaryCards
         cards={[
-          { label: 'Activos', value: String(myContracts.filter(c => c.status === 'activo').length), icon: FileText, color: 'bg-blue-500' },
-          { label: 'Por vencer', value: String(myContracts.filter(c => c.status === 'proximo_vencer').length), icon: Clock, color: 'bg-yellow-500' },
-          { label: 'Total', value: String(myContracts.length), icon: FileText, color: 'bg-purple-500' },
+          { label: 'Activos', value: String(myContracts.filter(c => c.status === 'activo').length), icon: FileText, color: 'bg-info' },
+          { label: 'Por vencer', value: String(myContracts.filter(c => c.status === 'proximo_vencer').length), icon: Clock, color: 'bg-warning' },
+          { label: 'Total', value: String(myContracts.length), icon: FileText, color: 'bg-info' },
         ]}
         columns={3}
       />

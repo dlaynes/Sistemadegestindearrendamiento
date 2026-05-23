@@ -71,10 +71,10 @@ export function AdminPropertyForm() {
     <div className="space-y-6">
       <BackButton onClick={() => navBack(-1)} />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-blue-100 p-3 rounded-lg">
-            <Building2 className="w-6 h-6 text-blue-600" />
+          <div className="bg-primary-muted p-3 rounded-lg">
+            <Building2 className="w-6 h-6 text-primary" />
           </div>
           <PageHeader
             title={isEditing ? 'Editar Propiedad' : 'Agregar Nueva Propiedad'}
@@ -97,7 +97,7 @@ export function AdminPropertyForm() {
               <input
                 type="text"
                 {...register('name', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="ej. Apartamento Centro #101"
               />
             </FormField>
@@ -106,7 +106,7 @@ export function AdminPropertyForm() {
               <input
                 type="text"
                 {...register('address', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Calle, número, ciudad"
               />
             </FormField>
@@ -114,7 +114,7 @@ export function AdminPropertyForm() {
             <FormField label="Tipo de propiedad" required>
               <select
                 {...register('type', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Selecciona...</option>
                 {propertyTypes.map((type) => (
@@ -128,7 +128,7 @@ export function AdminPropertyForm() {
             <FormField label="Estado" required>
               <select
                 {...register('status', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="disponible">Disponible</option>
                 <option value="ocupado">Ocupado</option>
@@ -142,7 +142,7 @@ export function AdminPropertyForm() {
               <input
                 type="number"
                 {...register('bedrooms', { required: true, min: 1 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
               />
             </FormField>
@@ -151,7 +151,7 @@ export function AdminPropertyForm() {
               <input
                 type="number"
                 {...register('bathrooms', { required: true, min: 1 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
               />
             </FormField>
@@ -160,7 +160,7 @@ export function AdminPropertyForm() {
               <input
                 type="text"
                 {...register('area', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="ej. 85"
               />
             </FormField>
@@ -169,7 +169,7 @@ export function AdminPropertyForm() {
               <input
                 type="number"
                 {...register('floors', { required: true, min: 1 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
               />
             </FormField>
@@ -178,7 +178,7 @@ export function AdminPropertyForm() {
               <input
                 type="number"
                 {...register('yearBuilt', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </FormField>
 
@@ -187,9 +187,9 @@ export function AdminPropertyForm() {
                 <input
                   type="checkbox"
                   {...register('furnished')}
-                  className="w-5 h-5 text-blue-600"
+                  className="w-5 h-5 text-primary"
                 />
-                <span className="text-gray-700">Sí</span>
+                <span className="text-foreground">Sí</span>
               </div>
             </FormField>
           </FormSection>
@@ -199,7 +199,7 @@ export function AdminPropertyForm() {
               <input
                 type="text"
                 {...register('rent', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="ej. $3,200"
               />
             </FormField>
@@ -210,7 +210,7 @@ export function AdminPropertyForm() {
               <textarea
                 {...register('description', { required: true })}
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Describe la propiedad..."
               />
             </FormField>

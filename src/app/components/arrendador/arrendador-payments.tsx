@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader } from '../shared/dashboard/page-header';
+import { TableListSkeleton } from '../shared';
 import { usePayment } from "../../contexts/payment-context";
 
 export function ArrendadorPayments() {
@@ -22,11 +23,11 @@ export function ArrendadorPayments() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pagado':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-success" />;
       case 'pendiente':
-        return <Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-warning" />;
       case 'vencido':
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
+        return <AlertCircle className="w-5 h-5 text-destructive" />;
       default:
         return null;
     }
@@ -35,22 +36,18 @@ export function ArrendadorPayments() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pagado':
-        return 'bg-green-100 text-green-700';
+        return 'bg-success-muted text-success-muted-foreground';
       case 'pendiente':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-warning-muted text-warning-muted-foreground';
       case 'vencido':
-        return 'bg-red-100 text-red-700';
+        return 'bg-destructive-muted text-destructive-muted-foreground';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-foreground';
     }
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <TableListSkeleton />;
   }
 
   return (
@@ -59,32 +56,32 @@ export function ArrendadorPayments() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="bg-card rounded-lg shadow-sm p-6 border border-border">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-green-100">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+            <div className="p-2 rounded-lg bg-success-muted">
+              <CheckCircle className="w-5 h-5 text-success" />
             </div>
-            <span className="text-sm font-medium text-gray-600">Total Pagado</span>
+            <span className="text-sm font-medium text-muted-foreground">Total Pagado</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">${totalPaid.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-foreground">${totalPaid.toLocaleString()}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="bg-card rounded-lg shadow-sm p-6 border border-border">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-yellow-100">
-              <Clock className="w-5 h-5 text-yellow-600" />
+            <div className="p-2 rounded-lg bg-warning-muted">
+              <Clock className="w-5 h-5 text-warning" />
             </div>
-            <span className="text-sm font-medium text-gray-600">Pendiente</span>
+            <span className="text-sm font-medium text-muted-foreground">Pendiente</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">${totalPending.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-foreground">${totalPending.toLocaleString()}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div className="bg-card rounded-lg shadow-sm p-6 border border-border">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-red-100">
-              <AlertCircle className="w-5 h-5 text-red-600" />
+            <div className="p-2 rounded-lg bg-destructive-muted">
+              <AlertCircle className="w-5 h-5 text-destructive" />
             </div>
-            <span className="text-sm font-medium text-gray-600">Vencido</span>
+            <span className="text-sm font-medium text-muted-foreground">Vencido</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">${totalOverdue.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-foreground">${totalOverdue.toLocaleString()}</p>
         </div>
       </div>
 
@@ -96,8 +93,8 @@ export function ArrendadorPayments() {
             onClick={() => setStatusFilter(status)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               statusFilter === status
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-card text-foreground border border-border hover:bg-muted'
             }`}
           >
             {status === 'all' ? 'Todos' : status.charAt(0).toUpperCase() + status.slice(1)}
@@ -106,30 +103,30 @@ export function ArrendadorPayments() {
       </div>
 
       {/* Payments Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inquilino</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Propiedad</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Inquilino</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Propiedad</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Monto</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Estado</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Fecha</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-gray-200">
               {filteredPayments.map((payment) => (
-                <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={payment.id} className="hover:bg-muted transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{payment.tenantName}</div>
+                    <div className="text-sm font-medium text-foreground">{payment.tenantName}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{payment.property}</div>
+                    <div className="text-sm text-muted-foreground">{payment.property}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">${Number(payment.amount).toLocaleString()}</div>
+                    <div className="text-sm font-medium text-foreground">${Number(payment.amount).toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(payment.status)}`}>
@@ -138,7 +135,7 @@ export function ArrendadorPayments() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       <Calendar className="inline w-4 h-4 mr-1" />
                       {payment.dueDate}
                     </div>
@@ -146,7 +143,7 @@ export function ArrendadorPayments() {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => navigate(`/pagos/${payment.id}`)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-primary hover:text-primary-hover"
                     >
                       Ver
                     </button>

@@ -43,20 +43,20 @@ export function EmptyState({
     >
       <div
         className={cn(
-          'flex items-center justify-center rounded-full bg-gray-100 mb-4',
+          'flex items-center justify-center rounded-full bg-muted mb-4',
           iconSize === 'sm' ? 'p-3' : iconSize === 'md' ? 'p-4' : 'p-6'
         )}
       >
-        <Icon className={cn('text-gray-400', iconSizeClasses[iconSize])} />
+        <Icon className={cn('text-muted-foreground', iconSizeClasses[iconSize])} />
       </div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
+      <h3 className="text-lg font-medium text-foreground mb-2">{title}</h3>
       {description && (
-        <p className="text-sm text-gray-500 max-w-sm mb-4">{description}</p>
+        <p className="text-sm text-muted-foreground max-w-sm mb-4">{description}</p>
       )}
       {action && (
         <button
           onClick={action.onClick}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition-colors font-medium"
         >
           {action.label}
         </button>

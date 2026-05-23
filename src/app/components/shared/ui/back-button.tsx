@@ -18,7 +18,7 @@ export function BackButton({
     <button
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-2 text-gray-600 hover:text-gray-900',
+        'inline-flex items-center gap-2 text-muted-foreground hover:text-foreground',
         'transition-colors duration-200',
         className
       )}

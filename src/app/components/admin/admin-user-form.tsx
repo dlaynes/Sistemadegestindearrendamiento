@@ -89,12 +89,12 @@ export function AdminUserForm() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/usuarios')} className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+          <button onClick={() => navigate('/usuarios')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Volver</span>
           </button>
         </div>
-        <p className="text-gray-600">Cargando usuario...</p>
+        <p className="text-muted-foreground">Cargando usuario...</p>
       </div>
     );
   }
@@ -104,17 +104,17 @@ export function AdminUserForm() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate('/usuarios')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="font-medium">Volver</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-blue-100 p-3 rounded-lg">
-            <User className="w-6 h-6 text-blue-600" />
+          <div className="bg-primary-muted p-3 rounded-lg">
+            <User className="w-6 h-6 text-primary" />
           </div>
           <PageHeader title={isEditing ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
             subtitle={isEditing ? 'Modifica la información del usuario' : 'Completa los datos del nuevo usuario'} size="sm" />
@@ -122,25 +122,25 @@ export function AdminUserForm() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Información Básica</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Información Básica</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Nombre completo *
                 </label>
                 <input
                   type="text"
                   {...register('name', { required: 'El nombre es requerido' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="ej. Juan Pérez"
                 />
                 {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
                 )}
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Correo electrónico *
                 </label>
                 <input
@@ -152,26 +152,26 @@ export function AdminUserForm() {
                       message: 'Formato de correo inválido'
                     }
                   })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="ej. maria@email.com"
                 />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
                 )}
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Rol y Estado</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Rol y Estado</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Rol del usuario *
                 </label>
                 <select
                   {...register('role', { required: 'El rol es requerido' })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">Selecciona un rol</option>
                   {userRoles.map((role) => (
@@ -182,17 +182,17 @@ export function AdminUserForm() {
                   ))}
                 </select>
                 {errors.role && (
-                  <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.role.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Estado del usuario
                 </label>
                 <select
                   {...register('status')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="activo">Activo</option>
                   <option value="inactivo">Inactivo</option>
@@ -202,33 +202,33 @@ export function AdminUserForm() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Propiedades Asignadas</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Propiedades Asignadas</h3>
             <div className="space-y-4">
               {isEditing && user ? (
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   <p className="mb-2">Propiedades actuales asignadas al usuario:</p>
                   {user.properties && user.properties.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {user.properties.map((propId) => (
                         <div
                           key={propId}
-                          className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg"
+                          className="flex items-center gap-2 px-3 py-2 bg-primary-muted text-primary-muted-foreground rounded-lg"
                         >
-                          <Building2 className="w-4 h-4 text-blue-600" />
+                          <Building2 className="w-4 h-4 text-primary" />
                           <span className="font-medium">#{propId}</span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 italic">No hay propiedades asignadas</p>
+                    <p className="text-muted-foreground italic">No hay propiedades asignadas</p>
                   )}
-                  <p className="mt-2 text-xs text-gray-500">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     Nota: Las propiedades asignadas se gestionan desde el panel de arrendador.
                   </p>
                 </div>
               ) : (
-                <div className="text-sm text-gray-600">
-                  <p className="mt-2 text-xs text-gray-500">
+                <div className="text-sm text-muted-foreground">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     Nota: Para asignar propiedades a nuevos usuarios, ingresa al panel de arrendador y crea las propiedades desde allí.
                   </p>
                 </div>
@@ -236,17 +236,17 @@ export function AdminUserForm() {
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-border">
             <button
               type="button"
               onClick={() => navigate('/usuarios')}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="px-6 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition-colors font-medium"
             >
               <Save className="w-4 h-4" />
               {isEditing ? 'Guardar Cambios' : 'Crear Usuario'}

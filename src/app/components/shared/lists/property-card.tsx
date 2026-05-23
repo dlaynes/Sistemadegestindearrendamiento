@@ -19,19 +19,19 @@ export function PropertyCard({
   return (
     <div
       className={cn(
-        'bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden',
+        'bg-card rounded-lg shadow-sm border border-border overflow-hidden',
         'hover:shadow-md transition-shadow',
         className
       )}
     >
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4">
+      <div className="bg-gradient-to-r from-primary to-primary-hover p-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-white/20 rounded-lg">
-            <Building2 className="w-5 h-5 text-white" />
+          <div className="p-2 bg-card/20 rounded-lg">
+            <Building2 className="w-5 h-5 text-primary-foreground" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-white truncate">{property.name}</h3>
-            <p className="text-sm text-white/80 truncate">{property.address}</p>
+            <h3 className="font-semibold text-primary-foreground truncate">{property.name}</h3>
+            <p className="text-sm text-primary-foreground/80 truncate">{property.address}</p>
           </div>
         </div>
       </div>
@@ -39,28 +39,28 @@ export function PropertyCard({
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <StatusBadge status={property.status} type="property" />
-          <span className="text-lg font-bold text-gray-900">{property.rent}</span>
+          <span className="text-lg font-bold text-foreground">{property.rent}</span>
         </div>
         
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="flex items-center gap-2">
-            <Bed className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-600">{property.bedrooms} Habs</span>
+            <Bed className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{property.bedrooms} Habs</span>
           </div>
           
           <div className="flex items-center gap-2">
-            <Bath className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-600">{property.bathrooms} Baños</span>
+            <Bath className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{property.bathrooms} Baños</span>
           </div>
           
           <div className="flex items-center gap-2">
-            <Square className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-600">{property.area}</span>
+            <Square className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{property.area}</span>
           </div>
         </div>
         
         {property.tenantName && (
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
             <MapPin className="w-4 h-4" />
             <span>Inquilino: {property.tenantName}</span>
           </div>
@@ -71,8 +71,8 @@ export function PropertyCard({
             onClick={() => onView(property)}
             className={cn(
               'w-full flex items-center justify-center gap-2',
-              'px-4 py-2 border border-blue-600 text-blue-600 rounded-lg',
-              'hover:bg-blue-50 transition-colors font-medium'
+              'px-4 py-2 border border-primary text-primary rounded-lg',
+              'hover:bg-primary-muted transition-colors font-medium'
             )}
           >
             <Eye className="w-4 h-4" />

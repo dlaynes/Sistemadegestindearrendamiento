@@ -27,11 +27,11 @@ import type { Document as Doc } from '../shared/detail/document-list';
 
 export function InquilinoPropertyDetail() {
   const { id } = useParams();
-  const navigate = useRoleNavigation();
   const { getPropertyById } = useProperty();
-  const { document: documentService } = useServices();
-  
   const property = id ? getPropertyById(id) : undefined;
+  const navigate = useRoleNavigation();
+  
+  const { document: documentService } = useServices();
 
   const [documents, setDocuments] = useState<Doc[]>([]);
 
@@ -69,7 +69,7 @@ export function InquilinoPropertyDetail() {
   if (!property) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -108,11 +108,11 @@ export function InquilinoPropertyDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">{property.name}</h1>
-            <div className="flex items-center gap-2 text-gray-600">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">{property.name}</h1>
+            <div className="flex items-center gap-2 text-muted-foreground">
               <MapPin className="w-5 h-5" />
               <span className="text-lg">{property.address}</span>
             </div>
@@ -143,8 +143,8 @@ export function InquilinoPropertyDetail() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {(property.amenities || []).map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  <span className="text-gray-700">{amenity}</span>
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span className="text-foreground">{amenity}</span>
                 </div>
               ))}
             </div>
@@ -169,7 +169,7 @@ export function InquilinoPropertyDetail() {
             >
               <button 
                 onClick={() => navigate(`/contratos`)}
-                className="w-full bg-blue-50 text-blue-700 py-2 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                className="w-full bg-primary-muted text-primary-muted-foreground py-2 rounded-lg hover:bg-primary-muted transition-colors font-medium"
               >
                 Ver Contrato
               </button>

@@ -68,11 +68,11 @@ export function PageHeader({
       )}
     >
       <div>
-        <h1 className={cn('font-bold text-gray-900', titleSizeClasses[size])}>
+        <h1 className={cn('font-bold text-foreground', titleSizeClasses[size])}>
           {title}
         </h1>
         {subtitle && (
-          <p className={cn('text-gray-600 mt-1', subtitleSizeClasses[size])}>
+          <p className={cn('text-muted-foreground mt-1', subtitleSizeClasses[size])}>
             {subtitle}
           </p>
         )}

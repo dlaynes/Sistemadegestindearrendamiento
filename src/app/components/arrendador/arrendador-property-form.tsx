@@ -94,10 +94,10 @@ export function ArrendadorPropertyForm() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-blue-100 p-3 rounded-lg">
-            <Building2 className="w-6 h-6 text-blue-600" />
+          <div className="bg-primary-muted p-3 rounded-lg">
+            <Building2 className="w-6 h-6 text-primary" />
           </div>
           <PageHeader 
             title={isEditing ? 'Editar Propiedad' : 'Agregar Nueva Propiedad'}
@@ -117,7 +117,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="text"
                 {...register('name', { required: 'El nombre es requerido' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="ej. Apartamento Centro #101"
               />
             </FormField>
@@ -131,7 +131,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="text"
                 {...register('address', { required: 'La dirección es requerida' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Calle, número, ciudad"
               />
             </FormField>
@@ -139,7 +139,7 @@ export function ArrendadorPropertyForm() {
             <FormField label="Tipo de propiedad" required error={errors.type?.message}>
               <select
                 {...register('type', { required: 'El tipo es requerido' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Selecciona...</option>
                 {propertyTypes.map((type) => (
@@ -151,7 +151,7 @@ export function ArrendadorPropertyForm() {
             <FormField label="Estado" required>
               <select
                 {...register('status', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="disponible">Disponible</option>
                 <option value="ocupado">Ocupado</option>
@@ -164,7 +164,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="number"
                 {...register('bedrooms', { required: 'Requerido', min: 1 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
               />
             </FormField>
@@ -173,7 +173,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="number"
                 {...register('bathrooms', { required: 'Requerido', min: 1 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
               />
             </FormField>
@@ -182,7 +182,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="text"
                 {...register('area', { required: 'El área es requerida' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="ej. 85"
               />
             </FormField>
@@ -191,7 +191,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="number"
                 {...register('floors', { required: true, min: 1 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 min="1"
               />
             </FormField>
@@ -200,7 +200,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="number"
                 {...register('yearBuilt', { required: true })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </FormField>
 
@@ -209,9 +209,9 @@ export function ArrendadorPropertyForm() {
                 <input
                   type="checkbox"
                   {...register('furnished')}
-                  className="w-5 h-5 text-blue-600"
+                  className="w-5 h-5 text-primary"
                 />
-                <span className="text-gray-700">Sí</span>
+                <span className="text-foreground">Sí</span>
               </div>
             </FormField>
           </FormSection>
@@ -221,7 +221,7 @@ export function ArrendadorPropertyForm() {
               <input
                 type="text"
                 {...register('rent', { required: 'La renta es requerida' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="ej. $3,200"
               />
             </FormField>
@@ -236,7 +236,7 @@ export function ArrendadorPropertyForm() {
               <textarea
                 {...register('description', { required: 'La descripción es requerida' })}
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Describe la propiedad..."
               />
             </FormField>

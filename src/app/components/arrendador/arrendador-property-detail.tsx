@@ -32,11 +32,14 @@ import type { Document as Doc } from '../shared/detail/document-list';
 
 export function ArrendadorPropertyDetail() {
   const { id } = useParams();
-  const navigate = useRoleNavigation();
   const { getPropertyById } = useProperty();
+  const property = id ? getPropertyById(id) : undefined;
+  const navigate = useRoleNavigation();
+  
   const { document: documentService } = useServices();
   
-  const property = id ? getPropertyById(id) : undefined;
+  
+  
 
   const [documents, setDocuments] = useState<Doc[]>([]);
 
@@ -134,11 +137,11 @@ export function ArrendadorPropertyDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">{property.name}</h1>
-            <div className="flex items-center gap-2 text-gray-600">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">{property.name}</h1>
+            <div className="flex items-center gap-2 text-muted-foreground">
               <MapPin className="w-5 h-5" />
               <span className="text-lg">{property.address}</span>
             </div>
@@ -169,8 +172,8 @@ export function ArrendadorPropertyDetail() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {property.amenities.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  <span className="text-gray-700">{amenity}</span>
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span className="text-foreground">{amenity}</span>
                 </div>
               ))}
             </div>
@@ -195,7 +198,7 @@ export function ArrendadorPropertyDetail() {
             >
               <button 
                 onClick={() => navigate(`/contratos`)}
-                className="w-full bg-blue-50 text-blue-700 py-2 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                className="w-full bg-primary-muted text-primary-muted-foreground py-2 rounded-lg hover:bg-primary-muted transition-colors font-medium"
               >
                 Ver Contrato
               </button>
@@ -210,7 +213,7 @@ export function ArrendadorPropertyDetail() {
             >
               <button 
                 onClick={() => navigate(`/contratos/nuevo`)}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
               >
                 Crear Contrato
               </button>
@@ -224,13 +227,13 @@ export function ArrendadorPropertyDetail() {
             onDelete={handleDelete}
           />
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <label className="flex items-center gap-2 text-blue-600 hover:text-blue-700 cursor-pointer font-medium">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+            <label className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground cursor-pointer font-medium">
               <Upload className="w-4 h-4" />
               <span>Subir documento</span>
               <input type="file" className="hidden" onChange={handleUpload} />
             </label>
-            <p className="text-xs text-gray-500 mt-1">Máx. 4MB. Imágenes, PDF, Word, Excel o TXT.</p>
+            <p className="text-xs text-muted-foreground mt-1">Máx. 4MB. Imágenes, PDF, Word, Excel o TXT.</p>
           </div>
 
           <SidebarActions

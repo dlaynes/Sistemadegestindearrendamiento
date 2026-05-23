@@ -6,16 +6,17 @@ import {
   PropertyCard,
   SearchFilter,
   EmptyState,
+  PropertyListSkeleton,
 } from '../shared';
-import { useRoleNavigation } from '@/app/hooks/use-role-navigation';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 
 export function InquilinoProperties() {
+  const navigate = useRoleNavigation();
   const { getMyProperties, isLoading } = useProperty();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
   const myProperties = getMyProperties();
-  const navigate = useRoleNavigation();
 
   const filteredProperties = myProperties.filter((property) => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -25,11 +26,7 @@ export function InquilinoProperties() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <PropertyListSkeleton />;
   }
 
   return (

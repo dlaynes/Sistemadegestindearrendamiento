@@ -1,6 +1,12 @@
 @custom-variant dark (&:is(.dark *));
 
+/* ========================================
+   Design Tokens: RentManager Theme
+   Semantic color system for accessibility
+   ======================================== */
+
 :root {
+  /* Base */
   --font-size: 16px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
@@ -8,37 +14,84 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
+
+  /* Brand Primary — Emerald/Teal for trust & stability */
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+  --primary-hover: #0f766e;
+  --primary-muted: #ccfbf1;
+  --primary-muted-foreground: #115e59;
+
+  /* Secondary / Neutral */
   --secondary: oklch(0.95 0.0058 264.53);
   --secondary-foreground: #030213;
+
+  /* Muted / Placeholder */
   --muted: #ececf0;
-  --muted-foreground: #717182;
+  --muted-foreground: #6b7280;
+
+  /* Accent */
   --accent: #e9ebef;
   --accent-foreground: #030213;
-  --destructive: #d4183d;
+
+  /* Semantic Status Colors — designed for 4.5:1+ contrast */
+
+  /* Success: deep green for AA on white and light backgrounds */
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --success-muted: #dcfce7;
+  --success-muted-foreground: #14532d;
+
+  /* Warning: amber-700 for AA on white; amber-100 for backgrounds */
+  --warning: #b45309;
+  --warning-foreground: #ffffff;
+  --warning-muted: #fef3c7;
+  --warning-muted-foreground: #78350f;
+
+  /* Danger / Error: red-700 for AA text on white */
+  --destructive: #b91c1c;
   --destructive-foreground: #ffffff;
+  --destructive-muted: #fee2e2;
+  --destructive-muted-foreground: #7f1d1d;
+
+  /* Info: sky-700 for AA on white */
+  --info: #0369a1;
+  --info-foreground: #ffffff;
+  --info-muted: #e0f2fe;
+  --info-muted-foreground: #0c4a6e;
+
+  /* Neutral Gray scale for borders, dividers, disabled states */
   --border: rgba(0, 0, 0, 0.1);
   --input: transparent;
   --input-background: #f3f3f5;
   --switch-background: #cbced4;
+
+  /* Focus ring */
+  --ring: #0d9488;
+
+  /* Radius */
+  --radius: 0.625rem;
+
+  /* Font weights */
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
+
+  /* Chart colors */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
+
+  /* Sidebar */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #030213;
+  --sidebar-primary: #0d9488;
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: #0d9488;
 }
 
 .dark {
@@ -48,67 +101,136 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+
+  --primary: #2dd4bf;
+  --primary-foreground: #0f172a;
+  --primary-hover: #14b8a6;
+  --primary-muted: #134e4a;
+  --primary-muted-foreground: #99f6e4;
+
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
+
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
+
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+
+  --success: #4ade80;
+  --success-foreground: #052e16;
+  --success-muted: #14532d;
+  --success-muted-foreground: #bbf7d0;
+
+  --warning: #fbbf24;
+  --warning-foreground: #422006;
+  --warning-muted: #78350f;
+  --warning-muted-foreground: #fde68a;
+
+  --destructive: #f87171;
+  --destructive-foreground: #450a0a;
+  --destructive-muted: #7f1d1d;
+  --destructive-muted-foreground: #fecaca;
+
+  --info: #38bdf8;
+  --info-foreground: #082f49;
+  --info-muted: #0c4a6e;
+  --info-muted-foreground: #bae6fd;
+
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
+  --ring: #2dd4bf;
+
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: #2dd4bf;
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar-ring: #2dd4bf;
 }
 
+/* ========================================
+   @theme inline — maps tokens to Tailwind
+   ======================================== */
+
 @theme inline {
+  /* Base */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
+  /* Brand */
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+  --color-primary-muted-foreground: var(--primary-muted-foreground);
+
+  /* Secondary */
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Muted */
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+
+  /* Accent */
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
+  /* Semantic Status */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-muted: var(--success-muted);
+  --color-success-muted-foreground: var(--success-muted-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-muted: var(--warning-muted);
+  --color-warning-muted-foreground: var(--warning-muted-foreground);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-muted: var(--destructive-muted);
+  --color-destructive-muted-foreground: var(--destructive-muted-foreground);
+
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-muted: var(--info-muted);
+  --color-info-muted-foreground: var(--info-muted-foreground);
+
+  /* UI chrome */
   --color-border: var(--border);
   --color-input: var(--input);
   --color-input-background: var(--input-background);
   --color-switch-background: var(--switch-background);
   --color-ring: var(--ring);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -119,6 +241,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ========================================
+   Base Layer — global element styles
+   ======================================== */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -127,11 +253,6 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
 
   html {
     font-size: var(--font-size);

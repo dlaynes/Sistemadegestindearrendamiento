@@ -51,9 +51,9 @@ export function FormSection({
   return (
     <div className={cn('space-y-4', className)}>
       <div>
-        <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+        <h3 className="text-lg font-medium text-foreground">{title}</h3>
         {description && (
-          <p className="text-sm text-gray-500 mt-1">{description}</p>
+          <p className="text-sm text-muted-foreground mt-1">{description}</p>
         )}
       </div>
       <div className={cn('grid gap-4', gridCols[columns])}>

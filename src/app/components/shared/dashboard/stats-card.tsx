@@ -24,7 +24,7 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        'bg-white rounded-lg shadow-sm p-6 border border-gray-200',
+        'bg-card rounded-lg shadow-sm p-6 border border-border',
         className
       )}
     >
@@ -33,13 +33,13 @@ export function StatsCard({
           <Icon className="w-6 h-6 text-white" />
         </div>
         {showTrend && (
-          <TrendingUp className="w-5 h-5 text-green-500" />
+          <TrendingUp className="w-5 h-5 text-success" />
         )}
       </div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-1">{value}</h3>
-      <p className="text-sm text-gray-600 mb-2">{label}</p>
+      <h3 className="text-2xl font-bold text-foreground mb-1">{value}</h3>
+      <p className="text-sm text-muted-foreground mb-2">{label}</p>
       {change && (
-        <p className="text-xs text-green-600 font-medium">{change}</p>
+        <p className="text-xs text-success font-medium">{change}</p>
       )}
     </div>
   );

@@ -19,15 +19,15 @@ export interface ActionButtonProps {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+    'bg-primary text-primary-foreground hover:bg-primary-hover focus:ring-primary',
   secondary:
-    'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500',
+    'bg-secondary text-secondary-foreground hover:bg-muted focus:ring-muted-foreground',
   outline:
-    'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-500',
+    'bg-background text-foreground border border-border hover:bg-muted focus:ring-muted-foreground',
   danger:
-    'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+    'bg-destructive text-destructive-foreground hover:bg-destructive-muted focus:ring-destructive',
   ghost:
-    'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+    'bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

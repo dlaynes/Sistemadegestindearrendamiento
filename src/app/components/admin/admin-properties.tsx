@@ -6,12 +6,12 @@ import {
   PageHeader, 
   PropertyCard, 
   SearchFilter, 
-  EmptyState,
-} from '../shared';
+  EmptyState} from '../shared';
 
 export function AdminProperties() {
   const navigate = useRoleNavigation();
   const { properties } = useProperty();
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
