@@ -63,7 +63,6 @@ export function InvitationAccept() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-purple-700 flex items-center justify-center p-4">
       <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-        {/* Header */}
         <div className="bg-gradient-to-r from-primary to-purple-600 px-8 py-10 text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-card p-3 rounded-full">
@@ -74,7 +73,6 @@ export function InvitationAccept() {
           <p className="text-primary-foreground">Sistema de Gestión de Arrendamiento</p>
         </div>
 
-        {/* Form */}
         <div className="p-8">
           <h2 className="text-2xl font-semibold text-foreground mb-2 text-center">
             Aceptar Invitación
@@ -84,7 +82,11 @@ export function InvitationAccept() {
           </p>
 
           {error && (
-            <div className="mb-6 p-4 bg-destructive-muted border border-destructive-muted rounded-lg flex items-start gap-3">
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="mb-6 p-4 bg-destructive-muted border border-destructive-muted rounded-lg flex items-start gap-3"
+            >
               <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-destructive-muted-foreground text-sm font-medium">Error</p>
@@ -123,6 +125,8 @@ export function InvitationAccept() {
                   onChange={(e) => setName(e.target.value)}
                   required
                   autoFocus
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'invitation-error' : undefined}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="Tu nombre completo"
                 />
@@ -141,6 +145,8 @@ export function InvitationAccept() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'invitation-error' : undefined}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="••••••••"
                 />
@@ -159,6 +165,8 @@ export function InvitationAccept() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'invitation-error' : undefined}
                   className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="••••••••"
                 />

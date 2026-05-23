@@ -27,11 +27,11 @@ import type { Document as Doc } from '../shared/detail/document-list';
 
 export function InquilinoPropertyDetail() {
   const { id } = useParams();
-  const navigate = useRoleNavigation();
   const { getPropertyById } = useProperty();
-  const { document: documentService } = useServices();
-  
   const property = id ? getPropertyById(id) : undefined;
+  const navigate = useRoleNavigation();
+  
+  const { document: documentService } = useServices();
 
   const [documents, setDocuments] = useState<Doc[]>([]);
 

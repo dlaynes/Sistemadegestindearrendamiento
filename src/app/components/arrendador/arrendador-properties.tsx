@@ -8,11 +8,13 @@ import {
   SearchFilter,
   EmptyState,
   ActionButton,
+  PropertyListSkeleton,
 } from '../shared';
 
 export function ArrendadorProperties() {
   const navigate = useRoleNavigation();
   const { getMyProperties, isLoading } = useProperty();
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
@@ -26,11 +28,7 @@ export function ArrendadorProperties() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PropertyListSkeleton />;
   }
 
   return (

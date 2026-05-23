@@ -1,17 +1,19 @@
 import { Users, Building2, FileText, DollarSign } from 'lucide-react';
 import { AlertType } from '../../types/alert-type';
 import { AlertBox } from '../shared/alert-box';
-import { StatsCard, ActivityItem, PageHeader } from '../shared';
-import { useDashboard } from '../../contexts/dashboard-context';
+import { StatsCard, ActivityItem, PageHeader, DashboardSkeleton } from '../shared';
+import { useDashboardData } from '../../hooks/queries';
 
 export function AdminDashboard() {
-  const { stats, recentActivity, isLoading } = useDashboard();
+  const { data, isLoading } = useDashboardData();
+  const stats = data?.stats;
+  const recentActivity = data?.recentActivity ?? [];
 
   const dashboardStats = [
-    { label: 'Total Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-info' },
-    { label: 'Total Contratos', value: String(stats.totalContracts), icon: FileText, color: 'bg-info' },
-    { label: 'Total Usuarios', value: String(stats.totalUsers), icon: Users, color: 'bg-success' },
-    { label: 'Ingresos Totales', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-warning' },
+    { label: 'Total Propiedades', value: String(stats?.totalProperties ?? 0), icon: Building2, color: 'bg-info' },
+    { label: 'Total Contratos', value: String(stats?.totalContracts ?? 0), icon: FileText, color: 'bg-info' },
+    { label: 'Total Usuarios', value: String(stats?.totalUsers ?? 0), icon: Users, color: 'bg-success' },
+    { label: 'Ingresos Totales', value: `$${(stats?.totalIncome ?? 0).toLocaleString()}`, icon: DollarSign, color: 'bg-warning' },
   ];
 
   const alerts : { message: string; type: AlertType }[] = [
@@ -19,11 +21,7 @@ export function AdminDashboard() {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (

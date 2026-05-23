@@ -24,8 +24,6 @@ import { LoadingOverlay } from '../shared/ui/loading-overlay';
 import type { User as UserType } from '../../types/user';
 import { Attachment, ContractFormData } from '@/app/types/contract';
 
-
-
 const STEPS = [
   { id: 1, name: 'Propiedad', icon: Building2 },
   { id: 2, name: 'Inquilino', icon: User },

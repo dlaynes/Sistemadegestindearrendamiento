@@ -213,9 +213,7 @@ export function MessagesInterface({
             <>
               <div className="p-4 border-b border-border">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-medium">
-                    {selectedConversation.avatar || selectedConversation.name.substring(0, 2).toUpperCase()}
-                  </div>
+                  <Avatar name={selectedConversation.name} src={selectedConversation.avatar} size="md" />
                   <div>
                     <h3 className="font-semibold text-foreground">{selectedConversation.name}</h3>
                     {selectedConversation.property && (

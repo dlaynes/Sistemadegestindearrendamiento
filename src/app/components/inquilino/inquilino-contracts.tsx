@@ -7,6 +7,7 @@ import {
   FilterButtons,
   SummaryCards,
   EmptyState,
+  TableListSkeleton,
 } from '../shared';
 import type { ContractListItem } from '../../types';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
@@ -27,11 +28,7 @@ export function InquilinoContracts() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <TableListSkeleton />;
   }
 
   return (

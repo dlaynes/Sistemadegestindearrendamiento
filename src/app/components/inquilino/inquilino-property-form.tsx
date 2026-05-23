@@ -9,12 +9,11 @@ import {
   EmptyState 
 } from '../shared';
 
-
 export function InquilinoPropertyForm() {
   const { id } = useParams();
   const navigate = useRoleNavigation();
-  const { getPropertyById } = useProperty();
   
+  const { getPropertyById } = useProperty();
   const property = id ? getPropertyById(id) : undefined;
 
   if (!property) {

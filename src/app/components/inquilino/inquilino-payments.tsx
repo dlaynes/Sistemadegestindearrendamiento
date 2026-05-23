@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CheckCircle, Clock, AlertCircle, Calendar } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader } from '../shared/dashboard/page-header';
+import { TableListSkeleton } from '../shared';
 import { usePayment } from "../../contexts/payment-context";
 
 export function InquilinoPayments() {
@@ -45,11 +46,7 @@ export function InquilinoPayments() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <TableListSkeleton />;
   }
 
   return (

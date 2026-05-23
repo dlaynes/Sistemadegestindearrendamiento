@@ -1,3 +1,5 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/query-client';
 import { ServicesProvider } from './services';
 import { AuthProvider, useAuth } from './contexts/auth-context';
 import { PropertyProvider } from './contexts/property-context';
@@ -27,25 +29,27 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
 function App() {
   return (
-    <ThemeProvider>
-      <ServicesProvider>
-        <AuthProvider>
-          <AuthGate>
-            <PropertyProvider>
-              <ContractProvider>
-                <PaymentProvider>
-                  <DashboardProvider>
-                    <ErrorBoundary>
-                      <AppRouter />
-                    </ErrorBoundary>
-                  </DashboardProvider>
-                </PaymentProvider>
-              </ContractProvider>
-            </PropertyProvider>
-          </AuthGate>
-        </AuthProvider>
-      </ServicesProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <ServicesProvider>
+          <AuthProvider>
+            <AuthGate>
+              <PropertyProvider>
+                <ContractProvider>
+                  <PaymentProvider>
+                    <DashboardProvider>
+                      <ErrorBoundary>
+                        <AppRouter />
+                      </ErrorBoundary>
+                    </DashboardProvider>
+                  </PaymentProvider>
+                </ContractProvider>
+              </PropertyProvider>
+            </AuthGate>
+          </AuthProvider>
+        </ServicesProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

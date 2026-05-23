@@ -1,23 +1,21 @@
 import { Building2, FileText, DollarSign, Users, Calendar, MapPin } from 'lucide-react';
-import { StatsCard, PageHeader, StatusBadge } from '../shared';
-import { useDashboard } from '../../contexts/dashboard-context';
+import { StatsCard, PageHeader, StatusBadge, DashboardSkeleton } from "../shared";
+import { useDashboardData } from '../../hooks/queries';
 
 export function ArrendadorDashboard() {
-  const { stats, isLoading, upcomingPayments } = useDashboard();
+  const { data, isLoading } = useDashboardData();
+  const stats = data?.stats;
+  const upcomingPayments = data?.upcomingPayments ?? [];
 
   const dashboardStats = [
-    { label: 'Mis Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-info' },
-    { label: 'Contratos Activos', value: String(stats.activeContracts), icon: FileText, color: 'bg-info' },
-    { label: 'Ingresos del Mes', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-success' },
-    { label: 'Inquilinos Activos', value: String(stats.activeContracts), icon: Users, color: 'bg-warning' },
+    { label: 'Mis Propiedades', value: String(stats?.totalProperties ?? 0), icon: Building2, color: 'bg-info' },
+    { label: 'Contratos Activos', value: String(stats?.activeContracts ?? 0), icon: FileText, color: 'bg-info' },
+    { label: 'Ingresos del Mes', value: `$${(stats?.totalIncome ?? 0).toLocaleString()}`, icon: DollarSign, color: 'bg-success' },
+    { label: 'Inquilinos Activos', value: String(stats?.activeContracts ?? 0), icon: Users, color: 'bg-warning' },
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -85,21 +83,21 @@ export function ArrendadorDashboard() {
                 <Building2 className="w-5 h-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Propiedades disponibles</span>
               </div>
-              <span className="font-semibold text-primary-muted-foreground">{stats.availableProperties}</span>
+              <span className="font-semibold text-primary-muted-foreground">{stats?.availableProperties ?? 0}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-warning-muted rounded-lg">
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-warning" />
                 <span className="text-sm font-medium text-foreground">Pagos pendientes</span>
               </div>
-              <span className="font-semibold text-warning-muted-foreground">{stats.pendingPayments}</span>
+              <span className="font-semibold text-warning-muted-foreground">{stats?.pendingPayments ?? 0}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-destructive-muted rounded-lg">
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-destructive" />
                 <span className="text-sm font-medium text-foreground">Pagos vencidos</span>
               </div>
-              <span className="font-semibold text-destructive-muted-foreground">{stats.overduePayments}</span>
+              <span className="font-semibold text-destructive-muted-foreground">{stats?.overduePayments ?? 0}</span>
             </div>
           </div>
         </div>

@@ -6,8 +6,7 @@ import {
   ContractCard, 
   FilterButtons, 
   SummaryCards, 
-  EmptyState,
-} from '../shared';
+  EmptyState} from '../shared';
 import type { ContractListItem } from '../../types';
 import { useContract } from '../../contexts/contract-context';
 

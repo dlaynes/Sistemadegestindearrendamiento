@@ -32,11 +32,14 @@ import type { Document as Doc } from '../shared/detail/document-list';
 
 export function AdminPropertyDetail() {
   const { id } = useParams();
-  const navigate = useRoleNavigation();
   const { getPropertyById } = useProperty();
+  const property = id ? getPropertyById(id) : undefined;
+  const navigate = useRoleNavigation();
+  
   const { document: documentService } = useServices();
   
-  const property = id ? getPropertyById(id) : undefined;
+  
+  
 
   const [documents, setDocuments] = useState<Doc[]>([]);
 
