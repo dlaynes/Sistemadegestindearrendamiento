@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MessageSquare, Send, Search, Plus, ArrowLeft, User } from 'lucide-react';
 import { cn } from '../../ui/utils';
+import { Avatar } from '../ui';
 
 export interface Conversation {
   id: string | number;
@@ -150,9 +151,7 @@ export function MessagesInterface({
                     className="p-4 border-b border-border cursor-pointer transition-colors hover:bg-muted"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-medium flex-shrink-0">
-                        {contact.avatar || contact.name.substring(0, 2).toUpperCase()}
-                      </div>
+                      <Avatar name={contact.name} src={contact.avatar} size="md" />
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground truncate">
                           {contact.name}
@@ -180,9 +179,7 @@ export function MessagesInterface({
                   )}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-medium flex-shrink-0">
-                      {conversation.avatar || conversation.name.substring(0, 2).toUpperCase()}
-                    </div>
+                    <Avatar name={conversation.name} src={conversation.avatar} size="md" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="font-semibold text-foreground truncate">

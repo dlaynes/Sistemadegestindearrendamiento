@@ -3,6 +3,7 @@ import { Home, Building2, FileText, MessageSquare, LogOut, Users, FileArchive, D
 import { useAuth } from '../contexts/auth-context';
 import { useTheme } from '../contexts/theme-context';
 import { useState, useEffect } from 'react';
+import { Avatar } from './shared';
 
 export function Layout() {
   const location = useLocation();
@@ -159,9 +160,7 @@ export function Layout() {
             {user && (
               <div className="mb-3">
                 <div className="flex items-center gap-3 px-4 py-2">
-                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-medium">
-                    {user.avatar || user.name.charAt(0)}
-                  </div>
+                  <Avatar name={user.name} src={user.avatar} size="sm" />
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground truncate">{user.name}</p>
                     <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
@@ -226,9 +225,8 @@ export function Layout() {
             {user && (
               <div className="mb-3">
                 <div className="flex items-center gap-3 px-4 py-2">
-                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-medium">
-                    {user.avatar || user.name.charAt(0)}
-                  </div>
+                  <Avatar name={user.name} src={user.avatar} size="sm" />
+  
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground truncate">{user.name}</p>
                     <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
