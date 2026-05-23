@@ -142,7 +142,7 @@ export function AdminPaymentDetail() {
                 Este pago venció hace {getDaysOverdue()} días. Se están acumulando cargos por mora.
               </p>
             </div>
-            <button className="bg-destructive text-white px-4 py-2 rounded-lg hover:bg-destructive-muted transition-colors font-medium whitespace-nowrap">
+            <button className="bg-destructive text-destructive-foreground px-4 py-2 rounded-lg hover:bg-destructive-muted transition-colors font-medium whitespace-nowrap">
               Registrar Pago
             </button>
           </div>
@@ -157,7 +157,7 @@ export function AdminPaymentDetail() {
                 Este pago vence el {payment.dueDate}.
               </p>
             </div>
-            <button className="bg-warning text-white px-4 py-2 rounded-lg hover:bg-warning-muted-foreground transition-colors font-medium whitespace-nowrap">
+            <button className="bg-warning text-warning-foreground px-4 py-2 rounded-lg hover:bg-warning-muted-foreground transition-colors font-medium whitespace-nowrap">
               Registrar Pago
             </button>
           </div>
@@ -316,7 +316,7 @@ export function AdminPaymentDetail() {
             <div className="space-y-2">
               {payment.status === 'pagado' ? (
                 <>
-                  <button className="w-full flex items-center justify-center gap-2 bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium">
+                  <button className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium">
                     <Receipt className="w-4 h-4" />
                     Ver Recibo
                   </button>
@@ -330,7 +330,7 @@ export function AdminPaymentDetail() {
                 </>
               ) : (
                 <>
-                  <button className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium">
+                  <button className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium">
                     Registrar Pago
                   </button>
                   <button className="w-full bg-muted text-foreground py-2 rounded-lg hover:bg-muted transition-colors font-medium">

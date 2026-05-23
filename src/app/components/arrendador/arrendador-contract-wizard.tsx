@@ -1088,7 +1088,7 @@ export function ArrendadorContractWizard() {
                 disabled={!canProceed()}
                 className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors ${
                   canProceed()
-                    ? 'bg-primary text-white hover:bg-primary-hover'
+                    ? 'bg-primary text-primary-foreground hover:bg-primary-hover'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
@@ -1099,7 +1099,7 @@ export function ArrendadorContractWizard() {
               <button
                 type="button"
                 onClick={handleSubmit(onSubmit)} disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-2 bg-success text-white rounded-lg hover:bg-success-muted-foreground transition-colors font-medium"
+                className="flex items-center gap-2 px-6 py-2 bg-success text-success-foreground rounded-lg hover:bg-success-muted-foreground transition-colors font-medium"
               >
                 <Save className="w-4 h-4" />
                 {isEditing ? 'Guardar Cambios' : 'Crear Contrato'}

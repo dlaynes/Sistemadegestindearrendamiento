@@ -96,7 +96,7 @@ export function ArrendadorPayments() {
             onClick={() => setStatusFilter(status)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               statusFilter === status
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-primary-foreground'
                 : 'bg-card text-foreground border border-border hover:bg-muted'
             }`}
           >

@@ -210,7 +210,7 @@ export function ArrendadorPropertyDetail() {
             >
               <button 
                 onClick={() => navigate(`/contratos/nuevo`)}
-                className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
+                className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
               >
                 Crear Contrato
               </button>

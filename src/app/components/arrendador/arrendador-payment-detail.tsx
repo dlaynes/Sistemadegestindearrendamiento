@@ -162,7 +162,7 @@ export function ArrendadorPaymentDetail() {
             </div>
             <button
               onClick={registrarPago}
-              className="bg-destructive text-white px-4 py-2 rounded-lg hover:bg-destructive-muted transition-colors font-medium whitespace-nowrap"
+              className="bg-destructive text-destructive-foreground px-4 py-2 rounded-lg hover:bg-destructive-muted transition-colors font-medium whitespace-nowrap"
             >
               Registrar Pago
             </button>
@@ -372,7 +372,7 @@ export function ArrendadorPaymentDetail() {
                 <>
                   <button
                     onClick={onViewReceipt}
-                    className="w-full flex items-center justify-center gap-2 bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
+                    className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
                   >
                     <Receipt className="w-4 h-4" />
                     Ver Recibo
@@ -395,7 +395,7 @@ export function ArrendadorPaymentDetail() {
                 <>
                   <button
                     onClick={registrarPago}
-                    className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
+                    className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
                   >
                     Registrar Pago
                   </button>

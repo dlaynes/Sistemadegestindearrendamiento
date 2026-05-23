@@ -67,7 +67,7 @@ export function AdminUsers() {
         <PageHeader title='Usuarios' subtitle='Administra los usuarios del sistema' size='md' />
         <button
           onClick={() => navigate('/usuarios/nuevo')}
-          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-hover transition-colors shadow-lg"
+          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary-hover transition-colors shadow-lg"
         >
           <Plus className="w-5 h-5" />
           Agregar Usuario

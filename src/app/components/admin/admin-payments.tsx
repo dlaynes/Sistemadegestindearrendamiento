@@ -116,7 +116,7 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'all'
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
@@ -126,7 +126,7 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('pagado')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'pagado'
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
@@ -136,7 +136,7 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('pendiente')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'pendiente'
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
@@ -146,7 +146,7 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('vencido')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'vencido'
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >

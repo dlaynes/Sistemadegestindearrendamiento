@@ -420,7 +420,7 @@ export function InquilinoPaymentForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-2 bg-success text-white rounded-lg hover:bg-success-muted-foreground transition-colors font-medium disabled:opacity-60"
+              className="flex items-center gap-2 px-6 py-2 bg-success text-success-foreground rounded-lg hover:bg-success-muted-foreground transition-colors font-medium disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
               {isSubmitting ? 'Registrando...' : 'Registrar Pago'}

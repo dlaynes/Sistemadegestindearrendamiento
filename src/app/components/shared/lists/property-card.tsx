@@ -27,11 +27,11 @@ export function PropertyCard({
       <div className="bg-gradient-to-r from-primary to-primary-hover p-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-card/20 rounded-lg">
-            <Building2 className="w-5 h-5 text-white" />
+            <Building2 className="w-5 h-5 text-primary-foreground" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-white truncate">{property.name}</h3>
-            <p className="text-sm text-white/80 truncate">{property.address}</p>
+            <h3 className="font-semibold text-primary-foreground truncate">{property.name}</h3>
+            <p className="text-sm text-primary-foreground/80 truncate">{property.address}</p>
           </div>
         </div>
       </div>

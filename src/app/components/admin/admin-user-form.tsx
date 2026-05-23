@@ -246,7 +246,7 @@ export function AdminUserForm() {
             </button>
             <button
               type="submit"
-              className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-medium"
+              className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition-colors font-medium"
             >
               <Save className="w-4 h-4" />
               {isEditing ? 'Guardar Cambios' : 'Crear Usuario'}

@@ -5,6 +5,7 @@ import { ContractProvider } from './contexts/contract-context';
 import { PaymentProvider } from './contexts/payment-context';
 import { DashboardProvider } from './contexts/dashboard-context';
 import { ThemeProvider } from './contexts/theme-context';
+import { ErrorBoundary } from './components/error-boundary';
 import { AppRouter } from './router';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
@@ -34,7 +35,9 @@ function App() {
               <ContractProvider>
                 <PaymentProvider>
                   <DashboardProvider>
-                    <AppRouter />
+                    <ErrorBoundary>
+                      <AppRouter />
+                    </ErrorBoundary>
                   </DashboardProvider>
                 </PaymentProvider>
               </ContractProvider>

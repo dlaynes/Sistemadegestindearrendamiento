@@ -27,7 +27,7 @@ export function FilterButtons({
           className={cn(
             'px-4 py-2 rounded-lg font-medium transition-colors',
             activeValue === option.value
-              ? 'bg-primary text-white'
+              ? 'bg-primary text-primary-foreground'
               : 'bg-muted text-foreground hover:bg-muted'
           )}
         >

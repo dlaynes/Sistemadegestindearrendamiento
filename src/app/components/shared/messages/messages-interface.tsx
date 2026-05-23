@@ -118,7 +118,7 @@ export function MessagesInterface({
                   'w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
                   showContacts
                     ? 'bg-muted text-foreground hover:bg-muted'
-                    : 'bg-primary text-white hover:bg-primary-hover'
+                    : 'bg-primary text-primary-foreground hover:bg-primary-hover'
                 )}
               >
                 {showContacts ? (
@@ -186,7 +186,7 @@ export function MessagesInterface({
                           {conversation.name}
                         </h3>
                         {conversation.unread > 0 && (
-                          <span className="bg-primary text-white text-xs font-medium px-2 py-1 rounded-full">
+                          <span className="bg-primary text-primary-foreground text-xs font-medium px-2 py-1 rounded-full">
                             {conversation.unread}
                           </span>
                         )}
@@ -240,7 +240,7 @@ export function MessagesInterface({
                       className={cn(
                         'max-w-[70%] p-3 rounded-lg',
                         message.sender === 'me'
-                          ? 'bg-primary text-white'
+                          ? 'bg-primary text-primary-foreground'
                           : 'bg-muted text-foreground'
                       )}
                     >
@@ -274,7 +274,7 @@ export function MessagesInterface({
                     onClick={onSendMessage}
                     disabled={!newMessage.trim()}
                     className={cn(
-                      'px-4 py-2 bg-primary text-white rounded-lg',
+                      'px-4 py-2 bg-primary text-primary-foreground rounded-lg',
                       'hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
                     )}
                   >
