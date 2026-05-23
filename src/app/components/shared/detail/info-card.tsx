@@ -31,15 +31,15 @@ export function InfoCard({
   };
 
   return (
-    <div className={cn('bg-white rounded-lg shadow-sm border border-gray-200', className)}>
-      <div className="p-6 border-b border-gray-200">
+    <div className={cn('bg-card rounded-lg shadow-sm border border-border', className)}>
+      <div className="p-6 border-b border-border">
         <div className="flex items-center gap-3">
           {CardIcon && (
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <CardIcon className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-primary-muted rounded-lg">
+              <CardIcon className="w-5 h-5 text-primary" />
             </div>
           )}
-          <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+          <h2 className="text-xl font-semibold text-foreground">{title}</h2>
         </div>
       </div>
       
@@ -47,11 +47,11 @@ export function InfoCard({
         {items?.map((item, index) => (
           <div key={index} className="flex items-start gap-3">
             {item.icon && (
-              <item.icon className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
+              <item.icon className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
             )}
             <div className="flex-1">
-              <p className="text-sm text-gray-600">{item.label}</p>
-              <div className="font-medium text-gray-900">{item.value}</div>
+              <p className="text-sm text-muted-foreground">{item.label}</p>
+              <div className="font-medium text-foreground">{item.value}</div>
             </div>
           </div>
         ))}

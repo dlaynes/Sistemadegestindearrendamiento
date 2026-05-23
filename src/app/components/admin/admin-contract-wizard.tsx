@@ -238,24 +238,24 @@ export function AdminContractWizard() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate('/contratos')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="font-medium">Volver</span>
         </button>
       </div>
 
-      <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="relative bg-card rounded-lg shadow-sm border border-border p-6">
         <LoadingOverlay visible={isSubmitting} message={isEditing ? "Guardando cambios..." : "Creando contrato..."} />
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-blue-100 p-3 rounded-lg">
-            <FileText className="w-6 h-6 text-blue-600" />
+          <div className="bg-primary-muted p-3 rounded-lg">
+            <FileText className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-2xl font-semibold text-foreground">
               {isEditing ? 'Editar Contrato' : 'Nuevo Contrato de Arrendamiento'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Paso {currentStep} de {STEPS.length}: {STEPS[currentStep - 1].name}
             </p>
           </div>
@@ -275,25 +275,25 @@ export function AdminContractWizard() {
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors ${
                         isCompleted
-                          ? 'bg-green-100 border-green-600'
+                          ? 'bg-success-muted border-success'
                           : isActive
-                          ? 'bg-blue-100 border-blue-600'
-                          : 'bg-gray-100 border-gray-300'
+                          ? 'bg-primary-muted border-primary'
+                          : 'bg-muted border-border'
                       }`}
                     >
                       {isCompleted ? (
-                        <CheckCircle className="w-6 h-6 text-green-600" />
+                        <CheckCircle className="w-6 h-6 text-success" />
                       ) : (
                         <Icon
                           className={`w-6 h-6 ${
-                            isActive ? 'text-blue-600' : 'text-gray-400'
+                            isActive ? 'text-primary' : 'text-muted-foreground'
                           }`}
                         />
                       )}
                     </div>
                     <span
                       className={`text-xs mt-2 font-medium ${
-                        isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                        isActive ? 'text-primary' : isCompleted ? 'text-success' : 'text-muted-foreground'
                       }`}
                     >
                       {step.name}
@@ -302,7 +302,7 @@ export function AdminContractWizard() {
                   {index < STEPS.length - 1 && (
                     <div
                       className={`h-0.5 flex-1 transition-colors ${
-                        isCompleted ? 'bg-green-600' : 'bg-gray-300'
+                        isCompleted ? 'bg-success' : 'bg-muted'
                       }`}
                     />
                   )}
@@ -317,17 +317,17 @@ export function AdminContractWizard() {
           {currentStep === 1 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Selecciona la Propiedad
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Elige la propiedad que será objeto del contrato de arrendamiento
                 </p>
 
                 {/* Autocomplete */}
                 <div className="relative">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                       type="text"
                       value={propertyQuery}
@@ -359,12 +359,12 @@ export function AdminContractWizard() {
                         }
                       }}
                       placeholder="Buscar propiedad por nombre o dirección..."
-                      className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-10 pr-10 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     <button
                       type="button"
                       onClick={() => setPropertyDropdownOpen((open) => !open)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-muted-foreground"
                     >
                       <ChevronDown className="w-5 h-5" />
                     </button>
@@ -373,10 +373,10 @@ export function AdminContractWizard() {
                   {propertyDropdownOpen && (
                     <div
                       ref={propertyListRef}
-                      className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+                      className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-60 overflow-auto"
                     >
                       {filteredProperties.length === 0 ? (
-                        <div className="px-4 py-3 text-sm text-gray-500">
+                        <div className="px-4 py-3 text-sm text-muted-foreground">
                           No se encontraron propiedades
                         </div>
                       ) : (
@@ -391,21 +391,21 @@ export function AdminContractWizard() {
                             }}
                             className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
                               index === propertyHighlighted
-                                ? 'bg-blue-50'
-                                : 'hover:bg-gray-50'
+                                ? 'bg-primary-muted'
+                                : 'hover:bg-muted'
                             } ${
                               Number(watchedData.propertyId) === property.id
-                                ? 'border-l-4 border-blue-600'
+                                ? 'border-l-4 border-primary'
                                 : 'border-l-4 border-transparent'
                             }`}
                             onMouseEnter={() => setPropertyHighlighted(index)}
                           >
-                            <Building2 className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                            <Building2 className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                             <div className="flex-1 min-w-0">
-                              <div className="font-medium text-gray-900 truncate">
+                              <div className="font-medium text-foreground truncate">
                                 {property.name}
                               </div>
-                              <div className="text-sm text-gray-500 truncate">
+                              <div className="text-sm text-muted-foreground truncate">
                                 {property.address} · ${property.rent}/mes
                               </div>
                             </div>
@@ -418,12 +418,12 @@ export function AdminContractWizard() {
 
                 {/* Selected property card */}
                 {selectedProperty && (
-                  <div className="mt-4 p-4 border-2 border-blue-600 bg-blue-50 rounded-lg flex items-center gap-4">
-                    <Building2 className="w-8 h-8 text-blue-600" />
+                  <div className="mt-4 p-4 border-2 border-primary bg-primary-muted rounded-lg flex items-center gap-4">
+                    <Building2 className="w-8 h-8 text-primary" />
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900">{selectedProperty.name}</div>
-                      <div className="text-sm text-gray-600">{selectedProperty.address}</div>
-                      <div className="text-sm font-semibold text-blue-600 mt-1">
+                      <div className="font-medium text-foreground">{selectedProperty.name}</div>
+                      <div className="text-sm text-muted-foreground">{selectedProperty.address}</div>
+                      <div className="text-sm font-semibold text-primary mt-1">
                         ${selectedProperty.rent}/mes
                       </div>
                     </div>
@@ -435,7 +435,7 @@ export function AdminContractWizard() {
                   {...register('propertyId', { required: 'Debes seleccionar una propiedad' })}
                 />
                 {errors.propertyId && (
-                  <p className="mt-2 text-sm text-red-600">{errors.propertyId.message}</p>
+                  <p className="mt-2 text-sm text-destructive">{errors.propertyId.message}</p>
                 )}
               </div>
             </div>
@@ -445,20 +445,20 @@ export function AdminContractWizard() {
           {currentStep === 2 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Información del Inquilino
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Ingresa los datos personales del inquilino
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2 relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Nombre completo *
                     </label>
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <input
                         type="text"
                         value={tenantQuery}
@@ -492,12 +492,12 @@ export function AdminContractWizard() {
                           }
                         }}
                         placeholder="Buscar inquilino por nombre o correo..."
-                        className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                       <button
                         type="button"
                         onClick={() => setTenantDropdownOpen((open) => !open)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-muted-foreground"
                       >
                         <ChevronDown className="w-5 h-5" />
                       </button>
@@ -506,7 +506,7 @@ export function AdminContractWizard() {
                     {tenantDropdownOpen && (
                       <div
                         ref={tenantListRef}
-                        className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+                        className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-60 overflow-auto"
                       >
                         {filteredTenants.length > 0 ? (
                           filteredTenants.map((t, index) => (
@@ -522,17 +522,17 @@ export function AdminContractWizard() {
                               }}
                               className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
                                 index === tenantHighlighted
-                                  ? 'bg-blue-50'
-                                  : 'hover:bg-gray-50'
+                                  ? 'bg-primary-muted'
+                                  : 'hover:bg-muted'
                               }`}
                               onMouseEnter={() => setTenantHighlighted(index)}
                             >
-                              <User className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                              <User className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                               <div className="flex-1 min-w-0">
-                                <div className="font-medium text-gray-900 truncate">
+                                <div className="font-medium text-foreground truncate">
                                   {t.name}
                                 </div>
-                                <div className="text-sm text-gray-500 truncate">
+                                <div className="text-sm text-muted-foreground truncate">
                                   {t.email}
                                 </div>
                               </div>
@@ -547,12 +547,12 @@ export function AdminContractWizard() {
                       {...register('invitedTenantName', { required: 'El nombre es requerido' })}
                     />
                     {errors.invitedTenantName && (
-                      <p className="mt-1 text-sm text-red-600">{errors.invitedTenantName.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.invitedTenantName.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Correo electrónico *
                     </label>
                     <input
@@ -564,26 +564,26 @@ export function AdminContractWizard() {
                           message: 'Correo inválido',
                         },
                       })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="juan.perez@email.com"
                     />
                     {errors.invitedTenantEmail && (
-                      <p className="mt-1 text-sm text-red-600">{errors.invitedTenantEmail.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.invitedTenantEmail.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Teléfono *
                     </label>
                     <input
                       type="tel"
                       {...register('invitedTenantPhone', { required: 'El teléfono es requerido' })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="+1234567890"
                     />
                     {errors.invitedTenantPhone && (
-                      <p className="mt-1 text-sm text-red-600">{errors.invitedTenantPhone.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.invitedTenantPhone.message}</p>
                     )}
                   </div>
 
@@ -597,21 +597,21 @@ export function AdminContractWizard() {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Términos del Contrato
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Define las fechas, montos y plazo del arrendamiento
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Tipo de contrato *
                     </label>
                     <select
                       {...register('contractType', { required: 'El tipo es requerido' })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       <option value="fijo">Plazo Fijo</option>
                       <option value="mensual">Mes a Mes</option>
@@ -620,7 +620,7 @@ export function AdminContractWizard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Duración (meses) *
                     </label>
                     <input
@@ -630,15 +630,15 @@ export function AdminContractWizard() {
                         required: 'La duración es requerida',
                         onChange: (e) => handleDurationChange(Number(e.target.value)),
                       })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     {errors.duration && (
-                      <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.duration.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Fecha de inicio *
                     </label>
                     <input
@@ -654,29 +654,29 @@ export function AdminContractWizard() {
                           }
                         },
                       })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     {errors.startDate && (
-                      <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.startDate.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Fecha de fin *
                     </label>
                     <input
                       type="date"
                       {...register('endDate', { required: 'La fecha de fin es requerida' })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     {errors.endDate && (
-                      <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.endDate.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Renta mensual (S/.) *
                     </label>
                     <input
@@ -687,16 +687,16 @@ export function AdminContractWizard() {
                         required: 'La renta es requerida',
                         min: { value: 0, message: 'Debe ser mayor a 0' },
                       })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Ej: 3200.00 (solo números)"
                     />
                     {errors.monthlyRent && (
-                      <p className="mt-1 text-sm text-red-600">{errors.monthlyRent.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.monthlyRent.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Servicios (S./)
                     </label>
                     <input
@@ -706,16 +706,16 @@ export function AdminContractWizard() {
                       {...register('services', {
                         min: { value: 0, message: 'Debe ser mayor a 0' },
                       })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="0.00"
                     />
                     {errors.services && (
-                      <p className="mt-1 text-sm text-red-600">{errors.services.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.services.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Depósito de garantía (S/.) *
                     </label>
                     <input
@@ -726,21 +726,21 @@ export function AdminContractWizard() {
                         required: 'El depósito es requerido',
                         min: { value: 0, message: 'Debe ser mayor a 0' },
                       })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Ej: 6400.00 (solo números)"
                     />
                     {errors.deposit && (
-                      <p className="mt-1 text-sm text-red-600">{errors.deposit.message}</p>
+                      <p className="mt-1 text-sm text-destructive">{errors.deposit.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Día de pago mensual *
                     </label>
                     <select
                       {...register('paymentDay', { required: 'El día de pago es requerido' })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       {Array.from({ length: 28 }, (_, i) => i + 1).map((day) => (
                         <option key={day} value={day}>
@@ -758,16 +758,16 @@ export function AdminContractWizard() {
           {currentStep === 4 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Condiciones y Cláusulas Especiales
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Agrega términos y condiciones adicionales del contrato
                 </p>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Cláusulas especiales
                     </label>
                     <Controller
@@ -787,14 +787,14 @@ export function AdminContractWizard() {
                               onChange(arrayValue);
                             }}
                             rows={6}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="Ej: No se permiten mascotas. \nEl inquilino es responsable de los servicios públicos. \nSe requiere seguro de inquilino..."
                           />
                         )
 
                       }}
                     />
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Incluye restricciones, responsabilidades y acuerdos especiales
                     </p>
                   </div>
@@ -804,13 +804,13 @@ export function AdminContractWizard() {
                       <input
                         type="checkbox"
                         {...register('includeMaintenance')}
-                        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                        className="w-5 h-5 text-primary border-border rounded focus:ring-2 focus:ring-primary"
                       />
                       <div>
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-foreground">
                           Incluye mantenimiento
                         </span>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           Reparaciones y mantenimiento general incluidos
                         </p>
                       </div>
@@ -825,18 +825,18 @@ export function AdminContractWizard() {
           {currentStep === 5 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Documentos y Archivos Adjuntos
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Adjunta documentos requeridos como contrato firmado, identificaciones, comprobantes, etc.
                 </p>
 
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                  <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <div className="mb-4">
                     <label className="cursor-pointer">
-                      <span className="text-blue-600 hover:text-blue-700 font-medium">
+                      <span className="text-primary hover:text-primary-muted-foreground font-medium">
                         Selecciona archivos
                       </span>
                       <input
@@ -847,36 +847,36 @@ export function AdminContractWizard() {
                         accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                       />
                     </label>
-                    <span className="text-gray-600"> o arrastra y suelta aquí</span>
+                    <span className="text-muted-foreground"> o arrastra y suelta aquí</span>
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     PDF, JPG, PNG o DOC (máx. 10MB por archivo)
                   </p>
                 </div>
 
                 {attachments.length > 0 && (
                   <div className="mt-6 space-y-2">
-                    <h4 className="font-medium text-gray-900 mb-3">
+                    <h4 className="font-medium text-foreground mb-3">
                       Archivos adjuntos ({attachments.length})
                     </h4>
                     {attachments.map((attachment) => (
                       <div
                         key={attachment.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
+                        className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border"
                       >
                         <div className="flex items-center gap-3">
-                          <FileText className="w-5 h-5 text-blue-600" />
+                          <FileText className="w-5 h-5 text-primary" />
                           <div>
-                            <div className="font-medium text-gray-900 text-sm">
+                            <div className="font-medium text-foreground text-sm">
                               {attachment.name}
                             </div>
-                            <div className="text-xs text-gray-500">{attachment.size}</div>
+                            <div className="text-xs text-muted-foreground">{attachment.size}</div>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => handleRemoveAttachment(attachment.id)}
-                          className="text-red-600 hover:text-red-700 transition-colors"
+                          className="text-destructive hover:text-destructive-muted-foreground transition-colors"
                         >
                           <X className="w-5 h-5" />
                         </button>
@@ -885,14 +885,14 @@ export function AdminContractWizard() {
                   </div>
                 )}
 
-                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mt-4 p-4 bg-primary-muted border border-primary-muted rounded-lg">
                   <div className="flex gap-3">
-                    <FileCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <FileCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-medium text-blue-900 text-sm mb-1">
+                      <h4 className="font-medium text-primary-hover text-sm mb-1">
                         Documentos recomendados
                       </h4>
-                      <ul className="text-sm text-blue-800 space-y-1">
+                      <ul className="text-sm text-primary-muted-foreground space-y-1">
                         <li>• Contrato de arrendamiento firmado</li>
                         <li>• Identificación oficial del inquilino</li>
                         <li>• Comprobante de domicilio</li>
@@ -910,65 +910,65 @@ export function AdminContractWizard() {
           {currentStep === 6 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-foreground mb-4">
                   Revisión del Contrato
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   Verifica que toda la información sea correcta antes de guardar
                 </p>
 
                 <div className="space-y-6">
                   {/* Propiedad */}
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-muted rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Building2 className="w-5 h-5 text-blue-600" />
-                      <h4 className="font-semibold text-gray-900">Propiedad</h4>
+                      <Building2 className="w-5 h-5 text-primary" />
+                      <h4 className="font-semibold text-foreground">Propiedad</h4>
                     </div>
                     <div className="space-y-1 text-sm">
-                      <div className="font-medium text-gray-900">{selectedProperty?.name}</div>
-                      <div className="text-gray-600">{selectedProperty?.address}</div>
-                      <div className="text-blue-600 font-semibold">
+                      <div className="font-medium text-foreground">{selectedProperty?.name}</div>
+                      <div className="text-muted-foreground">{selectedProperty?.address}</div>
+                      <div className="text-primary font-semibold">
                         ${selectedProperty?.rent}/mes
                       </div>
                     </div>
                   </div>
 
                   {/* Inquilino */}
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-muted rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <User className="w-5 h-5 text-blue-600" />
-                      <h4 className="font-semibold text-gray-900">Inquilino</h4>
+                      <User className="w-5 h-5 text-primary" />
+                      <h4 className="font-semibold text-foreground">Inquilino</h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                       <div>
-                        <span className="text-gray-600">Nombre:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.invitedTenantName}</span>
+                        <span className="text-muted-foreground">Nombre:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.invitedTenantName}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Email:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.invitedTenantEmail}</span>
+                        <span className="text-muted-foreground">Email:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.invitedTenantEmail}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Teléfono:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.invitedTenantPhone}</span>
+                        <span className="text-muted-foreground">Teléfono:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.invitedTenantPhone}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Inquilino asignado:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.tenantId ? 'Sí (ID: ' + watchedData.tenantId + ')' : 'Nuevo (invitación)'}</span>
+                        <span className="text-muted-foreground">Inquilino asignado:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.tenantId ? 'Sí (ID: ' + watchedData.tenantId + ')' : 'Nuevo (invitación)'}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Términos */}
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-muted rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Calendar className="w-5 h-5 text-blue-600" />
-                      <h4 className="font-semibold text-gray-900">Términos del Contrato</h4>
+                      <Calendar className="w-5 h-5 text-primary" />
+                      <h4 className="font-semibold text-foreground">Términos del Contrato</h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                       <div>
-                        <span className="text-gray-600">Tipo:</span>{' '}
-                        <span className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Tipo:</span>{' '}
+                        <span className="font-medium text-foreground">
                           {watchedData.contractType === 'fijo'
                             ? 'Plazo Fijo'
                             : watchedData.contractType === 'mensual'
@@ -977,62 +977,62 @@ export function AdminContractWizard() {
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Duración:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.duration} meses</span>
+                        <span className="text-muted-foreground">Duración:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.duration} meses</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Inicio:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.startDate}</span>
+                        <span className="text-muted-foreground">Inicio:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.startDate}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Fin:</span>{' '}
-                        <span className="font-medium text-gray-900">{watchedData.endDate}</span>
+                        <span className="text-muted-foreground">Fin:</span>{' '}
+                        <span className="font-medium text-foreground">{watchedData.endDate}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Renta mensual:</span>{' '}
-                        <span className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Renta mensual:</span>{' '}
+                        <span className="font-medium text-foreground">
                           ${watchedData.monthlyRent?.toLocaleString()}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Servicios:</span>{' '}
-                        <span className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Servicios:</span>{' '}
+                        <span className="font-medium text-foreground">
                           ${watchedData.services?.toLocaleString()}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Depósito:</span>{' '}
-                        <span className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Depósito:</span>{' '}
+                        <span className="font-medium text-foreground">
                           ${watchedData.deposit?.toLocaleString()}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Día de pago:</span>{' '}
-                        <span className="font-medium text-gray-900">Día {watchedData.paymentDay}</span>
+                        <span className="text-muted-foreground">Día de pago:</span>{' '}
+                        <span className="font-medium text-foreground">Día {watchedData.paymentDay}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Condiciones */}
                   {(watchedData.terms || watchedData.includeUtilities || watchedData.includeMaintenance) && (
-                    <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <FileCheck className="w-5 h-5 text-blue-600" />
-                        <h4 className="font-semibold text-gray-900">Condiciones Especiales</h4>
+                        <FileCheck className="w-5 h-5 text-primary" />
+                        <h4 className="font-semibold text-foreground">Condiciones Especiales</h4>
                       </div>
                       {watchedData.terms && (
-                        <div className="text-sm text-gray-700 mb-3 whitespace-pre-line">
+                        <div className="text-sm text-foreground mb-3 whitespace-pre-line">
                           {Array.isArray(watchedData.terms) ? (watchedData.terms || []).join(', ') : watchedData.terms}
                         </div>
                       )}
                       <div className="flex flex-wrap gap-2">
                         {!!watchedData.services && (
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                          <span className="px-3 py-1 bg-primary-muted text-primary-muted-foreground rounded-full text-xs font-medium">
                             Servicios cobrados por separado
                           </span>
                         )}
                         {watchedData.includeMaintenance && (
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                          <span className="px-3 py-1 bg-primary-muted text-primary-muted-foreground rounded-full text-xs font-medium">
                             Mantenimiento incluido
                           </span>
                         )}
@@ -1042,19 +1042,19 @@ export function AdminContractWizard() {
 
                   {/* Documentos */}
                   {attachments.length > 0 && (
-                    <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <Upload className="w-5 h-5 text-blue-600" />
-                        <h4 className="font-semibold text-gray-900">
+                        <Upload className="w-5 h-5 text-primary" />
+                        <h4 className="font-semibold text-foreground">
                           Documentos Adjuntos ({attachments.length})
                         </h4>
                       </div>
                       <div className="space-y-2">
                         {attachments.map((attachment) => (
                           <div key={attachment.id} className="flex items-center gap-2 text-sm">
-                            <FileText className="w-4 h-4 text-gray-400" />
-                            <span className="text-gray-700">{attachment.name}</span>
-                            <span className="text-gray-500">({attachment.size})</span>
+                            <FileText className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-foreground">{attachment.name}</span>
+                            <span className="text-muted-foreground">({attachment.size})</span>
                           </div>
                         ))}
                       </div>
@@ -1066,15 +1066,15 @@ export function AdminContractWizard() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex items-center justify-between pt-6 border-t border-gray-200 mt-8">
+          <div className="flex items-center justify-between pt-6 border-t border-border mt-8">
             <button
               type="button"
               onClick={prevStep}
               disabled={currentStep === 1}
-              className={`flex items-center gap-2 px-6 py-2 border border-gray-300 rounded-lg font-medium transition-colors ${
+              className={`flex items-center gap-2 px-6 py-2 border border-border rounded-lg font-medium transition-colors ${
                 currentStep === 1
-                  ? 'text-gray-400 cursor-not-allowed'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  ? 'text-muted-foreground cursor-not-allowed'
+                  : 'text-foreground hover:bg-muted'
               }`}
             >
               <ArrowLeft className="w-4 h-4" />
@@ -1088,8 +1088,8 @@ export function AdminContractWizard() {
                 disabled={!canProceed()}
                 className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors ${
                   canProceed()
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ? 'bg-primary text-white hover:bg-primary-hover'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
                 Siguiente
@@ -1099,7 +1099,7 @@ export function AdminContractWizard() {
               <button
                 type="button"
                 onClick={handleSubmit(onSubmit)} disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                className="flex items-center gap-2 px-6 py-2 bg-success text-white rounded-lg hover:bg-success-muted-foreground transition-colors font-medium"
               >
                 <Save className="w-4 h-4" />
                 {isEditing ? 'Guardar Cambios' : 'Crear Contrato'}

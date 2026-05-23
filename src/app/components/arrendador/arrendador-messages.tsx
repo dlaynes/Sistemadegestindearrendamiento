@@ -117,7 +117,7 @@ export function ArrendadorMessages() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -125,7 +125,7 @@ export function ArrendadorMessages() {
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600">{error}</p>
+        <p className="text-destructive">{error}</p>
       </div>
     );
   }
@@ -149,9 +149,9 @@ export function ArrendadorMessages() {
 
       <SummaryCards
         cards={[
-          { label: 'Conversaciones Activas', value: String(conversations.length), icon: MessageSquare, color: 'bg-blue-500' },
-          { label: 'Mensajes Sin Leer', value: String(conversations.reduce((sum, c) => sum + c.unread, 0)), icon: User, color: 'bg-orange-500' },
-          { label: 'Inquilinos Disponibles', value: String(tenants.length), icon: User, color: 'bg-green-500' },
+          { label: 'Conversaciones Activas', value: String(conversations.length), icon: MessageSquare, color: 'bg-info' },
+          { label: 'Mensajes Sin Leer', value: String(conversations.reduce((sum, c) => sum + c.unread, 0)), icon: User, color: 'bg-warning' },
+          { label: 'Inquilinos Disponibles', value: String(tenants.length), icon: User, color: 'bg-success' },
         ]}
         columns={3}
       />

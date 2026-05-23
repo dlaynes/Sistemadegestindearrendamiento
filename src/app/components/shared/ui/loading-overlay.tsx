@@ -13,12 +13,12 @@ export function LoadingOverlay({ visible, message = 'Procesando...', className }
   return (
     <div
       className={cn(
-        'absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/70 backdrop-blur-sm rounded-lg',
+        'absolute inset-0 z-50 flex flex-col items-center justify-center bg-card/70 backdrop-blur-sm rounded-lg',
         className
       )}
     >
-      <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-3" />
-      <p className="text-sm font-medium text-gray-700">{message}</p>
+      <Loader2 className="w-10 h-10 text-primary animate-spin mb-3" />
+      <p className="text-sm font-medium text-foreground">{message}</p>
     </div>
   );
 }

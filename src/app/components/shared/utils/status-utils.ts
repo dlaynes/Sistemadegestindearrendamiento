@@ -2,11 +2,11 @@
  * Status utility functions and constants for the rental management system
  */
 
-import type { 
-  ContractStatus, 
-  PaymentStatus, 
-  PropertyStatus, 
-  UserStatus 
+import type {
+  ContractStatus,
+  PaymentStatus,
+  PropertyStatus,
+  UserStatus
 } from '../../../types';
 
 // Re-export types for convenience
@@ -18,17 +18,17 @@ export type { ContractStatus, PaymentStatus, PropertyStatus, UserStatus };
 export const getContractStatusColor = (status: ContractStatus): string => {
   switch (status) {
     case 'activo':
-      return 'bg-green-100 text-green-700';
+      return 'bg-success-muted text-success-muted-foreground';
     case 'proximo_vencer':
-      return 'bg-yellow-100 text-yellow-700';
+      return 'bg-warning-muted text-warning-muted-foreground';
     case 'vencido':
-      return 'bg-red-100 text-red-700';
+      return 'bg-destructive-muted text-destructive-muted-foreground';
     case 'cancelado':
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-muted text-muted-foreground';
     case 'terminado':
-      return 'bg-blue-100 text-blue-700';
+      return 'bg-primary-muted text-primary-muted-foreground';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-muted text-muted-foreground';
   }
 };
 
@@ -58,15 +58,15 @@ export const getContractStatusLabel = (status: ContractStatus): string => {
 export const getPaymentStatusColor = (status: PaymentStatus): string => {
   switch (status) {
     case 'pagado':
-      return 'bg-green-100 text-green-700';
+      return 'bg-success-muted text-success-muted-foreground';
     case 'pendiente':
-      return 'bg-yellow-100 text-yellow-700';
+      return 'bg-warning-muted text-warning-muted-foreground';
     case 'vencido':
-      return 'bg-red-100 text-red-700';
+      return 'bg-destructive-muted text-destructive-muted-foreground';
     case 'procesando':
-      return 'bg-blue-100 text-blue-700';
+      return 'bg-primary-muted text-primary-muted-foreground';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-muted text-muted-foreground';
   }
 };
 
@@ -94,13 +94,13 @@ export const getPaymentStatusLabel = (status: PaymentStatus): string => {
 export const getPropertyStatusColor = (status: PropertyStatus): string => {
   switch (status) {
     case 'ocupado':
-      return 'bg-green-100 text-green-700';
+      return 'bg-success-muted text-success-muted-foreground';
     case 'disponible':
-      return 'bg-blue-100 text-blue-700';
+      return 'bg-primary-muted text-primary-muted-foreground';
     case 'mantenimiento':
-      return 'bg-yellow-100 text-yellow-700';
+      return 'bg-warning-muted text-warning-muted-foreground';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-muted text-muted-foreground';
   }
 };
 
@@ -126,11 +126,11 @@ export const getPropertyStatusLabel = (status: PropertyStatus): string => {
 export const getUserStatusColor = (status: UserStatus): string => {
   switch (status) {
     case 'activo':
-      return 'bg-green-100 text-green-700';
+      return 'bg-success-muted text-success-muted-foreground';
     case 'inactivo':
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-muted text-muted-foreground';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-muted text-muted-foreground';
   }
 };
 

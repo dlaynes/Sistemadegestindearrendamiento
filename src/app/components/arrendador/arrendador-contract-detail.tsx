@@ -171,20 +171,20 @@ export function ArrendadorContractDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/contratos')} label="Volver a contratos" />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">{contract.code}</h1>
-            <p className="text-gray-600">{contract.property}</p>
+            <h1 className="text-3xl font-semibold text-foreground mb-2">{contract.code}</h1>
+            <p className="text-muted-foreground">{contract.property}</p>
           </div>
           <StatusBadge status={contract.status} type="contract" size="lg" />
         </div>
       </div>
 
       {isExpiringSoon && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-yellow-600" />
-          <span className="text-sm text-yellow-800">
+        <div className="bg-warning-muted border border-warning rounded-lg p-4 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-warning" />
+          <span className="text-sm text-warning-muted-foreground">
             El contrato vence en {daysLeft} días - Considera renovar o buscar nuevo inquilino
           </span>
         </div>
@@ -214,7 +214,7 @@ export function ArrendadorContractDetail() {
             title="Términos y Condiciones"
             icon={FileText}
             columns={1} items={[]}          >
-            <div className="whitespace-pre-wrap text-gray-900">{contract.terms}</div>
+            <div className="whitespace-pre-wrap text-foreground">{contract.terms}</div>
           </InfoCard>
 
           <InfoCard
@@ -222,29 +222,29 @@ export function ArrendadorContractDetail() {
             icon={DollarSign}
             columns={1} items={[]}          >
             {isLoadingPayments ? (
-              <p className="text-sm text-gray-500">Cargando pagos...</p>
+              <p className="text-sm text-muted-foreground">Cargando pagos...</p>
             ) : payments.length === 0 ? (
-              <p className="text-sm text-gray-500">No hay pagos registrados.</p>
+              <p className="text-sm text-muted-foreground">No hay pagos registrados.</p>
             ) : (
               <div className="space-y-3">
                 {payments.map((payment) => (
                   <div
                     key={payment.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
                   >
                     <div className="flex items-center gap-3">
                       {payment.status === 'pagado' ? (
-                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <CheckCircle className="w-5 h-5 text-success" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-red-600" />
+                        <AlertCircle className="w-5 h-5 text-destructive" />
                       )}
                       <div>
-                        <p className="font-medium text-gray-900">{toMonthName(payment.dueDate)}</p>
-                        <p className="text-sm text-gray-600">{payment.dueDate}</p>
+                        <p className="font-medium text-foreground">{toMonthName(payment.dueDate)}</p>
+                        <p className="text-sm text-muted-foreground">{payment.dueDate}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">{payment.amount}</p>
+                      <p className="font-semibold text-foreground">{payment.amount}</p>
                       <StatusBadge status={payment.status} type="payment" size="sm" />
                     </div>
                   </div>
@@ -260,13 +260,13 @@ export function ArrendadorContractDetail() {
             onDelete={handleDelete}
           />
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <label className="flex items-center gap-2 text-blue-600 hover:text-blue-700 cursor-pointer font-medium">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+            <label className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground cursor-pointer font-medium">
               <Upload className="w-4 h-4" />
               <span>Subir documento</span>
               <input type="file" className="hidden" onChange={handleUpload} />
             </label>
-            <p className="text-xs text-gray-500 mt-1">Máx. 4MB. Imágenes, PDF, Word, Excel o TXT.</p>
+            <p className="text-xs text-muted-foreground mt-1">Máx. 4MB. Imágenes, PDF, Word, Excel o TXT.</p>
           </div>
         </div>
 

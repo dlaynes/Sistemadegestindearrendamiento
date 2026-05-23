@@ -16,9 +16,9 @@ interface SidebarActionsProps {
 }
 
 const variantClasses = {
-  primary: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
-  secondary: 'bg-gray-50 text-gray-700 hover:bg-gray-100',
-  danger: 'bg-red-50 text-red-700 hover:bg-red-100',
+  primary: 'bg-primary-muted text-primary-muted-foreground hover:bg-primary-muted',
+  secondary: 'bg-muted text-foreground hover:bg-muted',
+  danger: 'bg-destructive-muted text-destructive-muted-foreground hover:bg-destructive-muted',
 };
 
 export function SidebarActions({
@@ -27,9 +27,9 @@ export function SidebarActions({
   className,
 }: SidebarActionsProps) {
   return (
-    <div className={cn('bg-white rounded-lg shadow-sm border border-gray-200', className)}>
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="font-semibold text-gray-900">{title}</h3>
+    <div className={cn('bg-card rounded-lg shadow-sm border border-border', className)}>
+      <div className="p-4 border-b border-border">
+        <h3 className="font-semibold text-foreground">{title}</h3>
       </div>
       
       <div className="p-4 space-y-2">

@@ -8,10 +8,10 @@ export function AdminDashboard() {
   const { stats, recentActivity, isLoading } = useDashboard();
 
   const dashboardStats = [
-    { label: 'Total Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500' },
-    { label: 'Total Contratos', value: String(stats.totalContracts), icon: FileText, color: 'bg-purple-500' },
-    { label: 'Total Usuarios', value: String(stats.totalUsers), icon: Users, color: 'bg-green-500' },
-    { label: 'Ingresos Totales', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500' },
+    { label: 'Total Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-info' },
+    { label: 'Total Contratos', value: String(stats.totalContracts), icon: FileText, color: 'bg-info' },
+    { label: 'Total Usuarios', value: String(stats.totalUsers), icon: Users, color: 'bg-success' },
+    { label: 'Ingresos Totales', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-warning' },
   ];
 
   const alerts : { message: string; type: AlertType }[] = [
@@ -21,7 +21,7 @@ export function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -56,9 +56,9 @@ export function AdminDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Actividad Reciente</h2>
+      <div className="bg-card rounded-lg shadow-sm border border-border">
+        <div className="p-6 border-b border-border">
+          <h2 className="text-xl font-semibold text-foreground">Actividad Reciente</h2>
         </div>
         <div className="divide-y divide-gray-200">
           {recentActivity.map((activity, index) => (

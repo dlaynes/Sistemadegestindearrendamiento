@@ -85,9 +85,9 @@ export function TagInput({
   return (
     <div className={cn('space-y-2', className)}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-foreground">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-destructive ml-1">*</span>}
         </label>
       )}
       
@@ -95,13 +95,13 @@ export function TagInput({
         {tags.map((tag, index) => (
           <span
             key={index}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
+            className="inline-flex items-center gap-1 px-3 py-1 bg-primary-muted text-primary-muted-foreground rounded-full text-sm"
           >
             {tag}
             <button
               type="button"
               onClick={() => handleRemoveTag(tag)}
-              className="hover:text-blue-900 focus:outline-none"
+              className="hover:text-primary-hover focus:outline-none"
             >
               <X className="w-3 h-3" />
             </button>
@@ -117,9 +117,9 @@ export function TagInput({
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
           className={cn(
-            'flex-1 px-4 py-2 border border-gray-300 rounded-lg',
-            'focus:outline-none focus:ring-2 focus:ring-blue-500',
-            error && 'border-red-500 focus:ring-red-500'
+            'flex-1 px-4 py-2 border border-border rounded-lg',
+            'focus:outline-none focus:ring-2 focus:ring-primary',
+            error && 'border-destructive focus:ring-destructive'
           )}
         />
         <button
@@ -128,7 +128,7 @@ export function TagInput({
           disabled={!newTag.trim()}
           className={cn(
             'flex items-center gap-2 px-4 py-2 rounded-lg font-medium',
-            'bg-blue-50 text-blue-700 hover:bg-blue-100',
+            'bg-primary-muted text-primary-muted-foreground hover:bg-primary-muted',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'transition-colors'
           )}
@@ -139,10 +139,10 @@ export function TagInput({
       </div>
       
       {helpText && !error && (
-        <p className="text-sm text-gray-500">{helpText}</p>
+        <p className="text-sm text-muted-foreground">{helpText}</p>
       )}
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       )}
     </div>
   );

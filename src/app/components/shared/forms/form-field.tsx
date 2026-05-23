@@ -55,19 +55,19 @@ export function FormField({
     <div className={cn('space-y-1', className)}>
       <label
         className={cn(
-          'block text-sm font-medium text-gray-700',
+          'block text-sm font-medium text-foreground',
           labelClassName
         )}
       >
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-destructive ml-1">*</span>}
       </label>
       <div>{children}</div>
       {helpText && !error && (
-        <p className="text-sm text-gray-500">{helpText}</p>
+        <p className="text-sm text-muted-foreground">{helpText}</p>
       )}
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       )}
     </div>
   );

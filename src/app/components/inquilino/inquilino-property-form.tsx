@@ -48,10 +48,10 @@ export function InquilinoPropertyForm() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="bg-blue-100 p-3 rounded-lg">
-            <Building2 className="w-6 h-6 text-blue-600" />
+          <div className="bg-primary-muted p-3 rounded-lg">
+            <Building2 className="w-6 h-6 text-primary" />
           </div>
           <PageHeader 
             title="Detalles de la Propiedad"
@@ -81,13 +81,13 @@ export function InquilinoPropertyForm() {
           >
             <ul className="list-disc list-inside space-y-1">
               {property.amenities.map((amenity, index) => (
-                <li key={index} className="text-gray-700">{amenity}</li>
+                <li key={index} className="text-foreground">{amenity}</li>
               ))}
             </ul>
           </InfoCard>
 
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="bg-muted rounded-lg p-4 text-center">
+            <p className="text-sm text-muted-foreground">
               Para modificar información de la propiedad, contacta a tu arrendador.
             </p>
           </div>

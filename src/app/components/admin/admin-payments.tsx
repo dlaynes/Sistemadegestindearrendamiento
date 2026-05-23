@@ -21,11 +21,11 @@ export function AdminPayments() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pagado':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-success" />;
       case 'pendiente':
-        return <Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-warning" />;
       case 'vencido':
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
+        return <AlertCircle className="w-5 h-5 text-destructive" />;
       default:
         return null;
     }
@@ -34,13 +34,13 @@ export function AdminPayments() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pagado':
-        return 'bg-green-100 text-green-700';
+        return 'bg-success-muted text-success-muted-foreground';
       case 'pendiente':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-warning-muted text-warning-muted-foreground';
       case 'vencido':
-        return 'bg-red-100 text-red-700';
+        return 'bg-destructive-muted text-destructive-muted-foreground';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-foreground';
     }
   };
 
@@ -64,60 +64,60 @@ export function AdminPayments() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center gap-3 mb-3">
-            <div className="bg-green-100 p-3 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
+            <div className="bg-success-muted p-3 rounded-lg">
+              <CheckCircle className="w-6 h-6 text-success" />
             </div>
             <div>
-              <p className="text-gray-600 text-sm">Pagos Recibidos</p>
-              <p className="text-2xl font-semibold text-gray-900">${totalPaid.toLocaleString()}</p>
+              <p className="text-muted-foreground text-sm">Pagos Recibidos</p>
+              <p className="text-2xl font-semibold text-foreground">${totalPaid.toLocaleString()}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1 text-sm text-green-600">
+          <div className="flex items-center gap-1 text-sm text-success">
             <TrendingUp className="w-4 h-4" />
             <span>+12% vs mes anterior</span>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center gap-3 mb-3">
-            <div className="bg-yellow-100 p-3 rounded-lg">
-              <Clock className="w-6 h-6 text-yellow-600" />
+            <div className="bg-warning-muted p-3 rounded-lg">
+              <Clock className="w-6 h-6 text-warning" />
             </div>
             <div>
-              <p className="text-gray-600 text-sm">Pagos Pendientes</p>
-              <p className="text-2xl font-semibold text-gray-900">${totalPending.toLocaleString()}</p>
+              <p className="text-muted-foreground text-sm">Pagos Pendientes</p>
+              <p className="text-2xl font-semibold text-foreground">${totalPending.toLocaleString()}</p>
             </div>
           </div>
-          <p className="text-sm text-gray-600">3 pagos por vencer</p>
+          <p className="text-sm text-muted-foreground">3 pagos por vencer</p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center gap-3 mb-3">
-            <div className="bg-red-100 p-3 rounded-lg">
-              <AlertCircle className="w-6 h-6 text-red-600" />
+            <div className="bg-destructive-muted p-3 rounded-lg">
+              <AlertCircle className="w-6 h-6 text-destructive" />
             </div>
             <div>
-              <p className="text-gray-600 text-sm">Pagos Vencidos</p>
-              <p className="text-2xl font-semibold text-gray-900">${totalOverdue.toLocaleString()}</p>
+              <p className="text-muted-foreground text-sm">Pagos Vencidos</p>
+              <p className="text-2xl font-semibold text-foreground">${totalOverdue.toLocaleString()}</p>
             </div>
           </div>
-          <p className="text-sm text-gray-600">1 pago requiere atención</p>
+          <p className="text-sm text-muted-foreground">1 pago requiere atención</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-4">
         <div className="flex items-center gap-4">
-          <span className="text-gray-700 font-medium">Filtrar por estado:</span>
+          <span className="text-foreground font-medium">Filtrar por estado:</span>
           <div className="flex gap-2">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
               Todos
@@ -126,8 +126,8 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('pagado')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'pagado'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
               Pagados
@@ -136,8 +136,8 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('pendiente')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'pendiente'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
               Pendientes
@@ -146,8 +146,8 @@ export function AdminPayments() {
               onClick={() => setStatusFilter('vencido')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === 'vencido'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-muted text-foreground hover:bg-muted'
               }`}
             >
               Vencidos
@@ -157,54 +157,54 @@ export function AdminPayments() {
       </div>
 
       {/* Payments Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-muted border-b border-border">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Inquilino
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Propiedad
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Monto
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Fecha de Vencimiento
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Fecha de Pago
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Estado
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredPayments.map((payment) => (
-                <tr key={payment.id} className="hover:bg-gray-50">
+                <tr key={payment.id} className="hover:bg-muted">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900">{payment.tenantName}</div>
+                    <div className="font-medium text-foreground">{payment.tenantName}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-gray-600">{payment.property}</div>
+                    <div className="text-muted-foreground">{payment.property}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-semibold text-gray-900">${Number(payment.amount).toLocaleString()}</div>
+                    <div className="font-semibold text-foreground">${Number(payment.amount).toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="w-4 h-4" />
                       <span>{payment.dueDate}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-gray-600">
+                    <div className="text-muted-foreground">
                       {payment.paidDate || '-'}
                     </div>
                   </td>
@@ -217,7 +217,7 @@ export function AdminPayments() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <button className="text-blue-600 hover:text-blue-800 font-medium text-sm" onClick={() => navigate(`/pagos/${payment.id}`)}>
+                    <button className="text-primary hover:text-primary-muted-foreground font-medium text-sm" onClick={() => navigate(`/pagos/${payment.id}`)}>
                       Ver Pago
                     </button>
                   </td>
@@ -229,10 +229,10 @@ export function AdminPayments() {
       </div>
 
       {filteredPayments.length === 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <DollarSign className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="font-semibold text-gray-900 mb-2">No se encontraron pagos</h3>
-          <p className="text-gray-600">Intenta ajustar los filtros</p>
+        <div className="bg-card rounded-lg shadow-sm border border-border p-12 text-center">
+          <DollarSign className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-semibold text-foreground mb-2">No se encontraron pagos</h3>
+          <p className="text-muted-foreground">Intenta ajustar los filtros</p>
         </div>
       )}
     </div>

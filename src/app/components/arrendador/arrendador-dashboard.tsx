@@ -6,16 +6,16 @@ export function ArrendadorDashboard() {
   const { stats, isLoading, upcomingPayments } = useDashboard();
 
   const dashboardStats = [
-    { label: 'Mis Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-blue-500' },
-    { label: 'Contratos Activos', value: String(stats.activeContracts), icon: FileText, color: 'bg-purple-500' },
-    { label: 'Ingresos del Mes', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-green-500' },
-    { label: 'Inquilinos Activos', value: String(stats.activeContracts), icon: Users, color: 'bg-yellow-500' },
+    { label: 'Mis Propiedades', value: String(stats.totalProperties), icon: Building2, color: 'bg-info' },
+    { label: 'Contratos Activos', value: String(stats.activeContracts), icon: FileText, color: 'bg-info' },
+    { label: 'Ingresos del Mes', value: `$${stats.totalIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-success' },
+    { label: 'Inquilinos Activos', value: String(stats.activeContracts), icon: Users, color: 'bg-warning' },
   ];
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -42,32 +42,32 @@ export function ArrendadorDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pagos Pendientes */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Pagos Pendientes</h2>
+        <div className="bg-card rounded-lg shadow-sm border border-border">
+          <div className="p-6 border-b border-border">
+            <h2 className="text-xl font-semibold text-foreground">Pagos Pendientes</h2>
           </div>
           <div className="divide-y divide-gray-200">
             {upcomingPayments.length > 0 ? (
               upcomingPayments.map((payment, index) => (
-                <div key={index} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div key={index} className="p-4 flex items-center justify-between hover:bg-muted transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-yellow-600" />
+                    <div className="w-10 h-10 rounded-full bg-warning-muted flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-warning" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{payment.tenant}</p>
-                      <p className="text-sm text-gray-500">{payment.property}</p>
+                      <p className="font-medium text-foreground">{payment.tenant}</p>
+                      <p className="text-sm text-muted-foreground">{payment.property}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">{payment.amount}</p>
-                    <p className="text-sm text-gray-500">Vence: {payment.dueDate}</p>
+                    <p className="font-semibold text-foreground">{payment.amount}</p>
+                    <p className="text-sm text-muted-foreground">Vence: {payment.dueDate}</p>
                     <StatusBadge status={payment.status} type="payment" size="sm" />
                   </div>
                 </div>
               ))
             ) : (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-8 text-center text-muted-foreground">
                 No hay pagos pendientes
               </div>
             )}
@@ -75,31 +75,31 @@ export function ArrendadorDashboard() {
         </div>
 
         {/* Resumen Rápido */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Resumen Rápido</h2>
+        <div className="bg-card rounded-lg shadow-sm border border-border">
+          <div className="p-6 border-b border-border">
+            <h2 className="text-xl font-semibold text-foreground">Resumen Rápido</h2>
           </div>
           <div className="p-4 space-y-4">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-primary-muted rounded-lg">
               <div className="flex items-center gap-3">
-                <Building2 className="w-5 h-5 text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Propiedades disponibles</span>
+                <Building2 className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-foreground">Propiedades disponibles</span>
               </div>
-              <span className="font-semibold text-blue-700">{stats.availableProperties}</span>
+              <span className="font-semibold text-primary-muted-foreground">{stats.availableProperties}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-warning-muted rounded-lg">
               <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-yellow-600" />
-                <span className="text-sm font-medium text-gray-700">Pagos pendientes</span>
+                <MapPin className="w-5 h-5 text-warning" />
+                <span className="text-sm font-medium text-foreground">Pagos pendientes</span>
               </div>
-              <span className="font-semibold text-yellow-700">{stats.pendingPayments}</span>
+              <span className="font-semibold text-warning-muted-foreground">{stats.pendingPayments}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-destructive-muted rounded-lg">
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-red-600" />
-                <span className="text-sm font-medium text-gray-700">Pagos vencidos</span>
+                <Calendar className="w-5 h-5 text-destructive" />
+                <span className="text-sm font-medium text-foreground">Pagos vencidos</span>
               </div>
-              <span className="font-semibold text-red-700">{stats.overduePayments}</span>
+              <span className="font-semibold text-destructive-muted-foreground">{stats.overduePayments}</span>
             </div>
           </div>
         </div>

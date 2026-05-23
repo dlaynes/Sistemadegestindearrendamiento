@@ -47,9 +47,9 @@ export function AdminContracts() {
 
       <SummaryCards
         cards={[
-          { label: 'Contratos Activos', value: '8', icon: FileText, color: 'bg-green-500' },
-          { label: 'Próximos a Vencer', value: '3', icon: Clock, color: 'bg-yellow-500' },
-          { label: 'Duración Promedio', value: '15.6 m', icon: Calendar, color: 'bg-blue-500' },
+          { label: 'Contratos Activos', value: '8', icon: FileText, color: 'bg-success' },
+          { label: 'Próximos a Vencer', value: '3', icon: Clock, color: 'bg-warning' },
+          { label: 'Duración Promedio', value: '15.6 m', icon: Calendar, color: 'bg-info' },
         ]}
         columns={3}
       />

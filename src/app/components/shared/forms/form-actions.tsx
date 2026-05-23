@@ -31,7 +31,7 @@ export function FormActions({
   return (
     <div
       className={cn(
-        'flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200',
+        'flex flex-col sm:flex-row gap-3 pt-6 border-t border-border',
         showDelete ? 'justify-between' : 'justify-end',
         className
       )}

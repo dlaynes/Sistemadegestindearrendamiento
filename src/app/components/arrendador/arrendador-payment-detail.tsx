@@ -25,11 +25,11 @@ export function ArrendadorPaymentDetail() {
   if (!payment) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <DollarSign className="w-16 h-16 text-gray-400" />
-        <h2 className="text-2xl font-semibold text-gray-900">Pago no encontrado</h2>
+        <DollarSign className="w-16 h-16 text-muted-foreground" />
+        <h2 className="text-2xl font-semibold text-foreground">Pago no encontrado</h2>
         <button
           onClick={() => navigate('/pagos')}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+          className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground"
         >
           <ArrowLeft className="w-4 h-4" />
           Volver
@@ -41,11 +41,11 @@ export function ArrendadorPaymentDetail() {
   const getStatusIcon = () => {
     switch (payment.status) {
       case 'pagado':
-        return <CheckCircle className="w-8 h-8 text-green-600" />;
+        return <CheckCircle className="w-8 h-8 text-success" />;
       case 'pendiente':
-        return <Clock className="w-8 h-8 text-yellow-600" />;
+        return <Clock className="w-8 h-8 text-warning" />;
       case 'vencido':
-        return <AlertCircle className="w-8 h-8 text-red-600" />;
+        return <AlertCircle className="w-8 h-8 text-destructive" />;
       default:
         return null;
     }
@@ -54,13 +54,13 @@ export function ArrendadorPaymentDetail() {
   const getStatusColor = () => {
     switch (payment.status) {
       case 'pagado':
-        return 'bg-green-100 text-green-700';
+        return 'bg-success-muted text-success-muted-foreground';
       case 'pendiente':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-warning-muted text-warning-muted-foreground';
       case 'vencido':
-        return 'bg-red-100 text-red-700';
+        return 'bg-destructive-muted text-destructive-muted-foreground';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-foreground';
     }
   };
 
@@ -106,37 +106,37 @@ export function ArrendadorPaymentDetail() {
       {/* Back Button */}
       <button
         onClick={() => navigate('/pagos')}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="w-5 h-5" />
         <span className="font-medium">Volver a pagos</span>
       </button>
 
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
             <div
               className={`p-4 rounded-lg ${
                 payment.status === 'pagado'
-                  ? 'bg-green-100'
+                  ? 'bg-success-muted'
                   : payment.status === 'pendiente'
-                  ? 'bg-yellow-100'
-                  : 'bg-red-100'
+                  ? 'bg-warning-muted'
+                  : 'bg-destructive-muted'
               }`}
             >
               {getStatusIcon()}
             </div>
             <div>
-              <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+              <h1 className="text-3xl font-semibold text-foreground mb-2">
                 Pago #{String(payment.id).padStart(5, '0')}
               </h1>
-              <div className="flex items-center gap-2 text-gray-600">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="w-5 h-5" />
                 <span>Vencimiento: {payment.dueDate}</span>
               </div>
               {payment.paidDate && (
-                <div className="flex items-center gap-2 text-gray-600 mt-1">
+                <div className="flex items-center gap-2 text-muted-foreground mt-1">
                   <CheckCircle className="w-5 h-5" />
                   <span>Pagado el: {payment.paidDate}</span>
                 </div>
@@ -151,18 +151,18 @@ export function ArrendadorPaymentDetail() {
         </div>
 
         {payment.status === 'vencido' && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600" />
+          <div className="p-4 bg-destructive-muted border border-destructive-muted rounded-lg flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-destructive" />
             <div className="flex-1">
-              <p className="font-semibold text-red-800">Pago vencido</p>
-              <p className="text-sm text-red-700">
+              <p className="font-semibold text-destructive-muted-foreground">Pago vencido</p>
+              <p className="text-sm text-destructive-muted-foreground">
                 Este pago venció hace {getDaysOverdue()} días. Se están
                 acumulando cargos por mora.
               </p>
             </div>
             <button
               onClick={registrarPago}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium whitespace-nowrap"
+              className="bg-destructive text-white px-4 py-2 rounded-lg hover:bg-destructive-muted transition-colors font-medium whitespace-nowrap"
             >
               Registrar Pago
             </button>
@@ -170,11 +170,11 @@ export function ArrendadorPaymentDetail() {
         )}
 
         {payment.status === 'pendiente' && (
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-600" />
+          <div className="p-4 bg-warning-muted border border-warning rounded-lg flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-warning" />
             <div className="flex-1">
-              <p className="font-semibold text-yellow-800">Pago pendiente</p>
-              <p className="text-sm text-yellow-700">
+              <p className="font-semibold text-warning-muted-foreground">Pago pendiente</p>
+              <p className="text-sm text-warning-muted-foreground">
                 Este pago está pendiente. Se enviará un recordatorio al
                 inquilino.
               </p>
@@ -187,38 +187,38 @@ export function ArrendadorPaymentDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Payment Details */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               Detalles del Pago
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Inquilino</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Inquilino</p>
+                <p className="text-lg font-semibold text-foreground">
                   {payment.tenantName || 'No especificado'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Propiedad</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Propiedad</p>
+                <p className="text-lg font-semibold text-foreground">
                   {payment.property || 'No especificada'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Dirección</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Dirección</p>
+                <p className="text-lg font-semibold text-foreground">
                   {payment.propertyAddress || 'No especificada'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Monto base</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Monto base</p>
+                <p className="text-lg font-semibold text-foreground">
                   ${Number(payment.amount).toLocaleString()}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Método de pago</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Método de pago</p>
+                <p className="text-lg font-semibold text-foreground">
                   {payment.method === 'transferencia' && 'Transferencia'}
                   {payment.method === 'cheque' && 'Cheque'}
                   {payment.method === 'tarjeta' && 'Tarjeta'}
@@ -228,7 +228,7 @@ export function ArrendadorPaymentDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Estado</p>
+                <p className="text-sm text-muted-foreground mb-1">Estado</p>
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor()}`}
                 >
@@ -240,25 +240,25 @@ export function ArrendadorPaymentDetail() {
 
           {/* Breakdown */}
           {payment.breakdown && payment.breakdown.length > 0 && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">
                 Desglose
               </h2>
               <div className="space-y-3">
                 {payment.breakdown.map((item, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                    className="flex justify-between items-center p-3 bg-muted rounded-lg"
                   >
-                    <span className="text-gray-700">{item.concept}</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="text-foreground">{item.concept}</span>
+                    <span className="font-semibold text-foreground">
                       ${item.amount.toLocaleString()}
                     </span>
                   </div>
                 ))}
-                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border-t-2 border-blue-100">
-                  <span className="font-semibold text-gray-900">Total</span>
-                  <span className="font-bold text-blue-600">
+                <div className="flex justify-between items-center p-3 bg-primary-muted rounded-lg border-t-2 border-primary-muted">
+                  <span className="font-semibold text-foreground">Total</span>
+                  <span className="font-bold text-primary">
                     ${totalAmount.toLocaleString()}
                   </span>
                 </div>
@@ -268,40 +268,40 @@ export function ArrendadorPaymentDetail() {
 
           {/* Payment History */}
           {payment.relatedPayments && payment.relatedPayments.length > 0 && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">
                 Historial de Pagos Relacionados
               </h2>
               <div className="space-y-3">
                 {payment.relatedPayments.map((related, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
                   >
                     <div className="flex items-center gap-3">
                       {related.status === 'pagado' && (
-                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <CheckCircle className="w-5 h-5 text-success" />
                       )}
                       {related.status === 'pendiente' && (
-                        <Clock className="w-5 h-5 text-yellow-600" />
+                        <Clock className="w-5 h-5 text-warning" />
                       )}
                       {related.status === 'vencido' && (
-                        <AlertCircle className="w-5 h-5 text-red-600" />
+                        <AlertCircle className="w-5 h-5 text-destructive" />
                       )}
                       <div>
-                        <p className="font-medium text-gray-900">{related.month}</p>
-                        <p className="text-sm text-gray-600">{related.date}</p>
+                        <p className="font-medium text-foreground">{related.month}</p>
+                        <p className="text-sm text-muted-foreground">{related.date}</p>
                       </div>
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
                         related.status === 'pagado'
-                          ? 'bg-green-100 text-green-700'
+                          ? 'bg-success-muted text-success-muted-foreground'
                           : related.status === 'pendiente'
-                          ? 'bg-yellow-100 text-yellow-700'
+                          ? 'bg-warning-muted text-warning-muted-foreground'
                           : related.status === 'vencido'
-                          ? 'bg-red-100 text-red-700'
-                          : 'bg-gray-100 text-gray-700'
+                          ? 'bg-destructive-muted text-destructive-muted-foreground'
+                          : 'bg-muted text-foreground'
                       }`}
                     >
                       {related.status === 'pagado'
@@ -322,39 +322,39 @@ export function ArrendadorPaymentDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Summary */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Resumen</h2>
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Resumen</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Inquilino</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Inquilino</p>
+                <p className="text-lg font-semibold text-foreground">
                   {payment.tenantName || 'No especificado'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Monto base</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Monto base</p>
+                <p className="text-lg font-semibold text-foreground">
                   ${Number(payment.amount).toLocaleString()}
                 </p>
               </div>
               {payment.status === 'vencido' && (
                 <>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Mora acumulada</p>
-                    <p className="text-lg font-semibold text-red-600">
+                    <p className="text-sm text-muted-foreground mb-1">Mora acumulada</p>
+                    <p className="text-lg font-semibold text-destructive">
                       ${(totalAmount - Number(payment.amount)).toLocaleString()}
                     </p>
                   </div>
-                  <div className="pt-3 border-t border-gray-200">
-                    <p className="text-sm text-gray-600 mb-1">Total a pagar</p>
-                    <p className="text-2xl font-bold text-gray-900">
+                  <div className="pt-3 border-t border-border">
+                    <p className="text-sm text-muted-foreground mb-1">Total a pagar</p>
+                    <p className="text-2xl font-bold text-foreground">
                       ${totalAmount.toLocaleString()}
                     </p>
                   </div>
                 </>
               )}
               <div>
-                <p className="text-sm text-gray-600 mb-1">Estado</p>
+                <p className="text-sm text-muted-foreground mb-1">Estado</p>
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor()}`}
                 >
@@ -365,28 +365,28 @@ export function ArrendadorPaymentDetail() {
           </div>
 
           {/* Actions */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Acciones</h2>
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Acciones</h2>
             <div className="space-y-2">
               {payment.status === 'pagado' ? (
                 <>
                   <button
                     onClick={onViewReceipt}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="w-full flex items-center justify-center gap-2 bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
                   >
                     <Receipt className="w-4 h-4" />
                     Ver Recibo
                   </button>
                   <button
                     onClick={onDownloadPDF}
-                    className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                    className="w-full flex items-center justify-center gap-2 bg-muted text-foreground py-2 rounded-lg hover:bg-muted transition-colors font-medium"
                   >
                     <Download className="w-4 h-4" />
                     Descargar PDF
                   </button>
                   <button
                     onClick={onSendReceipt}
-                    className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                    className="w-full bg-muted text-foreground py-2 rounded-lg hover:bg-muted transition-colors font-medium"
                   >
                     Enviar Recibo
                   </button>
@@ -395,19 +395,19 @@ export function ArrendadorPaymentDetail() {
                 <>
                   <button
                     onClick={registrarPago}
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
                   >
                     Registrar Pago
                   </button>
                   <button
                     onClick={onSendReminder}
-                    className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                    className="w-full bg-muted text-foreground py-2 rounded-lg hover:bg-muted transition-colors font-medium"
                   >
                     Enviar Recordatorio
                   </button>
                   <button
                     onClick={onAdjustAmount}
-                    className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                    className="w-full bg-muted text-foreground py-2 rounded-lg hover:bg-muted transition-colors font-medium"
                   >
                     Ajustar Monto
                   </button>
@@ -417,27 +417,27 @@ export function ArrendadorPaymentDetail() {
           </div>
 
           {/* Payment Stats */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Estadísticas</h2>
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Estadísticas</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Pagos a tiempo</p>
+                <p className="text-sm text-muted-foreground mb-1">Pagos a tiempo</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-lg font-semibold text-gray-900">
+                  <p className="text-lg font-semibold text-foreground">
                     {relatedCount} / {relatedCount}
                   </p>
-                  <TrendingUp className="w-4 h-4 text-green-600" />
+                  <TrendingUp className="w-4 h-4 text-success" />
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div className="w-full bg-muted rounded-full h-2 mt-2">
                   <div
-                    className="bg-green-600 h-2 rounded-full"
+                    className="bg-success h-2 rounded-full"
                     style={{ width: relatedCount > 0 ? '100%' : '0%' }}
                   ></div>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Total pagado este año</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground mb-1">Total pagado este año</p>
+                <p className="text-lg font-semibold text-foreground">
                   ${totalPaidThisYear.toLocaleString()}
                 </p>
               </div>
@@ -446,28 +446,28 @@ export function ArrendadorPaymentDetail() {
 
           {/* Documents */}
           {payment.status === 'pagado' && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Documentos</h2>
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Documentos</h2>
               <div className="space-y-2">
                 <button
                   onClick={onViewReceipt}
-                  className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                  className="w-full flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors text-left"
                 >
-                  <FileText className="w-5 h-5 text-gray-600" />
+                  <FileText className="w-5 h-5 text-muted-foreground" />
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900 text-sm">Recibo de pago</p>
-                    <p className="text-xs text-gray-600">PDF</p>
+                    <p className="font-medium text-foreground text-sm">Recibo de pago</p>
+                    <p className="text-xs text-muted-foreground">PDF</p>
                   </div>
                 </button>
                 {payment.referenceNumber && (
                   <button
                     onClick={onViewReceipt}
-                    className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                    className="w-full flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors text-left"
                   >
-                    <FileText className="w-5 h-5 text-gray-600" />
+                    <FileText className="w-5 h-5 text-muted-foreground" />
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900 text-sm">Comprobante bancario</p>
-                      <p className="text-xs text-gray-600">
+                      <p className="font-medium text-foreground text-sm">Comprobante bancario</p>
+                      <p className="text-xs text-muted-foreground">
                         Referencia: {payment.referenceNumber}
                       </p>
                     </div>
