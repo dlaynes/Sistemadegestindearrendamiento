@@ -11,3 +11,8 @@ coverage/
 *.bak
 *.tmp
 .firebase/
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
