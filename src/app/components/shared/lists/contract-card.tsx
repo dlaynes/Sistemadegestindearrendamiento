@@ -29,15 +29,15 @@ export function ContractCard({
   return (
     <div
       className={cn(
-        'bg-card rounded-lg shadow-sm border border-border p-6',
-        'hover:shadow-md transition-shadow',
-        className
+        'rounded-xl border border-border-subtle bg-card p-5 shadow-elev-xs transition-all',
+        'hover:-translate-y-0.5 hover:shadow-elev-md',
+        className,
       )}
     >
-      <div className="flex items-start justify-between mb-4">
+      <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary-muted rounded-lg">
-            <FileText className="w-5 h-5 text-primary" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-muted text-primary">
+            <FileText className="h-5 w-5" />
           </div>
           <div>
             <h3 className="font-semibold text-foreground">{contract.code}</h3>
@@ -46,74 +46,75 @@ export function ContractCard({
         </div>
         <StatusBadge status={contract.status} type="contract" />
       </div>
-      
-      <div className="grid grid-cols-2 gap-4 mb-4">
+
+      <div className="mb-4 grid grid-cols-2 gap-4">
         <div className="flex items-center gap-2">
-          <User className="w-4 h-4 text-muted-foreground" />
+          <User className="h-4 w-4 text-muted-foreground" />
           <div>
             <p className="text-xs text-muted-foreground">Inquilino</p>
             <p className="text-sm font-medium text-foreground">{contract.tenantName}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <Building2 className="w-4 h-4 text-muted-foreground" />
+          <Building2 className="h-4 w-4 text-muted-foreground" />
           <div>
             <p className="text-xs text-muted-foreground">Propiedad</p>
-            <p className="text-sm font-medium text-foreground truncate">{contract.property}</p>
+            <p className="text-sm font-medium text-foreground">{contract.property}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-muted-foreground" />
+          <Calendar className="h-4 w-4 text-muted-foreground" />
           <div>
-            <p className="text-xs text-muted-foreground">Vencimiento</p>
-            <p className="text-sm font-medium text-foreground">{contract.endDate}</p>
+            <p className="text-xs text-muted-foreground">Inicio</p>
+            <p className="text-sm font-medium text-foreground">{contract.startDate}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <DollarSign className="w-4 h-4 text-muted-foreground" />
+          <DollarSign className="h-4 w-4 text-muted-foreground" />
           <div>
-            <p className="text-xs text-muted-foreground">Renta Mensual</p>
+            <p className="text-xs text-muted-foreground">Renta</p>
             <p className="text-sm font-medium text-foreground">{contract.monthlyRent}</p>
           </div>
         </div>
       </div>
-      
+
       {isExpiringSoon && (
-        <div className="flex items-center gap-2 p-3 bg-warning-muted border border-warning rounded-lg mb-4">
-          <AlertCircle className="w-5 h-5 text-warning" />
-          <div className="flex-1">
-            <p className="text-sm text-warning-muted-foreground">
-              <strong>Próximo a vencer:</strong> El contrato vence en {daysLeft} días
-            </p>
-          </div>
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-warning-muted bg-warning-muted/60 p-3">
+          <AlertCircle className="h-5 w-5 text-warning" />
+          <p className="text-sm text-warning-muted-foreground">
+            <strong>Próximo a vencer:</strong> El contrato vence en {daysLeft} días
+          </p>
         </div>
       )}
-      
+
       {showActions && (onView || onEdit || onDelete) && (
-        <div className="flex gap-2 pt-4 border-t border-border">
+        <div className="flex gap-2 border-t border-border-subtle pt-4">
           {onView && (
             <button
+              type="button"
               onClick={() => onView(contract)}
-              className="flex-1 px-4 py-2 text-primary hover:bg-primary-muted rounded-lg transition-colors font-medium"
+              className="flex-1 rounded-md px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-muted"
             >
               Ver Detalles
             </button>
           )}
           {onEdit && (
             <button
+              type="button"
               onClick={() => onEdit(contract)}
-              className="flex-1 px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors font-medium"
+              className="flex-1 rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
             >
               Editar
             </button>
           )}
           {onDelete && (
             <button
+              type="button"
               onClick={() => onDelete(contract)}
-              className="flex-1 px-4 py-2 text-destructive hover:bg-destructive-muted rounded-lg transition-colors font-medium"
+              className="flex-1 rounded-md px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive-muted"
             >
               Eliminar
             </button>

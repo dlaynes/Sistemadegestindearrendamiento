@@ -108,7 +108,7 @@ export function InquilinoContractDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/contratos')} label="Volver a contratos" />
 
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-3xl font-semibold text-foreground mb-2">Mi Contrato</h1>

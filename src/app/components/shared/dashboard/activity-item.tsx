@@ -11,7 +11,7 @@ interface ActivityItemProps {
   onClick?: () => void;
 }
 
-const statusColors: Record<ActivityStatus, string> = {
+const dotColor: Record<ActivityStatus, string> = {
   success: 'bg-success',
   warning: 'bg-warning',
   info: 'bg-info',
@@ -30,21 +30,24 @@ export function ActivityItem({
     <div
       onClick={onClick}
       className={cn(
-        'p-6 hover:bg-muted transition-colors',
+        'flex items-start justify-between gap-3 p-4 transition-colors hover:bg-surface',
         onClick && 'cursor-pointer',
-        className
+        className,
       )}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex flex-1 items-start gap-3">
+        <span
+          aria-hidden="true"
+          className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', dotColor[status])}
+        />
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-1">
-            <span className={cn('inline-block w-2 h-2 rounded-full', statusColors[status])} />
-            <h3 className="font-semibold text-foreground">{type}</h3>
-          </div>
-          <p className="text-sm text-muted-foreground ml-5">{description}</p>
+          <h3 className="font-semibold text-foreground">{type}</h3>
+          <p className="text-sm text-muted-foreground">{description}</p>
         </div>
-        <span className="text-sm text-muted-foreground whitespace-nowrap ml-4">{time}</span>
       </div>
+      <span className="shrink-0 whitespace-nowrap text-sm text-muted-foreground">
+        {time}
+      </span>
     </div>
   );
 }

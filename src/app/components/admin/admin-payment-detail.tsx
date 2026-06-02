@@ -103,7 +103,7 @@ export function AdminPaymentDetail() {
       </button>
 
       {/* Header */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
             <div className={`p-4 rounded-lg ${
@@ -169,7 +169,7 @@ export function AdminPaymentDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Parties Involved */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Información del Pago</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Tenant */}
@@ -205,7 +205,7 @@ export function AdminPaymentDetail() {
           </div>
 
           {/* Payment Breakdown */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Desglose del Pago</h2>
             <div className="space-y-3">
               {payment.breakdown?.map((item, index) => (
@@ -223,7 +223,7 @@ export function AdminPaymentDetail() {
 
           {/* Payment Details */}
           {payment.status === 'pagado' && (
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">Detalles del Pago</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -250,13 +250,13 @@ export function AdminPaymentDetail() {
           )}
 
           {/* Notes */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Notas</h2>
             <p className="text-foreground">{payment.notes}</p>
           </div>
 
           {/* Related Payments */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Historial de Pagos Relacionados</h2>
             <div className="space-y-3">
               {payment.relatedPayments?.map((related, index) => (
@@ -280,7 +280,7 @@ export function AdminPaymentDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Amount Summary */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Resumen</h2>
             <div className="space-y-4">
               <div>
@@ -311,7 +311,7 @@ export function AdminPaymentDetail() {
           </div>
 
           {/* Actions */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Acciones</h2>
             <div className="space-y-2">
               {payment.status === 'pagado' ? (
@@ -345,7 +345,7 @@ export function AdminPaymentDetail() {
           </div>
 
           {/* Payment Stats */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Estadísticas</h2>
             <div className="space-y-4">
               <div>
@@ -371,7 +371,7 @@ export function AdminPaymentDetail() {
 
           {/* Documents */}
           {payment.status === 'pagado' && (
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">Documentos</h2>
               <div className="space-y-2">
                 <button className="w-full flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors text-left">

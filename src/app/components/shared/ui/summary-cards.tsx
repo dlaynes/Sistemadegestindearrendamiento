@@ -30,13 +30,18 @@ export function SummaryCards({
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-card rounded-lg border border-border p-4 flex items-center gap-4"
+          className="flex items-center gap-4 rounded-xl border border-border-subtle bg-card p-4 shadow-elev-xs"
         >
-          <div className={cn('p-3 rounded-lg', card.color)}>
-            <card.icon className="w-5 h-5 text-white" />
+          <div
+            className={cn(
+              'flex h-10 w-10 items-center justify-center rounded-lg ring-1 ring-inset ring-border-subtle',
+              card.color,
+            )}
+          >
+            <card.icon className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-foreground">{card.value}</p>
+            <p className="text-h3 font-semibold text-foreground">{card.value}</p>
             <p className="text-sm text-muted-foreground">{card.label}</p>
           </div>
         </div>

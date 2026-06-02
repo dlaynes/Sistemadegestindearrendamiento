@@ -22,13 +22,31 @@ export interface StatusBadgeProps {
   label?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'pill' | 'dot';
 }
 
 const sizeClasses = {
   sm: 'px-2 py-0.5 text-xs',
-  md: 'px-3 py-1 text-xs',
-  lg: 'px-4 py-2 text-sm',
+  md: 'px-2.5 py-1 text-xs',
+  lg: 'px-3 py-1 text-sm',
 };
+
+/** Map a status type + status string to a 6px-tall CSS variable to color a status dot. */
+const dotColor: Record<string, string> = {
+  'bg-success-muted': 'bg-success',
+  'bg-warning-muted': 'bg-warning',
+  'bg-destructive-muted': 'bg-destructive',
+  'bg-info-muted': 'bg-info',
+  'bg-primary-muted': 'bg-primary',
+  'bg-muted': 'bg-muted-foreground',
+};
+
+function colorClassToDot(color: string): string {
+  // status-utils returns pairs like "bg-success-muted text-success-muted-foreground"
+  const token = color.split(' ').find((c) => c.startsWith('bg-') && c.endsWith('-muted'));
+  if (!token) return 'bg-muted-foreground';
+  return dotColor[token] ?? 'bg-muted-foreground';
+}
 
 export function StatusBadge({
   status,
@@ -36,6 +54,7 @@ export function StatusBadge({
   label,
   className,
   size = 'md',
+  variant = 'pill',
 }: StatusBadgeProps) {
   const getColorClass = (): string => {
     switch (type) {
@@ -54,7 +73,6 @@ export function StatusBadge({
 
   const getLabel = (): string => {
     if (label) return label;
-
     switch (type) {
       case 'contract':
         return getContractStatusLabel(status as ContractStatus);
@@ -69,16 +87,36 @@ export function StatusBadge({
     }
   };
 
+  const colorClass = getColorClass();
+  const text = getLabel();
+
+  if (variant === 'dot') {
+    return (
+      <span
+        className={cn(
+          'inline-flex items-center gap-2 text-sm text-foreground',
+          className,
+        )}
+      >
+        <span
+          aria-hidden="true"
+          className={cn('h-2 w-2 shrink-0 rounded-full', colorClassToDot(colorClass))}
+        />
+        <span>{text}</span>
+      </span>
+    );
+  }
+
   return (
     <span
       className={cn(
         'inline-flex items-center rounded-full font-medium',
         sizeClasses[size],
-        getColorClass(),
-        className
+        colorClass,
+        className,
       )}
     >
-      {getLabel()}
+      {text}
     </span>
   );
 }

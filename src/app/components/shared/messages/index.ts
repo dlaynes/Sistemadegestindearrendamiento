@@ -1,1 +1,3 @@
-export { MessagesInterface, type Conversation, type Message, type Contact } from './messages-interface';
+export { MessagesInterface } from './messages-interface';
+export type { Contact, Conversation } from './messages-interface';
+export type { Message } from '../../../services/message.service';

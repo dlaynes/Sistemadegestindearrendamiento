@@ -3,6 +3,7 @@ import { Navigate } from 'react-router';
 import { useAuth } from '../contexts/auth-context';
 import { UserRole } from '../types/user';
 import { ShieldAlert } from 'lucide-react';
+import { Spinner } from './shared/ui/spinner';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -14,10 +15,10 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-muted">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Verificando sesión...</p>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <Spinner size="xl" label="Verificando sesión" />
+          <p className="text-sm text-muted-foreground">Verificando sesión...</p>
         </div>
       </div>
     );
@@ -29,17 +30,17 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-muted">
-        <div className="bg-card rounded-lg shadow-lg p-8 max-w-md text-center">
-          <div className="bg-destructive-muted p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <ShieldAlert className="w-8 h-8 text-destructive" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-md rounded-2xl border border-border-subtle bg-card p-8 text-center shadow-elev-md">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive-muted">
+            <ShieldAlert className="h-8 w-8 text-destructive" />
           </div>
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Acceso Denegado</h2>
-          <p className="text-muted-foreground mb-6">
+          <h2 className="mb-2 text-h2 font-semibold text-foreground">Acceso Denegado</h2>
+          <p className="mb-6 text-sm text-muted-foreground">
             No tienes permisos para acceder a esta sección.
           </p>
           <p className="text-sm text-muted-foreground">
-            Tu rol: <span className="font-semibold">{user.role}</span>
+            Tu rol: <span className="font-semibold text-foreground">{user.role}</span>
           </p>
         </div>
       </div>

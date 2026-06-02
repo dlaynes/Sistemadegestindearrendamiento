@@ -31,23 +31,28 @@ export function InfoCard({
   };
 
   return (
-    <div className={cn('bg-card rounded-lg shadow-sm border border-border', className)}>
-      <div className="p-6 border-b border-border">
+    <div
+      className={cn(
+        'rounded-xl border border-border-subtle bg-card shadow-elev-xs',
+        className,
+      )}
+    >
+      <div className="border-b border-border-subtle px-6 py-4">
         <div className="flex items-center gap-3">
           {CardIcon && (
-            <div className="p-2 bg-primary-muted rounded-lg">
-              <CardIcon className="w-5 h-5 text-primary" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-muted text-primary">
+              <CardIcon className="h-5 w-5" />
             </div>
           )}
-          <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+          <h2 className="text-h2 font-semibold text-foreground">{title}</h2>
         </div>
       </div>
-      
-      <div className={cn('p-6 grid gap-6', gridCols[columns])}>
+
+      <div className={cn('grid gap-6 p-6', gridCols[columns])}>
         {items?.map((item, index) => (
           <div key={index} className="flex items-start gap-3">
             {item.icon && (
-              <item.icon className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+              <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
             )}
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">{item.label}</p>

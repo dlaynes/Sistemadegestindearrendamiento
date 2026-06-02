@@ -7,22 +7,23 @@ import {
   PropertyCard,
   SearchFilter,
   EmptyState,
-  ActionButton,
   PropertyListSkeleton,
 } from '../shared';
+import { Button } from '../ui/button';
 
 export function ArrendadorProperties() {
   const navigate = useRoleNavigation();
   const { getMyProperties, isLoading } = useProperty();
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
   const myProperties = getMyProperties();
 
   const filteredProperties = myProperties.filter((property) => {
-    const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.address.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.address.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || property.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -37,13 +38,10 @@ export function ArrendadorProperties() {
         title="Mis Propiedades"
         subtitle="Administra tu portafolio de propiedades"
         action={
-          <ActionButton
-            variant="primary"
-            icon={Plus}
-            onClick={() => navigate('/propiedades/nueva')}
-          >
+          <Button onClick={() => navigate('/propiedades/nueva')}>
+            <Plus className="h-4 w-4" />
             Nueva Propiedad
-          </ActionButton>
+          </Button>
         }
       />
 
@@ -51,17 +49,17 @@ export function ArrendadorProperties() {
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         selectValue={statusFilter}
+        onSelectChange={setStatusFilter}
         selectOptions={[
           { label: 'Todos', value: '' },
           { label: 'Disponibles', value: 'disponible' },
           { label: 'Ocupados', value: 'ocupado' },
           { label: 'Mantenimiento', value: 'mantenimiento' },
         ]}
-        onSelectChange={setStatusFilter}
       />
 
       {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredProperties.map((property) => (
             <PropertyCard
               key={property.id}

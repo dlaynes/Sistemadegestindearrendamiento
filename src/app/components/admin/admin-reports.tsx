@@ -12,6 +12,7 @@ import {
 import { PageHeader } from '../shared/dashboard/page-header';
 import { useServices } from '../../services';
 import type { ReportSummary } from '../../services/report.service';
+import { Spinner } from '../shared/ui/spinner';
 
 const REPORT_META = [
   {
@@ -59,7 +60,7 @@ const REPORT_META = [
     name: 'Reporte Calendario',
     description: 'Visión cronológica de eventos y fechas importantes',
     icon: Calendar,
-    iconColor: 'bg-indigo-100 text-indigo-700',
+    iconColor: 'bg-primary-muted text-primary-muted-foreground',
     dataColumns: ['Fecha', 'Evento', 'Tipo', 'Estado'],
   },
 ];
@@ -72,11 +73,10 @@ export function AdminReports() {
   const fetchSummary = useCallback(async () => {
     setIsLoading(true);
     try {
-      const summary = await report.getSummary();
-      setCounts(summary);
+      const data = await report.getSummary();
+      setCounts(data);
     } catch {
-      toast.error('Error al cargar resumen de reportes');
-      setCounts(null);
+      toast.error('Error al cargar el resumen de reportes');
     } finally {
       setIsLoading(false);
     }
@@ -86,114 +86,88 @@ export function AdminReports() {
     fetchSummary();
   }, [fetchSummary]);
 
-  const getRowCount = (id: string): number => {
-    if (!counts) return 0;
-    switch (id) {
-      case 'properties':
-        return counts.properties;
-      case 'contracts':
-        return counts.contracts;
-      case 'payments':
-        return counts.payments;
-      case 'users':
-        return counts.users;
-      case 'income':
-        return counts.income;
-      case 'calendar':
-        return counts.calendar;
-      default:
-        return 0;
-    }
-  };
-
-  const downloadReport = async (reportId: string) => {
-    toast.info('Generando reporte…');
-    try {
-      await report.downloadReport(reportId);
-      toast.success('Reporte descargado');
-    } catch {
-      toast.error('Error al descargar el reporte');
-    }
-  };
-
-  const regenerateReport = async (_reportId: string) => {
-    toast.info('Actualizando resumen…');
-    try {
-      await fetchSummary();
-      toast.success('Resumen actualizado');
-    } catch {
-      toast.error('Error al actualizar resumen');
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  const handleDownload = useCallback(
+    async (reportId: string) => {
+      try {
+        await report.downloadReport(reportId);
+        toast.success('Reporte descargado');
+      } catch {
+        toast.error('Error al descargar el reporte');
+      }
+    },
+    [report],
+  );
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Reportes" subtitle="Genera y descarga reportes del sistema" size="md" />
+      <PageHeader
+        title="Reportes"
+        subtitle="Genera y descarga reportes del sistema"
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {REPORT_META.map((reportMeta) => {
-          const Icon = reportMeta.icon;
-          return (
+      {isLoading ? (
+        <div className="flex min-h-[40vh] items-center justify-center">
+          <Spinner size="lg" label="Cargando reportes" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {REPORT_META.map((meta) => (
             <div
-              key={reportMeta.id}
-              className="bg-card rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow"
+              key={meta.id}
+              className="group rounded-xl border border-border-subtle bg-card p-5 shadow-elev-xs transition-all hover:-translate-y-0.5 hover:shadow-elev-md"
             >
-              <div className="p-6 border-b border-border">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className={`${reportMeta.iconColor} w-12 h-12 rounded-lg flex items-center justify-center`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-xl font-semibold text-foreground">{reportMeta.name}</h2>
-                    <p className="text-sm text-muted-foreground mt-1">{reportMeta.description}</p>
-                  </div>
+              <div className="flex items-start gap-4">
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg ring-1 ring-inset ring-border-subtle ${meta.iconColor}`}
+                >
+                  <meta.icon className="h-5 w-5" />
                 </div>
-
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span>{getRowCount(reportMeta.id)} registros</span>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-semibold text-foreground">{meta.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{meta.description}</p>
                 </div>
               </div>
-
-              <div className="p-4 bg-muted border-t border-border">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="text-xs text-muted-foreground truncate max-w-[45%]">
-                    Columnas: {reportMeta.dataColumns.join(', ')}
-                  </p>
-
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <button
-                      onClick={() => regenerateReport(reportMeta.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-card border border-border text-foreground rounded-lg hover:bg-muted transition-colors text-sm font-medium"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Regenerar
-                    </button>
-
-                    <button
-                      onClick={() => downloadReport(reportMeta.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-primary-muted text-primary-muted-foreground rounded-lg hover:bg-primary-muted transition-colors text-sm font-medium"
-                    >
-                      <Download className="w-4 h-4" />
-                      Descargar
-                    </button>
-                  </div>
-                </div>
+              <div className="mt-4 flex flex-wrap gap-1 text-xs text-muted-foreground">
+                {meta.dataColumns.slice(0, 4).map((col) => (
+                  <span
+                    key={col}
+                    className="rounded-full border border-border-subtle bg-surface px-2 py-0.5"
+                  >
+                    {col}
+                  </span>
+                ))}
+                {meta.dataColumns.length > 4 && (
+                  <span className="rounded-full border border-border-subtle bg-surface px-2 py-0.5">
+                    +{meta.dataColumns.length - 4}
+                  </span>
+                )}
               </div>
+              <button
+                type="button"
+                onClick={() => handleDownload(meta.id)}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+              >
+                <Download className="h-4 w-4" />
+                Descargar
+              </button>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {counts && (
+        <div className="rounded-xl border border-border-subtle bg-card p-6 shadow-elev-xs">
+          <h2 className="mb-4 text-h2 font-semibold text-foreground">Resumen</h2>
+          <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {Object.entries(counts).map(([key, value]) => (
+              <div key={key} className="rounded-lg bg-surface p-3">
+                <dt className="text-xs text-muted-foreground">{key}</dt>
+                <dd className="mt-1 text-h3 font-semibold text-foreground">{String(value)}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
     </div>
   );
 }

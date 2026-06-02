@@ -89,8 +89,8 @@ export function ArrendadorPropertyDetail() {
   const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
     try {
       await documentService.downloadDocument(doc.id!);
-    } catch (err) {
-      console.error('Error descargando:', err);
+    } catch {
+      console.error('Error descargando documento');
     }
   };
 
@@ -98,7 +98,7 @@ export function ArrendadorPropertyDetail() {
     try {
       await documentService.deleteDocument(doc.id!);
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id!));
-    } catch (err) {
+    } catch {
       alert('Error al eliminar el archivo');
     }
   };
@@ -137,7 +137,7 @@ export function ArrendadorPropertyDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
 
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-3xl font-semibold text-foreground mb-2">{property.name}</h1>
@@ -227,7 +227,7 @@ export function ArrendadorPropertyDetail() {
             onDelete={handleDelete}
           />
 
-          <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-4">
             <label className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground cursor-pointer font-medium">
               <Upload className="w-4 h-4" />
               <span>Subir documento</span>

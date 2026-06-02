@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Building2, Edit2Icon } from 'lucide-react';
+import { Trash2, Building2, Edit2 } from 'lucide-react';
 import type { User } from '../../types';
 import { useServices } from '../../services';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { PageHeader } from '../shared/dashboard/page-header';
+import { DataTable } from '../shared/ui/data-table';
+import { Spinner } from '../shared/ui/spinner';
+import { RoleBadge } from '../shared/ui/role-badge';
 
 export function AdminUsers() {
   const navigate = useRoleNavigation();
@@ -43,149 +46,124 @@ export function AdminUsers() {
     return matchesSearch && matchesRole && matchesStatus;
   });
 
-  const getUserRoleBadge = (role: string) => {
-    const badges = {
-      administrador: { bg: 'bg-destructive-muted', text: 'text-destructive-muted-foreground', label: 'Administrador' },
-      arrendador: { bg: 'bg-primary-muted', text: 'text-primary-muted-foreground', label: 'Arrendador' },
-      inquilino: { bg: 'bg-success-muted', text: 'text-success-muted-foreground', label: 'Inquilino' },
-    };
-    return badges[role as keyof typeof badges] || {};
-  };
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <Spinner size="lg" label="Cargando usuarios" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <PageHeader title='Usuarios' subtitle='Administra los usuarios del sistema' size='md' />
-        <button
-          onClick={() => navigate('/usuarios/nuevo')}
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary-hover transition-colors shadow-lg"
-        >
-          <Plus className="w-5 h-5" />
-          Agregar Usuario
-        </button>
-      </div>
+      <PageHeader
+        title="Usuarios"
+        subtitle="Administra los usuarios del sistema"
+        size="md"
+      />
 
-      {/* Filters */}
-      <div className="bg-card rounded-lg shadow-sm border border-border">
-        <div className="flex flex-wrap gap-4 p-4">
-            <div className='flex items-center'>
-                <label htmlFor="role-filter" className="mr-2 text-sm">Rol:</label>
-                <select id="role-filter" className="p-2 border rounded-md focus:ring-primary focus:border-primary">
-                    <option>Todos los roles</option>
-                    <option>Administrador</option>
-                    <option>Arrendador</option>
-                    <option>Inquilino</option>
-                </select>
-            </div>
-            <div className='flex items-center'>
-                <label htmlFor="status-filter" className="mr-2 text-sm">Estado:</label>
-                <select id="status-filter" className="p-2 border rounded-md focus:ring-primary focus:border-primary">
-                    <option>Todos los estados</option>
-                    <option>Activo</option>
-                    <option>Inactivo</option>
-                </select>
-            </div>
-        </div>
-      </div>
-
-      {/* Tabla de usuarios */}
-      <div className="overflow-x-auto shadow-lg rounded-lg border border-border">
-        <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-muted">
-                <tr className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    <th className="px-6 py-3">Nombre</th>
-                    <th className="px-6 py-3">Email</th>
-                    <th className="px-6 py-3">Rol</th>
-                    <th className="px-6 py-3">Estado</th>
-                    <th className="px-6 py-3">Propiedades</th>
-                    <th className="px-6 py-3 text-right">Acciones</th>
-                </tr>
-            </thead>
-            <tbody className="bg-card divide-y divide-gray-200">
-                {filteredUsers.length > 0 ? (
-                    filteredUsers.map((user) => {
-                        const roleBadge = getUserRoleBadge(user.role);
-                        const statusBadge = user.status === 'activo' ? 'bg-success-muted text-success-muted-foreground' : 'bg-warning-muted text-warning-muted-foreground';
-                        const propCount = user.properties?.length || 0;
-
-                        return (
-                            <tr key={user.id} className="hover:bg-muted transition-colors">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                                    {user.name}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                                    {user.email}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${roleBadge.bg} ${roleBadge.text}`}>
-                                        {roleBadge.label}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge}`}>
-                                        {user.status === 'activo' ? 'Activo' : 'Inactivo'}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                                    {propCount > 0 ? (
-                                        <div className="flex flex-wrap gap-1">
-                                            {user.properties?.map((propId) => (
-                                                <span key={propId} className="px-2 py-0.5 bg-primary-muted text-primary-muted-foreground text-xs rounded-full">
-                                                    #{typeof propId === 'number' ? propId : parseInt(propId)}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <span className="text-muted-foreground italic">Sin propiedades</span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div className="flex justify-end gap-3">
-                                        <button
-                                            onClick={() => navigate(`/usuarios/${user.id}`)}
-                                            className="text-primary hover:text-primary-hover transition-colors"
-                                            title="Ver detalles"
-                                        >
-                                            <Edit2Icon className="w-5 h-5" />
-                                        </button>
-                                        {user.role !== 'administrador' ? <button
-                                            onClick={() => navigate(`/usuarios/${user.id}/propiedades`)}
-                                            className="text-indigo-600 hover:text-indigo-900 transition-colors"
-                                            title="Ver propiedades"
-                                        >
-                                            <Building2 className="w-5 h-5" />
-                                        </button> : null}
-                                        <button
-                                            className="text-destructive hover:text-destructive-muted-foreground transition-colors"
-                                            title="Eliminar usuario"
-                                            onClick={() => {/* Lógica de eliminación */}}
-                                        >
-                                            <Trash2 className="w-5 h-5" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        );
-                    })
-                ) : (
-                    <tr>
-                        <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
-                            No se encontraron usuarios que cumplan con los filtros seleccionados.
-                        </td>
-                    </tr>
+      <DataTable
+        columns={[
+          {
+            key: 'name',
+            header: 'Nombre',
+            render: (user) => <span className="font-medium">{user.name}</span>,
+          },
+          {
+            key: 'email',
+            header: 'Correo',
+            cellClassName: 'text-muted-foreground',
+            render: (user) => user.email,
+          },
+          {
+            key: 'role',
+            header: 'Rol',
+            render: (user) => <RoleBadge role={user.role} />,
+          },
+          {
+            key: 'status',
+            header: 'Estado',
+            render: (user) =>
+              user.status === 'activo' ? (
+                <span className="inline-flex items-center gap-2 text-sm">
+                  <span className="h-2 w-2 rounded-full bg-success" aria-hidden="true" />
+                  <span className="text-foreground">Activo</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2 text-sm">
+                  <span className="h-2 w-2 rounded-full bg-warning" aria-hidden="true" />
+                  <span className="text-foreground">Inactivo</span>
+                </span>
+              ),
+          },
+          {
+            key: 'properties',
+            header: 'Propiedades',
+            cellClassName: 'text-muted-foreground',
+            render: (user) => {
+              const ids = user.properties ?? [];
+              if (ids.length === 0)
+                return <span className="italic text-muted-foreground">Sin propiedades</span>;
+              return (
+                <div className="flex flex-wrap gap-1">
+                  {ids.map((propId) => (
+                    <span
+                      key={propId}
+                      className="rounded-full bg-primary-muted px-2 py-0.5 text-xs text-primary-muted-foreground"
+                    >
+                      #{typeof propId === 'number' ? propId : parseInt(propId)}
+                    </span>
+                  ))}
+                </div>
+              );
+            },
+          },
+          {
+            key: 'actions',
+            header: 'Acciones',
+            headerClassName: 'text-right',
+            cellClassName: 'text-right',
+            render: (user) => (
+              <div className="inline-flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/usuarios/${user.id}`)}
+                  className="text-primary transition-colors hover:text-primary-hover"
+                  title="Ver detalles"
+                  aria-label="Ver detalles del usuario"
+                >
+                  <Edit2 className="h-5 w-5" />
+                </button>
+                {user.role !== 'administrador' && (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/usuarios/${user.id}/propiedades`)}
+                    className="text-primary transition-colors hover:text-primary-hover"
+                    title="Ver propiedades"
+                    aria-label="Ver propiedades del usuario"
+                  >
+                    <Building2 className="h-5 w-5" />
+                  </button>
                 )}
-            </tbody>
-        </table>
-      </div>
+                <button
+                  type="button"
+                  className="text-destructive transition-colors hover:text-destructive-muted-foreground"
+                  title="Eliminar usuario"
+                  aria-label="Eliminar usuario"
+                  onClick={() => {
+                    /* Lógica de eliminación */
+                  }}
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+              </div>
+            ),
+          },
+        ]}
+        rows={filteredUsers}
+        rowKey={(user) => user.id}
+        emptyMessage="No se encontraron usuarios que cumplan con los filtros seleccionados."
+      />
     </div>
   );
 }

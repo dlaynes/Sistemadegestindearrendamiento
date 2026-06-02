@@ -8,9 +8,9 @@ import {
   FilterButtons,
   SummaryCards,
   EmptyState,
-  ActionButton,
   TableListSkeleton,
 } from '../shared';
+import { Button } from '../ui/button';
 import type { ContractListItem } from '../../types';
 
 export function ArrendadorContracts() {
@@ -42,21 +42,33 @@ export function ArrendadorContracts() {
         title="Mis Contratos"
         subtitle="Administra tus contratos de arrendamiento"
         action={
-          <ActionButton
-            variant="primary"
-            icon={Plus}
-            onClick={() => navigate('/contratos/nuevo')}
-          >
+          <Button onClick={() => navigate('/contratos/nuevo')}>
+            <Plus className="h-4 w-4" />
             Nuevo Contrato
-          </ActionButton>
+          </Button>
         }
       />
 
       <SummaryCards
         cards={[
-          { label: 'Activos', value: String(myContracts.filter(c => c.status === 'activo').length), icon: FileText, color: 'bg-info' },
-          { label: 'Por vencer', value: String(myContracts.filter(c => c.status === 'proximo_vencer').length), icon: Clock, color: 'bg-warning' },
-          { label: 'Total', value: String(myContracts.length), icon: Calendar, color: 'bg-info' },
+          {
+            label: 'Activos',
+            value: String(myContracts.filter((c) => c.status === 'activo').length),
+            icon: FileText,
+            color: 'bg-info-muted text-info-muted-foreground',
+          },
+          {
+            label: 'Por vencer',
+            value: String(myContracts.filter((c) => c.status === 'proximo_vencer').length),
+            icon: Clock,
+            color: 'bg-warning-muted text-warning-muted-foreground',
+          },
+          {
+            label: 'Total',
+            value: String(myContracts.length),
+            icon: Calendar,
+            color: 'bg-info-muted text-info-muted-foreground',
+          },
         ]}
         columns={3}
       />
@@ -73,7 +85,7 @@ export function ArrendadorContracts() {
       />
 
       {filteredContracts.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {filteredContracts.map((contract) => (
             <ContractCard
               key={contract.id}

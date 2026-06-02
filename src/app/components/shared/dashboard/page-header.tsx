@@ -2,32 +2,17 @@ import * as React from 'react';
 import { cn } from '../../ui/utils';
 
 interface PageHeaderProps {
-  /**
-   * Page title
-   */
   title: string;
-  /**
-   * Optional subtitle/description
-   */
   subtitle?: string;
-  /**
-   * Optional action element (button, link, etc.)
-   */
   action?: React.ReactNode;
-  /**
-   * Optional additional class names
-   */
   className?: string;
-  /**
-   * Size variant
-   */
   size?: 'sm' | 'md' | 'lg';
 }
 
 const titleSizeClasses = {
-  sm: 'text-2xl',
-  md: 'text-3xl',
-  lg: 'text-4xl',
+  sm: 'text-h2',
+  md: 'text-h1',
+  lg: 'text-display',
 };
 
 const subtitleSizeClasses = {
@@ -36,23 +21,6 @@ const subtitleSizeClasses = {
   lg: 'text-lg',
 };
 
-/**
- * PageHeader - A consistent page header component
- * 
- * Usage:
- * ```tsx
- * <PageHeader
- *   title="Dashboard - Administrador"
- *   subtitle="Vista general del sistema de gestión"
- * />
- * 
- * <PageHeader
- *   title="Propiedades"
- *   subtitle="Gestiona tus propiedades"
- *   action={<Button>Agregar</Button>}
- * />
- * ```
- */
 export function PageHeader({
   title,
   subtitle,
@@ -63,21 +31,31 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4',
-        className
+        'flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between',
+        className,
       )}
     >
-      <div>
-        <h1 className={cn('font-bold text-foreground', titleSizeClasses[size])}>
+      <div className="min-w-0">
+        <h1
+          className={cn(
+            'font-semibold tracking-tight text-foreground',
+            titleSizeClasses[size],
+          )}
+        >
           {title}
         </h1>
         {subtitle && (
-          <p className={cn('text-muted-foreground mt-1', subtitleSizeClasses[size])}>
+          <p
+            className={cn(
+              'mt-1 text-muted-foreground',
+              subtitleSizeClasses[size],
+            )}
+          >
             {subtitle}
           </p>
         )}
       </div>
-      {action && <div className="flex-shrink-0">{action}</div>}
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

@@ -12,22 +12,43 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'rentmanager_theme';
+const ROOT = document.documentElement;
 
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function applyTheme(theme: Theme) {
+function applyTheme(theme: Theme): 'light' | 'dark' {
   const resolved = theme === 'system' ? getSystemTheme() : theme;
-  const root = document.documentElement;
   if (resolved === 'dark') {
-    root.classList.add('dark');
+    ROOT.classList.add('dark');
   } else {
-    root.classList.remove('dark');
+    ROOT.classList.remove('dark');
   }
   return resolved;
 }
+
+/**
+ * Force the document into light mode for the current subtree, without
+ * disturbing the user's stored preference. Used by the public pages
+ * (welcome / login / invitation) which are light-only by design.
+ *
+ * Cleans up on unmount by re-applying whatever the global theme provider
+ * last stored — so returning to the app restores the user's preference.
+ */
+function ForceLightTheme({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    const previous = ROOT.classList.contains('dark') ? 'dark' : 'light';
+    ROOT.classList.remove('dark');
+    return () => {
+      if (previous === 'dark') ROOT.classList.add('dark');
+    };
+  }, []);
+  return <>{children}</>;
+}
+
+export { ForceLightTheme };
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
