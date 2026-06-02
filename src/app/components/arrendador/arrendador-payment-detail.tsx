@@ -113,7 +113,7 @@ export function ArrendadorPaymentDetail() {
       </button>
 
       {/* Header */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
             <div
@@ -187,7 +187,7 @@ export function ArrendadorPaymentDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Payment Details */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">
               Detalles del Pago
             </h2>
@@ -240,7 +240,7 @@ export function ArrendadorPaymentDetail() {
 
           {/* Breakdown */}
           {payment.breakdown && payment.breakdown.length > 0 && (
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Desglose
               </h2>
@@ -268,7 +268,7 @@ export function ArrendadorPaymentDetail() {
 
           {/* Payment History */}
           {payment.relatedPayments && payment.relatedPayments.length > 0 && (
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Historial de Pagos Relacionados
               </h2>
@@ -322,7 +322,7 @@ export function ArrendadorPaymentDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Summary */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Resumen</h2>
             <div className="space-y-4">
               <div>
@@ -365,7 +365,7 @@ export function ArrendadorPaymentDetail() {
           </div>
 
           {/* Actions */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Acciones</h2>
             <div className="space-y-2">
               {payment.status === 'pagado' ? (
@@ -417,7 +417,7 @@ export function ArrendadorPaymentDetail() {
           </div>
 
           {/* Payment Stats */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Estadísticas</h2>
             <div className="space-y-4">
               <div>
@@ -446,7 +446,7 @@ export function ArrendadorPaymentDetail() {
 
           {/* Documents */}
           {payment.status === 'pagado' && (
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">Documentos</h2>
               <div className="space-y-2">
                 <button

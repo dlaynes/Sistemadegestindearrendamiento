@@ -107,8 +107,8 @@ export function ArrendadorContractDetail() {
   const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
     try {
       await documentService.downloadDocument(doc.id!);
-    } catch (err) {
-      console.error('Error descargando:', err);
+    } catch {
+      console.error('Error descargando documento');
     }
   };
 
@@ -116,7 +116,7 @@ export function ArrendadorContractDetail() {
     try {
       await documentService.deleteDocument(doc.id!);
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id!));
-    } catch (err) {
+    } catch {
       alert('Error al eliminar el archivo');
     }
   };
@@ -171,7 +171,7 @@ export function ArrendadorContractDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/contratos')} label="Volver a contratos" />
 
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-3xl font-semibold text-foreground mb-2">{contract.code}</h1>
@@ -260,7 +260,7 @@ export function ArrendadorContractDetail() {
             onDelete={handleDelete}
           />
 
-          <div className="bg-card rounded-lg shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-4">
             <label className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground cursor-pointer font-medium">
               <Upload className="w-4 h-4" />
               <span>Subir documento</span>

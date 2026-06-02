@@ -1,133 +1,119 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
-import { useAuth } from './contexts/auth-context';
 import { Login } from './components/login';
-import { Layout } from './components/layout';
+import { InvitationAccept } from './components/invitation-accept';
+import Welcome from './components/welcome';
+import { ProtectedLayout } from './components/protected-layout';
+import { ProtectedRoute } from './components/protected-route';
+import { Spinner } from './components/shared/ui/spinner';
+
+// Admin
 import { AdminDashboard } from './components/admin/admin-dashboard';
 import { AdminProperties } from './components/admin/admin-properties';
+import { AdminPropertyDetail } from './components/admin/admin-property-detail';
+import { AdminPropertyForm } from './components/admin/admin-property-form';
 import { AdminContracts } from './components/admin/admin-contracts';
+import { AdminContractDetail } from './components/admin/admin-contract-detail';
 import { AdminPayments } from './components/admin/admin-payments';
+import { AdminPaymentDetail } from './components/admin/admin-payment-detail';
 import { AdminUsers } from './components/admin/admin-users';
+import { AdminUserForm } from './components/admin/admin-user-form';
+import { AdminUserDetail } from './components/admin/admin-user-detail';
+import { AdminUserProperties } from './components/admin/admin-user-properties';
+import { AdminReports } from './components/admin/admin-reports';
+
+// Arrendador
 import { ArrendadorDashboard } from './components/arrendador/arrendador-dashboard';
 import { ArrendadorProperties } from './components/arrendador/arrendador-properties';
+import { ArrendadorPropertyDetail } from './components/arrendador/arrendador-property-detail';
+import { ArrendadorPropertyForm } from './components/arrendador/arrendador-property-form';
 import { ArrendadorContracts } from './components/arrendador/arrendador-contracts';
+import { ArrendadorContractDetail } from './components/arrendador/arrendador-contract-detail';
+import { ArrendadorContractWizard } from './components/arrendador/arrendador-contract-wizard';
 import { ArrendadorPayments } from './components/arrendador/arrendador-payments';
+import { ArrendadorPaymentDetail } from './components/arrendador/arrendador-payment-detail';
+import { ArrendadorMessages } from './components/arrendador/arrendador-messages';
+
+// Inquilino
 import { InquilinoDashboard } from './components/inquilino/inquilino-dashboard';
 import { InquilinoProperties } from './components/inquilino/inquilino-properties';
-import { InquilinoContracts } from './components/inquilino/inquilino-contracts';
-import { InquilinoPayments } from './components/inquilino/inquilino-payments';
-
-import { AdminContractDetail } from './components/admin/admin-contract-detail';
-import { ArrendadorContractDetail } from './components/arrendador/arrendador-contract-detail';
-import { InquilinoContractDetail } from './components/inquilino/inquilino-contract-detail';
-import { AdminUserForm } from './components/admin/admin-user-form';
-import { AdminPropertyDetail } from './components/admin/admin-property-detail';
-import { ArrendadorPropertyDetail } from './components/arrendador/arrendador-property-detail';
 import { InquilinoPropertyDetail } from './components/inquilino/inquilino-property-detail';
-import { Welcome } from './components/welcome';
-import { AdminPaymentDetail } from './components/admin/admin-payment-detail';
-import { ArrendadorPaymentDetail } from './components/arrendador/arrendador-payment-detail';
-import { AdminPropertyForm } from './components/admin/admin-property-form';
-import { ArrendadorPropertyForm } from './components/arrendador/arrendador-property-form';
 import { InquilinoPropertyForm } from './components/inquilino/inquilino-property-form';
-import { AdminContractWizard } from './components/admin/admin-contract-wizard';
-import { ArrendadorContractWizard } from './components/arrendador/arrendador-contract-wizard';
-import { InquilinoPaymentForm } from './components/inquilino/inquilino-payment-form';
-import { ArrendadorMessages } from './components/arrendador/arrendador-messages';
-import { InquilinoMessages } from './components/inquilino/inquilino-messages';
+import { InquilinoContracts } from './components/inquilino/inquilino-contracts';
+import { InquilinoContractDetail } from './components/inquilino/inquilino-contract-detail';
+import { InquilinoPayments } from './components/inquilino/inquilino-payments';
 import { InquilinoPaymentDetail } from './components/inquilino/inquilino-payment-detail';
-import { AdminReports } from './components/admin/admin-reports';
-import { InvitationAccept } from './components/invitation-accept';
-
-function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
-  const { user, isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Verificando sesión...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    return <Navigate to={`/${user.role.toLowerCase()}/dashboard`} replace />;
-  }
-
-  return <>{children}</>;
-}
-
-function RoleLayout({ allowedRoles }: { allowedRoles: string[] }) {
-  return (
-    <ProtectedRoute allowedRoles={allowedRoles}>
-      <Layout />
-    </ProtectedRoute>
-  );
-}
+import { InquilinoPaymentForm } from './components/inquilino/inquilino-payment-form';
+import { InquilinoMessages } from './components/inquilino/inquilino-messages';
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/invitation" element={<InvitationAccept />} />
         <Route path="/login" element={<Login />} />
-        
-        {/* Rutas de Administrador */}
+        <Route path="/invitation" element={<InvitationAccept />} />
+
+        {/* Admin */}
         <Route
           path="/administrador"
-          element={<RoleLayout allowedRoles={['administrador']} />}
+          element={
+            <ProtectedRoute allowedRoles={['administrador']}>
+              <ProtectedLayout />
+            </ProtectedRoute>
+          }
         >
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="usuarios" element={<AdminUsers />} />
-          <Route path="usuarios/nuevo" element={<AdminUserForm />} />
-          <Route path="usuarios/:id" element={<AdminUserForm />} />
-          <Route path="usuarios/:id/editar" element={<AdminUserForm />} />
-          <Route path="usuarios/:id/propiedades" element={<AdminProperties />} />
+          <Route path="propiedades" element={<AdminProperties />} />
           <Route path="propiedades/nueva" element={<AdminPropertyForm />} />
           <Route path="propiedades/:id" element={<AdminPropertyDetail />} />
           <Route path="propiedades/:id/editar" element={<AdminPropertyForm />} />
           <Route path="contratos" element={<AdminContracts />} />
           <Route path="contratos/:id" element={<AdminContractDetail />} />
-          <Route path="contratos/nuevo" element={<AdminContractWizard />} />
-          <Route path="contratos/:id/editar" element={<AdminContractWizard />} />
           <Route path="pagos" element={<AdminPayments />} />
           <Route path="pagos/:id" element={<AdminPaymentDetail />} />
+          <Route path="usuarios" element={<AdminUsers />} />
+          <Route path="usuarios/nuevo" element={<AdminUserForm />} />
+          <Route path="usuarios/:id" element={<AdminUserDetail />} />
+          <Route path="usuarios/:id/editar" element={<AdminUserForm />} />
+          <Route path="usuarios/:id/propiedades" element={<AdminUserProperties />} />
           <Route path="reportes" element={<AdminReports />} />
         </Route>
 
-        {/* Rutas de Arrendador */}
+        {/* Arrendador */}
         <Route
           path="/arrendador"
-          element={<RoleLayout allowedRoles={['arrendador']} />}
+          element={
+            <ProtectedRoute allowedRoles={['arrendador']}>
+              <ProtectedLayout />
+            </ProtectedRoute>
+          }
         >
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ArrendadorDashboard />} />
           <Route path="propiedades" element={<ArrendadorProperties />} />
           <Route path="propiedades/nueva" element={<ArrendadorPropertyForm />} />
           <Route path="propiedades/:id" element={<ArrendadorPropertyDetail />} />
           <Route path="propiedades/:id/editar" element={<ArrendadorPropertyForm />} />
           <Route path="contratos" element={<ArrendadorContracts />} />
-          <Route path="contratos/:id" element={<ArrendadorContractDetail />} />
           <Route path="contratos/nuevo" element={<ArrendadorContractWizard />} />
-          <Route path="contratos/:id/editar" element={<ArrendadorContractWizard />} />
+          <Route path="contratos/:id" element={<ArrendadorContractDetail />} />
           <Route path="pagos" element={<ArrendadorPayments />} />
           <Route path="pagos/:id" element={<ArrendadorPaymentDetail />} />
           <Route path="mensajes" element={<ArrendadorMessages />} />
         </Route>
 
-        {/* Rutas de Inquilino */}
+        {/* Inquilino */}
         <Route
           path="/inquilino"
-          element={<RoleLayout allowedRoles={['inquilino']} />}
+          element={
+            <ProtectedRoute allowedRoles={['inquilino']}>
+              <ProtectedLayout />
+            </ProtectedRoute>
+          }
         >
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<InquilinoDashboard />} />
           <Route path="propiedades" element={<InquilinoProperties />} />
-          <Route path="propiedades/nueva" element={<InquilinoPropertyForm />} />
           <Route path="propiedades/:id" element={<InquilinoPropertyDetail />} />
           <Route path="propiedades/:id/editar" element={<InquilinoPropertyForm />} />
           <Route path="contratos" element={<InquilinoContracts />} />
@@ -138,10 +124,17 @@ export function AppRouter() {
           <Route path="mensajes" element={<InquilinoMessages />} />
         </Route>
 
-        {/* Ruta raíz - Página de bienvenida */}
         <Route path="/" element={<Welcome />} />
-        
       </Routes>
     </BrowserRouter>
+  );
+}
+
+// Re-export the loading fallback for protected-route.tsx and protected-layout.tsx
+export function RouterLoadingFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <Spinner size="xl" label="Cargando" />
+    </div>
   );
 }

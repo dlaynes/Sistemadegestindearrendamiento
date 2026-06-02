@@ -153,7 +153,7 @@ export function InquilinoPaymentForm() {
         </button>
       </div>
 
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-success-muted p-3 rounded-lg">
             <DollarSign className="w-6 h-6 text-success" />

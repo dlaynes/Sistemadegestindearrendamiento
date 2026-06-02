@@ -1,5 +1,5 @@
 import { cn } from '../../ui/utils';
-import { ActionButton } from '../ui/action-button';
+import { Button } from '../../ui/button';
 
 interface FormActionsProps {
   onCancel: () => void;
@@ -31,37 +31,25 @@ export function FormActions({
   return (
     <div
       className={cn(
-        'flex flex-col sm:flex-row gap-3 pt-6 border-t border-border',
+        'flex flex-col gap-3 border-t border-border-subtle pt-6 sm:flex-row',
         showDelete ? 'justify-between' : 'justify-end',
-        className
+        className,
       )}
     >
       {showDelete && onDelete && (
-        <ActionButton
-          variant="danger"
-          onClick={onDelete}
-          disabled={isLoading}
-        >
+        <Button type="button" variant="destructive" onClick={onDelete} disabled={isLoading}>
           {deleteLabel}
-        </ActionButton>
+        </Button>
       )}
-      
+
       <div className="flex gap-3">
-        <ActionButton
-          variant="secondary"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
           {cancelLabel}
-        </ActionButton>
-        
-        <ActionButton
-          variant="primary"
-          onClick={onSubmit}
-          disabled={isLoading}
-        >
+        </Button>
+
+        <Button type="submit" variant="default" onClick={onSubmit} disabled={isLoading}>
           {submitLabel || defaultSubmitLabel}
-        </ActionButton>
+        </Button>
       </div>
     </div>
   );

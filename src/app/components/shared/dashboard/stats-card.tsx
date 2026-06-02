@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
-import { TrendingUp } from 'lucide-react';
 import { cn } from '../../ui/utils';
+import { StatTile } from '../ui/stat-tile';
 
 interface StatsCardProps {
   label: string;
@@ -12,35 +12,26 @@ interface StatsCardProps {
   showTrend?: boolean;
 }
 
+/**
+ * StatsCard — kept as a thin alias to the modern StatTile primitive.
+ * The previous `color` prop (e.g. "bg-info") is ignored; StatusIcon styling
+ * is owned by StatTile. Existing callers continue to work unchanged.
+ */
 export function StatsCard({
   label,
   value,
-  icon: Icon,
-  color,
+  icon,
   change,
   className,
-  showTrend = true,
+  showTrend: _showTrend = true,
 }: StatsCardProps) {
   return (
-    <div
-      className={cn(
-        'bg-card rounded-lg shadow-sm p-6 border border-border',
-        className
-      )}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className={cn('p-3 rounded-lg', color)}>
-          <Icon className="w-6 h-6 text-white" />
-        </div>
-        {showTrend && (
-          <TrendingUp className="w-5 h-5 text-success" />
-        )}
-      </div>
-      <h3 className="text-2xl font-bold text-foreground mb-1">{value}</h3>
-      <p className="text-sm text-muted-foreground mb-2">{label}</p>
-      {change && (
-        <p className="text-xs text-success font-medium">{change}</p>
-      )}
-    </div>
+    <StatTile
+      label={label}
+      value={value}
+      icon={icon}
+      trend={change ? { value: change, direction: 'up' } : undefined}
+      className={cn(className)}
+    />
   );
 }

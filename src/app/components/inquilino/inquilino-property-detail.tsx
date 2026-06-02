@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import { 
-  Building2, 
-  MapPin, 
-  DollarSign, 
-  BedDouble, 
-  Bath, 
-  Maximize, 
+import {
+  Building2,
+  MapPin,
+  DollarSign,
+  BedDouble,
+  Bath,
+  Maximize,
   User,
   FileText,
   Calendar,
@@ -15,76 +15,49 @@ import {
 } from 'lucide-react';
 import { useProperty } from '../../contexts/property-context';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
-import { useServices } from '../../services';
-import { 
-  BackButton, 
-  StatusBadge, 
-  InfoCard, 
+import {
+  BackButton,
+  StatusBadge,
+  InfoCard,
   DocumentList,
-  EmptyState 
+  EmptyState,
 } from '../shared';
 import type { Document as Doc } from '../shared/detail/document-list';
+import { Spinner } from '../shared/ui/spinner';
 
 export function InquilinoPropertyDetail() {
   const { id } = useParams();
   const { getPropertyById } = useProperty();
   const property = id ? getPropertyById(id) : undefined;
   const navigate = useRoleNavigation();
-  
-  const { document: documentService } = useServices();
 
   const [documents, setDocuments] = useState<Doc[]>([]);
+  const [isLoadingDocs, setIsLoadingDocs] = useState(true);
 
+  // Tenant cannot upload/delete; documents are read-only.
   useEffect(() => {
-    if (!property?.id) return;
-    let cancelled = false;
-    documentService
-      .getDocuments('PROPERTY', property.id)
-      .then((data) => {
-        if (!cancelled) {
-          setDocuments(
-            data.map((d) => ({
-              id: d.id,
-              name: d.name,
-              size: d.size < 1024 ? `${d.size} B` : d.size < 1024 * 1024 ? `${(d.size / 1024).toFixed(1)} KB` : `${(d.size / (1024 * 1024)).toFixed(1)} MB`,
-              type: d.contentType,
-            }))
-          );
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setDocuments([]);
-      });
-    return () => { cancelled = true; };
-  }, [property?.id, documentService]);
-
-  const handleDownload = async (doc: { name: string; size: string; type?: string; id?: string | number }) => {
-    try {
-      await documentService.downloadDocument(doc.id!);
-    } catch (err) {
-      console.error('Error descargando:', err);
+    if (!property?.id) {
+      setIsLoadingDocs(false);
+      return;
     }
-  };
+    setDocuments([]);
+    setIsLoadingDocs(false);
+  }, [property?.id]);
 
   if (!property) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="space-y-6">
+        <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
+        <EmptyState
+          icon={Building2}
+          title="Propiedad no encontrada"
+          description="La propiedad que buscas no existe o ya no está disponible"
+          action={{
+            label: 'Volver a Propiedades',
+            onClick: () => navigate('/propiedades'),
+          }}
+        />
       </div>
-    );
-  }
-
-  if (!property) {
-    return (
-      <EmptyState
-        icon={Building2}
-        title="Propiedad no encontrada"
-        description="La propiedad que buscas no existe"
-        action={{
-          label: 'Volver a Propiedades',
-          onClick: () => navigate('/propiedades'),
-        }}
-      />
     );
   }
 
@@ -108,21 +81,21 @@ export function InquilinoPropertyDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
 
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-        <div className="flex items-start justify-between mb-4">
+      <div className="rounded-xl border border-border-subtle bg-card p-6 shadow-elev-xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-3xl font-semibold text-foreground mb-2">{property.name}</h1>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <MapPin className="w-5 h-5" />
-              <span className="text-lg">{property.address}</span>
+            <h1 className="text-h1 font-semibold text-foreground">{property.name}</h1>
+            <div className="mt-1 flex items-center gap-2 text-muted-foreground">
+              <MapPin className="h-5 w-5" />
+              <span>{property.address}</span>
             </div>
           </div>
           <StatusBadge status={property.status} type="property" size="lg" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
           <InfoCard
             title="Información Principal"
             icon={Building2}
@@ -136,19 +109,23 @@ export function InquilinoPropertyDetail() {
             columns={1}
           />
 
-          <InfoCard
-            title="Amenidades"
-            icon={CheckCircle}
-            columns={2} items={[]}          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {(property.amenities || []).map((amenity, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-success" />
-                  <span className="text-foreground">{amenity}</span>
-                </div>
-              ))}
-            </div>
-          </InfoCard>
+          {property.amenities.length > 0 && (
+            <InfoCard
+              title="Amenidades"
+              icon={CheckCircle}
+              columns={2}
+              items={[]}
+            >
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {property.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-success" />
+                    <span className="text-foreground">{amenity}</span>
+                  </div>
+                ))}
+              </div>
+            </InfoCard>
+          )}
 
           <InfoCard
             title="Detalles Adicionales"
@@ -158,37 +135,33 @@ export function InquilinoPropertyDetail() {
         </div>
 
         <div className="space-y-6">
-          {property.status === 'ocupado' ? (
+          {property.tenantName ? (
             <InfoCard
-              title="Mi Arriendo"
+              title="Inquilino Actual"
               icon={User}
               items={[
-                { label: 'Estado', value: 'Arriendo activo' },
-                { label: 'Inquilino', value: property.tenantName || 'Yo' },
+                { label: 'Nombre', value: property.tenantName },
+                { label: 'Estado', value: 'Inquilino activo' },
               ]}
-            >
-              <button 
-                onClick={() => navigate(`/contratos`)}
-                className="w-full bg-primary-muted text-primary-muted-foreground py-2 rounded-lg hover:bg-primary-muted transition-colors font-medium"
-              >
-                Ver Contrato
-              </button>
-            </InfoCard>
+            />
           ) : (
             <InfoCard
-              title="Información"
+              title="Estado"
               icon={AlertCircle}
-              items={[
-                { label: 'Estado', value: 'Propiedad disponible' },
-              ]}
+              items={[{ label: 'Disponibilidad', value: 'Lista para arrendar' }]}
             />
           )}
 
-          <DocumentList
-            title="Documentos"
-            documents={documents}
-            onDownload={handleDownload}
-          />
+          {isLoadingDocs ? (
+            <div className="flex items-center justify-center rounded-xl border border-border-subtle bg-card p-12 shadow-elev-xs">
+              <Spinner size="md" label="Cargando documentos" />
+            </div>
+          ) : (
+            <DocumentList
+              title="Documentos"
+              documents={documents}
+            />
+          )}
         </div>
       </div>
     </div>

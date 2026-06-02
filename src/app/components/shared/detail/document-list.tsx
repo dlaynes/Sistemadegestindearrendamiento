@@ -31,58 +31,69 @@ export function DocumentList({
   const DefaultIcon = FileText;
 
   return (
-    <div className={cn('bg-card rounded-lg shadow-sm border border-border', className)}>
-      <div className="p-4 border-b border-border">
-        <h3 className="font-semibold text-foreground">{title}</h3>
+    <div
+      className={cn(
+        'rounded-xl border border-border-subtle bg-card shadow-elev-xs',
+        className,
+      )}
+    >
+      <div className="border-b border-border-subtle px-4 py-3">
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       </div>
-      
-      <div className="divide-y divide-gray-200">
+
+      <div className="divide-y divide-border-subtle">
         {documents.length === 0 ? (
-          <div className="p-4 text-center text-muted-foreground">{emptyMessage}</div>
+          <div className="p-4 text-center text-sm text-muted-foreground">{emptyMessage}</div>
         ) : (
           documents.map((doc, index) => {
             const IconComponent = doc.icon || DefaultIcon;
             return (
               <div
                 key={index}
-                className="p-4 flex items-center justify-between hover:bg-muted transition-colors"
+                className="flex items-center justify-between p-4 transition-colors hover:bg-surface"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-muted rounded-lg">
-                    <IconComponent className="w-5 h-5 text-muted-foreground" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface text-muted-foreground ring-1 ring-inset ring-border-subtle">
+                    <IconComponent className="h-5 w-5" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">{doc.name}</p>
                     <p className="text-sm text-muted-foreground">{doc.size}</p>
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-2">
+
+                <div className="flex items-center gap-1">
                   {onView && (
                     <button
+                      type="button"
                       onClick={() => onView(doc)}
-                      className="p-2 text-muted-foreground hover:text-primary transition-colors"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
                       title="Ver"
+                      aria-label="Ver documento"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="h-4 w-4" />
                     </button>
                   )}
                   {onDownload && (
                     <button
+                      type="button"
                       onClick={() => onDownload(doc)}
-                      className="p-2 text-muted-foreground hover:text-primary transition-colors"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-surface hover:text-primary"
                       title="Descargar"
+                      aria-label="Descargar documento"
                     >
-                      <Download className="w-4 h-4" />
+                      <Download className="h-4 w-4" />
                     </button>
                   )}
                   {onDelete && (
                     <button
+                      type="button"
                       onClick={() => onDelete(doc)}
-                      className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-destructive-muted hover:text-destructive"
                       title="Eliminar"
+                      aria-label="Eliminar documento"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   )}
                 </div>

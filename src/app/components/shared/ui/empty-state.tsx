@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '../../ui/utils';
+import { Button } from '../../ui/button';
 
 export interface EmptyStateProps {
   icon: LucideIcon;
@@ -25,6 +26,12 @@ const containerPaddingClasses = {
   lg: 'py-16',
 };
 
+const iconContainerClasses = {
+  sm: 'p-3',
+  md: 'p-4',
+  lg: 'p-6',
+};
+
 export function EmptyState({
   icon: Icon,
   title,
@@ -36,30 +43,27 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center text-center',
+        'flex flex-col items-center justify-center rounded-xl border border-border-subtle bg-card px-6 text-center',
         containerPaddingClasses[iconSize],
-        className
+        className,
       )}
     >
       <div
         className={cn(
-          'flex items-center justify-center rounded-full bg-muted mb-4',
-          iconSize === 'sm' ? 'p-3' : iconSize === 'md' ? 'p-4' : 'p-6'
+          'mb-4 flex items-center justify-center rounded-full bg-surface text-muted-foreground ring-1 ring-inset ring-border-subtle',
+          iconContainerClasses[iconSize],
         )}
       >
-        <Icon className={cn('text-muted-foreground', iconSizeClasses[iconSize])} />
+        <Icon className={cn(iconSizeClasses[iconSize])} aria-hidden="true" />
       </div>
-      <h3 className="text-lg font-medium text-foreground mb-2">{title}</h3>
+      <h3 className="mb-1 text-h3 font-semibold text-foreground">{title}</h3>
       {description && (
-        <p className="text-sm text-muted-foreground max-w-sm mb-4">{description}</p>
+        <p className="mb-4 max-w-sm text-sm text-muted-foreground">{description}</p>
       )}
       {action && (
-        <button
-          onClick={action.onClick}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition-colors font-medium"
-        >
+        <Button onClick={action.onClick} variant="default" size="default">
           {action.label}
-        </button>
+        </Button>
       )}
     </div>
   );
