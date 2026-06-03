@@ -295,4 +295,51 @@ export const handlers = [
       headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
     })
   }),
+
+  // Alerts
+  http.get(`${API_BASE}/alerts/mine`, () => {
+    return HttpResponse.json({
+      items: [
+        {
+          id: 1,
+          category: 'payment',
+          severity: 'warning',
+          title: 'Pago vencido',
+          body: 'Tienes un pago vencido por $1,500.',
+          actionUrl: '/inquilino/pagos/1',
+          sourceType: 'PAYMENT',
+          sourceId: 1,
+          createdAt: '2026-05-15T10:00:00',
+          seenAt: null,
+          dismissedAt: null,
+          unread: true,
+        },
+        {
+          id: 2,
+          category: 'contract',
+          severity: 'warning',
+          title: 'Contrato próximo a vencer',
+          body: 'El contrato CNT-001 vence en 15 días.',
+          actionUrl: '/arrendador/contratos/1',
+          sourceType: 'CONTRACT_EXPIRY',
+          sourceId: 1,
+          createdAt: '2026-05-16T10:00:00',
+          seenAt: null,
+          dismissedAt: null,
+          unread: true,
+        },
+      ],
+      unreadCount: 2,
+    })
+  }),
+  http.post(`${API_BASE}/alerts/:id/seen`, () => {
+    return HttpResponse.json({ id: 1, seen: true })
+  }),
+  http.post(`${API_BASE}/alerts/seen-all`, () => {
+    return HttpResponse.json({ updated: 2 })
+  }),
+  http.post(`${API_BASE}/alerts/:id/dismiss`, () => {
+    return HttpResponse.json({ id: 1, dismissed: true })
+  }),
+
 ]

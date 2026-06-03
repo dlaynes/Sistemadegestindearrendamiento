@@ -17,6 +17,7 @@ import { useTheme } from '../contexts/theme-context';
 import { useState, useEffect } from 'react';
 import { Avatar } from './shared';
 import { RoleBadge } from './shared/ui/role-badge';
+import { AlertBell } from './shared/alerts/alert-bell';
 import { cn } from './ui/utils';
 
 export function Layout() {
@@ -131,6 +132,9 @@ export function Layout() {
           <ThemeIcon className="h-5 w-5" />
           <span>{resolvedTheme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
         </button>
+        <div className="px-1 pt-1">
+          <AlertBell />
+        </div>
 
         {user && (
           <div className="mt-2 flex items-center gap-3 rounded-md bg-surface px-3 py-2">
@@ -183,14 +187,17 @@ export function Layout() {
           </div>
           <span className="font-semibold text-foreground">RentManager</span>
         </div>
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
-          aria-label="Cambiar tema"
-        >
-          <ThemeIcon className="h-5 w-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <AlertBell />
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+            aria-label="Cambiar tema"
+          >
+            <ThemeIcon className="h-5 w-5" />
+          </button>
+        </div>
       </header>
 
       {/* Mobile sidebar */}

@@ -144,6 +144,7 @@ export function PaymentProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePayment() {
   const context = useContext(PaymentContext);
   if (context === undefined) {

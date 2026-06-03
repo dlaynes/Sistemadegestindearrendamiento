@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, ReactNode } from 'react';
 import type { AuthService } from './auth.service';
 import type { PropertyService } from './property.service';
@@ -13,6 +14,7 @@ import { ApiContractService } from './contract.service';
 import { ApiPaymentService } from './payment.service';
 import { ApiDashboardService } from './dashboard.service';
 import { ApiMessageService } from './message.service';
+import { AlertService, ApiAlertService } from './alert.service';
 import { ApiDocumentService } from './document.service';
 import { ApiReportService } from './report.service';
 
@@ -23,6 +25,7 @@ export interface Services {
   payment: PaymentService;
   dashboard: DashboardService;
   message: MessageService;
+  alert: AlertService;
   document: DocumentService;
   report: ReportService;
 }
@@ -35,6 +38,7 @@ export function createServices(): Services {
     payment: new ApiPaymentService(),
     dashboard: new ApiDashboardService(),
     message: new ApiMessageService(),
+    alert: new ApiAlertService(),
     document: new ApiDocumentService(),
     report: new ApiReportService(),
   };

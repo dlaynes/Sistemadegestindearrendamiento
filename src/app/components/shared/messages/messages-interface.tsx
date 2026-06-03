@@ -74,7 +74,10 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
   const markAsRead = useMarkAsRead();
   const startConversation = useStartConversation();
 
-  const conversations = conversationsQuery.data ?? [];
+  const conversations = useMemo(
+    () => conversationsQuery.data ?? [],
+    [conversationsQuery.data],
+  );
   const activeConversation = useMemo(
     () => conversations.find((c) => String(c.id) === String(activeId)) ?? null,
     [conversations, activeId],
