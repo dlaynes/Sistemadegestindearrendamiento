@@ -6,3 +6,4 @@ export * from './payment';
 export * from './user';
 export * from './alert-type';
 export * from './alert';
+export * from './contract-amendment';

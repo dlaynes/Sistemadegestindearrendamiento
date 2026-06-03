@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react';
+import { ProposeAmendmentDialog, AmendmentTimeline, AmendmentDecisionDialog } from '../shared/amendments';
+import { Button } from '../ui/button';
+import { useAuth } from '../../contexts/auth-context';
+import type { ContractAmendment } from '../../types/contract-amendment';
 import { useParams } from 'react-router';
 import { 
   FileText, 
@@ -42,6 +46,10 @@ export function ArrendadorContractDetail() {
 
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoadingPayments, setIsLoadingPayments] = useState(true);
+  const [proposeOpen, setProposeOpen] = useState(false);
+  const [decisionTarget, setDecisionTarget] = useState<ContractAmendment | null>(null);
+  const [decisionKind, setDecisionKind] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
+  const { user } = useAuth();
   const [documents, setDocuments] = useState<Doc[]>([]);
 
   useEffect(() => {
@@ -192,6 +200,33 @@ export function ArrendadorContractDetail() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+
+        <section className="rounded-xl border border-border-subtle bg-card p-6 shadow-elev-xs xl:col-span-2">
+          <header className="mb-4 flex items-center justify-between">
+            <h2 className="text-h2 font-semibold text-foreground">Historial de enmiendas</h2>
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={() => setProposeOpen(true)}
+            >
+              Proponer cambio
+            </Button>
+          </header>
+          <AmendmentTimeline
+            contractId={contract.id}
+            currentUserId={user?.id != null ? Number(user.id) : undefined}
+            currentUserRole={user?.role}
+            onApprove={(a) => {
+              setDecisionTarget(a);
+              setDecisionKind('APPROVED');
+            }}
+            onReject={(a) => {
+              setDecisionTarget(a);
+              setDecisionKind('REJECTED');
+            }}
+          />
+        </section>
           <InfoCard
             title="Información del Contrato"
             icon={FileText}
@@ -281,10 +316,10 @@ export function ArrendadorContractDetail() {
                 variant: 'primary' 
               },
               { 
-                label: 'Renovar', 
+                label: 'Proponer cambio', 
                 icon: Calendar, 
-                onClick: () => console.log('Renovar'), 
-                variant: 'secondary' 
+                onClick: () => setProposeOpen(true), 
+                variant: 'primary' 
               },
               { 
                 label: 'Descargar PDF', 
@@ -320,6 +355,18 @@ export function ArrendadorContractDetail() {
           />
         </div>
       </div>
+      <ProposeAmendmentDialog
+        contractId={contract.id}
+        open={proposeOpen}
+        onOpenChange={setProposeOpen}
+      />
+      <AmendmentDecisionDialog
+        contractId={contract.id}
+        amendment={decisionTarget}
+        decision={decisionKind}
+        open={decisionTarget != null}
+        onOpenChange={(o) => !o && setDecisionTarget(null)}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AmendmentTimeline } from '../shared/amendments';
 import { useParams } from 'react-router';
 import { 
   FileText, 
@@ -323,6 +324,14 @@ export function AdminContractDetail() {
             ]}
           />
         </div>
+
+        <section className="rounded-xl border border-border-subtle bg-card p-6 shadow-elev-xs xl:col-span-2">
+          <header className="mb-4">
+            <h2 className="text-h2 font-semibold text-foreground">Historial de enmiendas</h2>
+            <p className="text-sm text-muted-foreground">Solo lectura.</p>
+          </header>
+          <AmendmentTimeline contractId={contract.id} />
+        </section>
       </div>
     </div>
   );

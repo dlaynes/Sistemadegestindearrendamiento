@@ -342,4 +342,101 @@ export const handlers = [
     return HttpResponse.json({ id: 1, dismissed: true })
   }),
 
+
+  // Contract amendments
+  http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () => {
+    return HttpResponse.json([
+      {
+        id: 1,
+        contractId: 1,
+        proposedByUserId: 1,
+        proposedByRole: 'arrendador',
+        status: 'pending_tenant',
+        proposedChanges: { monthlyRent: '1700' },
+        reason: 'Ajuste anual',
+        createdAt: '2026-06-01T10:00:00',
+        decidedAt: null,
+        decidedByUserId: null,
+        deciderRole: null,
+        decisionNote: null,
+        expiresAt: '2026-06-15T10:00:00',
+      },
+      {
+        id: 2,
+        contractId: 1,
+        proposedByUserId: 1,
+        proposedByRole: 'arrendador',
+        status: 'pending_tenant',
+        proposedChanges: { status: 'cancelado' },
+        reason: 'Venta de la propiedad',
+        createdAt: '2026-06-02T11:00:00',
+        decidedAt: null,
+        decidedByUserId: null,
+        deciderRole: null,
+        decisionNote: null,
+        expiresAt: '2026-06-16T11:00:00',
+      },
+    ])
+  }),
+  http.post(`${API_BASE}/landlord/contracts/:id/amendments`, async () => {
+    return HttpResponse.json({
+      id: 99,
+      contractId: 1,
+      proposedByUserId: 1,
+      proposedByRole: 'arrendador',
+      status: 'pending_tenant',
+      proposedChanges: { monthlyRent: '1700' },
+      reason: 'Ajuste anual',
+      createdAt: new Date().toISOString(),
+      decidedAt: null,
+      decidedByUserId: null,
+      deciderRole: null,
+      decisionNote: null,
+      expiresAt: new Date(Date.now() + 14 * 86400_000).toISOString(),
+    })
+  }),
+  http.post(`${API_BASE}/landlord/contracts/:id/amendments/:amendmentId/decision`, async () => {
+    return HttpResponse.json({
+      id: 1,
+      contractId: 1,
+      proposedByUserId: 1,
+      proposedByRole: 'arrendador',
+      status: 'approved',
+      proposedChanges: { monthlyRent: '1700' },
+      reason: 'Ajuste anual',
+      createdAt: '2026-06-01T10:00:00',
+      decidedAt: new Date().toISOString(),
+      decidedByUserId: 2,
+      deciderRole: 'inquilino',
+      decisionNote: null,
+      expiresAt: '2026-06-15T10:00:00',
+    })
+  }),
+  http.post(`${API_BASE}/landlord/contracts/:id/amendments/:amendmentId/withdraw`, async () => {
+    return HttpResponse.json({
+      id: 1, contractId: 1, proposedByUserId: 1, proposedByRole: 'arrendador',
+      status: 'withdrawn', proposedChanges: { monthlyRent: '1700' },
+      reason: 'Ajuste anual', createdAt: '2026-06-01T10:00:00',
+      decidedAt: new Date().toISOString(), decidedByUserId: 1,
+      deciderRole: 'arrendador', decisionNote: null, expiresAt: '2026-06-15T10:00:00',
+    })
+  }),
+  // Admin read-only
+  http.get(`${API_BASE}/admin/contracts/:id/amendments`, () => {
+    return HttpResponse.json([])
+  }),
+  // Tenant paths (used by inquilino role)
+  http.get(`${API_BASE}/tenant/contracts/:id/amendments`, () => {
+    return HttpResponse.json([])
+  }),
+  http.post(`${API_BASE}/tenant/contracts/:id/amendments`, async () => {
+    return HttpResponse.json({
+      id: 100, contractId: 1, proposedByUserId: 2, proposedByRole: 'inquilino',
+      status: 'pending_landlord', proposedChanges: { status: 'cancelado' },
+      reason: 'Me mudo a Lima', createdAt: new Date().toISOString(),
+      decidedAt: null, decidedByUserId: null, deciderRole: null, decisionNote: null,
+      expiresAt: new Date(Date.now() + 14 * 86400_000).toISOString(),
+    })
+  }),
+
 ]

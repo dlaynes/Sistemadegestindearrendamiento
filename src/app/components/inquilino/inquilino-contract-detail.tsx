@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react';
+import { AmendmentTimeline, AmendmentDecisionDialog, ProposeAmendmentDialog } from '../shared/amendments';
+import { Button } from '../ui/button';
+import { useAuth } from '../../contexts/auth-context';
+import type { ContractAmendment } from '../../types/contract-amendment';
 import { useParams } from 'react-router';
 import { FileText, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
@@ -18,6 +22,10 @@ export function InquilinoContractDetail() {
 
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoadingPayments, setIsLoadingPayments] = useState(true);
+  const [proposeOpen, setProposeOpen] = useState(false);
+  const [decisionTarget, setDecisionTarget] = useState<ContractAmendment | null>(null);
+  const [decisionKind, setDecisionKind] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
+  const { user } = useAuth();
   const [documents, setDocuments] = useState<Doc[]>([]);
 
   useEffect(() => {
@@ -109,11 +117,14 @@ export function InquilinoContractDetail() {
       <BackButton onClick={() => navigate('/contratos')} label="Volver a contratos" />
 
       <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div>
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div className="flex-1">
             <h1 className="text-3xl font-semibold text-foreground mb-2">Mi Contrato</h1>
             <p className="text-muted-foreground">{contract.property}</p>
           </div>
+          <Button type="button" onClick={() => setProposeOpen(true)}>
+            Proponer cambio
+          </Button>
           <StatusBadge status={contract.status} type="contract" size="lg" />
         </div>
       </div>
@@ -195,7 +206,38 @@ export function InquilinoContractDetail() {
             ]}
           />
         </div>
+
+        <section className="rounded-xl border border-border-subtle bg-card p-6 shadow-elev-xs">
+          <header className="mb-4">
+            <h2 className="text-h2 font-semibold text-foreground">Historial de enmiendas</h2>
+          </header>
+          <AmendmentTimeline
+            contractId={contract.id}
+            currentUserId={user?.id != null ? Number(user.id) : undefined}
+            currentUserRole={user?.role}
+            onApprove={(a) => {
+              setDecisionTarget(a);
+              setDecisionKind('APPROVED');
+            }}
+            onReject={(a) => {
+              setDecisionTarget(a);
+              setDecisionKind('REJECTED');
+            }}
+          />
+        </section>
       </div>
+      <AmendmentDecisionDialog
+        contractId={contract.id}
+        amendment={decisionTarget}
+        decision={decisionKind}
+        open={decisionTarget != null}
+        onOpenChange={(o) => !o && setDecisionTarget(null)}
+      />
+      <ProposeAmendmentDialog
+        contractId={contract.id}
+        open={proposeOpen}
+        onOpenChange={setProposeOpen}
+      />
     </div>
   );
 }
