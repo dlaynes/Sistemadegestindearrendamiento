@@ -51,6 +51,7 @@ export function ArrendadorContractWizard() {
 
   useEffect(() => {
     authService.getTenants().then(setTenants).catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Autocomplete state for property selection

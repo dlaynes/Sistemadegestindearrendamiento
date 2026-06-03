@@ -139,6 +139,7 @@ export function ContractProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useContract() {
   const context = useContext(ContractContext);
   if (context === undefined) {
