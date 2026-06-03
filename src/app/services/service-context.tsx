@@ -15,6 +15,7 @@ import { ApiPaymentService } from './payment.service';
 import { ApiDashboardService } from './dashboard.service';
 import { ApiMessageService } from './message.service';
 import { AlertService, ApiAlertService } from './alert.service';
+import { ContractAmendmentService, ApiContractAmendmentService } from './contract-amendment.service';
 import { ApiDocumentService } from './document.service';
 import { ApiReportService } from './report.service';
 
@@ -26,6 +27,7 @@ export interface Services {
   dashboard: DashboardService;
   message: MessageService;
   alert: AlertService;
+  contractAmendment: ContractAmendmentService;
   document: DocumentService;
   report: ReportService;
 }
@@ -39,6 +41,7 @@ export function createServices(): Services {
     dashboard: new ApiDashboardService(),
     message: new ApiMessageService(),
     alert: new ApiAlertService(),
+    contractAmendment: new ApiContractAmendmentService(),
     document: new ApiDocumentService(),
     report: new ApiReportService(),
   };
