@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router';
 import {
   Building2,
@@ -23,7 +23,6 @@ import {
   EmptyState,
 } from '../shared';
 import type { Document as Doc } from '../shared/detail/document-list';
-import { Spinner } from '../shared/ui/spinner';
 
 export function InquilinoPropertyDetail() {
   const { id } = useParams();
@@ -31,18 +30,8 @@ export function InquilinoPropertyDetail() {
   const property = id ? getPropertyById(id) : undefined;
   const navigate = useRoleNavigation();
 
-  const [documents, setDocuments] = useState<Doc[]>([]);
-  const [isLoadingDocs, setIsLoadingDocs] = useState(true);
-
   // Tenant cannot upload/delete; documents are read-only.
-  useEffect(() => {
-    if (!property?.id) {
-      setIsLoadingDocs(false);
-      return;
-    }
-    setDocuments([]);
-    setIsLoadingDocs(false);
-  }, [property?.id]);
+  const [documents] = useState<Doc[]>([]);
 
   if (!property) {
     return (
@@ -152,16 +141,10 @@ export function InquilinoPropertyDetail() {
             />
           )}
 
-          {isLoadingDocs ? (
-            <div className="flex items-center justify-center rounded-xl border border-border-subtle bg-card p-12 shadow-elev-xs">
-              <Spinner size="md" label="Cargando documentos" />
-            </div>
-          ) : (
-            <DocumentList
-              title="Documentos"
-              documents={documents}
-            />
-          )}
+          <DocumentList
+            title="Documentos"
+            documents={documents}
+          />
         </div>
       </div>
     </div>

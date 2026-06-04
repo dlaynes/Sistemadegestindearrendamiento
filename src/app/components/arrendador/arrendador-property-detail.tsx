@@ -1,4 +1,15 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../ui/alert-dialog';
 import { useParams } from 'react-router';
 import { 
   Building2, 
@@ -32,8 +43,24 @@ import type { Document as Doc } from '../shared/detail/document-list';
 
 export function ArrendadorPropertyDetail() {
   const { id } = useParams();
-  const { getPropertyById } = useProperty();
+  const { getPropertyById, deleteProperty } = useProperty();
   const property = id ? getPropertyById(id) : undefined;
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const handleDeleteProperty = async () => {
+    if (!property) return;
+    setIsDeleting(true);
+    try {
+      await deleteProperty(String(property.id));
+      toast.success('Propiedad eliminada');
+      navigate('/propiedades');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'No se pudo eliminar la propiedad');
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteOpen(false);
+    }
+  };
   const navigate = useRoleNavigation();
   
   const { document: documentService } = useServices();
@@ -82,7 +109,7 @@ export function ArrendadorPropertyDetail() {
         }))
       );
     } catch (err) {
-      alert('Error al subir el archivo: ' + (err instanceof Error ? err.message : 'desconocido'));
+      toast.error('Error al subir el archivo: ' + (err instanceof Error ? err.message : 'desconocido'));
     }
   };
 
@@ -99,7 +126,7 @@ export function ArrendadorPropertyDetail() {
       await documentService.deleteDocument(doc.id!);
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id!));
     } catch {
-      alert('Error al eliminar el archivo');
+      toast.error('Error al eliminar el archivo');
     }
   };
 
@@ -137,7 +164,7 @@ export function ArrendadorPropertyDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/propiedades')} label="Volver a propiedades" />
 
-      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-3xl font-semibold text-foreground mb-2">{property.name}</h1>
@@ -227,7 +254,7 @@ export function ArrendadorPropertyDetail() {
             onDelete={handleDelete}
           />
 
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-4">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-4">
             <label className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground cursor-pointer font-medium">
               <Upload className="w-4 h-4" />
               <span>Subir documento</span>
@@ -254,13 +281,39 @@ export function ArrendadorPropertyDetail() {
               { 
                 label: 'Eliminar Propiedad', 
                 icon: Trash2, 
-                onClick: () => console.log('Eliminar'), 
-                variant: 'danger' 
+                onClick: () => setIsDeleteOpen(true),
+                variant: 'danger',
+                disabled: isDeleting,
               },
             ]}
           />
         </div>
       </div>
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar propiedad?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Se eliminará la propiedad
+              <span className="font-semibold"> {property.name} </span>
+              y todos sus documentos asociados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeleteProperty();
+              }}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? 'Eliminando…' : 'Eliminar'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
