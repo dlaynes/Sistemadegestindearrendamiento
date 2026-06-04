@@ -1,4 +1,15 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../ui/alert-dialog';
 import { ProposeAmendmentDialog, AmendmentTimeline, AmendmentDecisionDialog } from '../shared/amendments';
 import { Button } from '../ui/button';
 import { useAuth } from '../../contexts/auth-context';
@@ -21,6 +32,7 @@ import {
   FileDown,
   Upload
 } from 'lucide-react';
+import { Spinner } from '../shared/ui/spinner';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useServices } from '../../services';
 import { 
@@ -41,8 +53,24 @@ export function ArrendadorContractDetail() {
   const navigate = useRoleNavigation();
   const { payment: paymentService, document: documentService } = useServices();
   
-  const { getContractById } = useContract();
+  const { getContractById, deleteContract } = useContract();
   const contract = id ? getContractById(id) : undefined;
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const handleDeleteContract = async () => {
+    if (!contract) return;
+    setIsDeleting(true);
+    try {
+      await deleteContract(String(contract.id));
+      toast.success('Contrato eliminado');
+      navigate('/contratos');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'No se pudo eliminar el contrato');
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteOpen(false);
+    }
+  };
 
   const [payments, setPayments] = useState<Payment[]>([]);
   const [isLoadingPayments, setIsLoadingPayments] = useState(true);
@@ -53,7 +81,10 @@ export function ArrendadorContractDetail() {
   const [documents, setDocuments] = useState<Doc[]>([]);
 
   useEffect(() => {
-    if (!contract?.id) return;
+    if (!contract?.id) {
+      setIsLoadingPayments(false);
+      return;
+    }
     let cancelled = false;
     setIsLoadingPayments(true);
     paymentService
@@ -71,7 +102,10 @@ export function ArrendadorContractDetail() {
   }, [contract?.id, paymentService]);
 
   useEffect(() => {
-    if (!contract?.id) return;
+    if (!contract?.id) {
+      setDocuments([]);
+      return;
+    }
     let cancelled = false;
     documentService
       .getDocuments('CONTRACT', contract.id)
@@ -108,7 +142,7 @@ export function ArrendadorContractDetail() {
         }))
       );
     } catch (err) {
-      alert('Error al subir el archivo: ' + (err instanceof Error ? err.message : 'desconocido'));
+      toast.error('Error al subir el archivo: ' + (err instanceof Error ? err.message : 'desconocido'));
     }
   };
 
@@ -125,7 +159,7 @@ export function ArrendadorContractDetail() {
       await documentService.deleteDocument(doc.id!);
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id!));
     } catch {
-      alert('Error al eliminar el archivo');
+      toast.error('Error al eliminar el archivo');
     }
   };
 
@@ -143,7 +177,7 @@ export function ArrendadorContractDetail() {
     );
   }
 
-  const daysLeft = getDaysUntilExpiration(contract.endDate, new Date('2026-03-27'));
+  const daysLeft = getDaysUntilExpiration(contract.endDate, new Date());
   const isExpiringSoon = daysLeft <= 90;
 
   const contractInfoItems = [
@@ -179,7 +213,7 @@ export function ArrendadorContractDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/contratos')} label="Volver a contratos" />
 
-      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-3xl font-semibold text-foreground mb-2">{contract.code}</h1>
@@ -257,7 +291,9 @@ export function ArrendadorContractDetail() {
             icon={DollarSign}
             columns={1} items={[]}          >
             {isLoadingPayments ? (
-              <p className="text-sm text-muted-foreground">Cargando pagos...</p>
+              <div className="flex items-center justify-center py-4" aria-live="polite">
+                <Spinner size="sm" label="Cargando pagos" />
+              </div>
             ) : payments.length === 0 ? (
               <p className="text-sm text-muted-foreground">No hay pagos registrados.</p>
             ) : (
@@ -295,7 +331,7 @@ export function ArrendadorContractDetail() {
             onDelete={handleDelete}
           />
 
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-4">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-4">
             <label className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground cursor-pointer font-medium">
               <Upload className="w-4 h-4" />
               <span>Subir documento</span>
@@ -330,8 +366,9 @@ export function ArrendadorContractDetail() {
               { 
                 label: 'Eliminar', 
                 icon: Trash2, 
-                onClick: () => console.log('Eliminar'), 
-                variant: 'danger' 
+                onClick: () => setIsDeleteOpen(true),
+                variant: 'danger',
+                disabled: isDeleting,
               },
             ]}
           />
@@ -367,6 +404,31 @@ export function ArrendadorContractDetail() {
         open={decisionTarget != null}
         onOpenChange={(o) => !o && setDecisionTarget(null)}
       />
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar contrato?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Se eliminará el contrato
+              <span className="font-semibold"> {contract.code} </span>
+              y todos sus pagos y documentos asociados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeleteContract();
+              }}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? 'Eliminando…' : 'Eliminar'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

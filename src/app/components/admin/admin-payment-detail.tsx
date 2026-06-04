@@ -1,7 +1,6 @@
 import { useParams } from 'react-router';
 import { 
   DollarSign,
-  ArrowLeft,
   User,
   Building2,
   Calendar,
@@ -16,6 +15,8 @@ import {
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { usePayment } from "../../contexts/payment-context";
+import { BackButton } from '../shared/ui/back-button';
+import { EmptyState } from '../shared/ui/empty-state';
 
 
 export function AdminPaymentDetail() {
@@ -27,16 +28,17 @@ export function AdminPaymentDetail() {
 
   if (!payment) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <DollarSign className="w-16 h-16 text-muted-foreground" />
-        <h2 className="text-2xl font-semibold text-foreground">Pago no encontrado</h2>
-        <button
-          onClick={() => navigate('/pagos')}
-          className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Volver
-        </button>
+      <div className="space-y-6">
+        <BackButton onClick={() => navigate('/pagos')} label="Volver a pagos" />
+        <EmptyState
+          icon={DollarSign}
+          title="Pago no encontrado"
+          description="El pago que buscas no existe o fue eliminado."
+          action={{
+            label: 'Volver a Pagos',
+            onClick: () => navigate('/pagos'),
+          }}
+        />
       </div>
     );
   }
@@ -82,7 +84,7 @@ export function AdminPaymentDetail() {
 
   const getDaysOverdue = () => {
     if (payment.status !== 'vencido') return 0;
-    const today = new Date('2026-03-31');
+    const today = new Date();
     const due = new Date(payment.dueDate);
     const diffTime = today.getTime() - due.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -94,16 +96,10 @@ export function AdminPaymentDetail() {
   return (
     <div className="space-y-6">
       {/* Back Button */}
-      <button
-        onClick={() => navigate('/pagos')}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-medium">Volver a pagos</span>
-      </button>
+      <BackButton onClick={() => navigate('/pagos')} label="Volver a pagos" />
 
       {/* Header */}
-      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
             <div className={`p-4 rounded-lg ${
@@ -169,7 +165,7 @@ export function AdminPaymentDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Parties Involved */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Información del Pago</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Tenant */}
@@ -205,7 +201,7 @@ export function AdminPaymentDetail() {
           </div>
 
           {/* Payment Breakdown */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Desglose del Pago</h2>
             <div className="space-y-3">
               {payment.breakdown?.map((item, index) => (
@@ -223,7 +219,7 @@ export function AdminPaymentDetail() {
 
           {/* Payment Details */}
           {payment.status === 'pagado' && (
-            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+            <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">Detalles del Pago</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -250,13 +246,13 @@ export function AdminPaymentDetail() {
           )}
 
           {/* Notes */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Notas</h2>
             <p className="text-foreground">{payment.notes}</p>
           </div>
 
           {/* Related Payments */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Historial de Pagos Relacionados</h2>
             <div className="space-y-3">
               {payment.relatedPayments?.map((related, index) => (
@@ -280,7 +276,7 @@ export function AdminPaymentDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Amount Summary */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Resumen</h2>
             <div className="space-y-4">
               <div>
@@ -311,7 +307,7 @@ export function AdminPaymentDetail() {
           </div>
 
           {/* Actions */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Acciones</h2>
             <div className="space-y-2">
               {payment.status === 'pagado' ? (
@@ -345,7 +341,7 @@ export function AdminPaymentDetail() {
           </div>
 
           {/* Payment Stats */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Estadísticas</h2>
             <div className="space-y-4">
               <div>
@@ -371,7 +367,7 @@ export function AdminPaymentDetail() {
 
           {/* Documents */}
           {payment.status === 'pagado' && (
-            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+            <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">Documentos</h2>
               <div className="space-y-2">
                 <button className="w-full flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition-colors text-left">

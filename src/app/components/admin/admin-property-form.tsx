@@ -71,7 +71,7 @@ export function AdminPropertyForm() {
     <div className="space-y-6">
       <BackButton onClick={() => navBack(-1)} />
 
-      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-primary-muted p-3 rounded-lg">
             <Building2 className="w-6 h-6 text-primary" />

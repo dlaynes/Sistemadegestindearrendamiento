@@ -103,8 +103,8 @@ export const handlers = [
   // Users
   http.get(`${API_BASE}/admin/users`, () => {
     return HttpResponse.json([
-      { id: 1, name: 'Admin', email: 'admin@test.com', role: 'administrador', status: 'activo' },
-      { id: 2, name: 'Landlord', email: 'landlord@test.com', role: 'arrendador', status: 'activo' },
+      { id: 1, name: 'Admin', email: 'admin@test.com', role: 'administrador', status: 'activo', propertyIds: [] },
+      { id: 2, name: 'Landlord', email: 'landlord@test.com', role: 'arrendador', status: 'activo', propertyIds: [1] },
     ])
   }),
 

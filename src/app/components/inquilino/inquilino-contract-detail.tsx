@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/auth-context';
 import type { ContractAmendment } from '../../types/contract-amendment';
 import { useParams } from 'react-router';
 import { FileText, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { Spinner } from '../shared/ui/spinner';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useServices } from '../../services';
 import { BackButton, StatusBadge, InfoCard, SidebarActions, DocumentList, EmptyState } from '../shared';
@@ -29,7 +30,10 @@ export function InquilinoContractDetail() {
   const [documents, setDocuments] = useState<Doc[]>([]);
 
   useEffect(() => {
-    if (!contract?.id) return;
+    if (!contract?.id) {
+      setIsLoadingPayments(false);
+      return;
+    }
     let cancelled = false;
     setIsLoadingPayments(true);
     paymentService
@@ -47,7 +51,10 @@ export function InquilinoContractDetail() {
   }, [contract?.id, paymentService]);
 
   useEffect(() => {
-    if (!contract?.id) return;
+    if (!contract?.id) {
+      setDocuments([]);
+      return;
+    }
     let cancelled = false;
     documentService
       .getDocuments('CONTRACT', contract.id)
@@ -116,7 +123,7 @@ export function InquilinoContractDetail() {
     <div className="space-y-6">
       <BackButton onClick={() => navigate('/contratos')} label="Volver a contratos" />
 
-      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex-1">
             <h1 className="text-3xl font-semibold text-foreground mb-2">Mi Contrato</h1>
@@ -149,7 +156,9 @@ export function InquilinoContractDetail() {
 
           <InfoCard title="Historial de Pagos" icon={FileText} columns={1} items={[]}>
             {isLoadingPayments ? (
-              <p className="text-sm text-muted-foreground">Cargando pagos...</p>
+              <div className="flex items-center justify-center py-4" aria-live="polite">
+                <Spinner size="sm" label="Cargando pagos" />
+              </div>
             ) : payments.length === 0 ? (
               <p className="text-sm text-muted-foreground">No hay pagos registrados.</p>
             ) : (

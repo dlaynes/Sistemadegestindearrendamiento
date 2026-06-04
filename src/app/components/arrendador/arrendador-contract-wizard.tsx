@@ -244,7 +244,7 @@ export function ArrendadorContractWizard() {
         </button>
       </div>
 
-      <div className="relative bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="relative bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <LoadingOverlay visible={isSubmitting} message={isEditing ? "Guardando cambios..." : "Creando contrato..."} />
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-primary-muted p-3 rounded-lg">

@@ -1,4 +1,5 @@
 import type { User, UserRole, AuthResponse } from '../types/user';
+import { toFrontendUser } from './user-mapper';
 import { apiPost, apiGet, apiPut, setToken, clearToken, apiFetch } from './api-client';
 
 export interface AuthService {
@@ -46,12 +47,14 @@ function setStoredUser(user: User): void {
 
 export class ApiAuthService implements AuthService {
   async getAllUsers(): Promise<User[]> {
-    return apiGet<User[]>('/admin/users');
+    const data = await apiGet<User[]>('/admin/users');
+    return data.map(toFrontendUser);
   }
 
   async getById(userId: string | number): Promise<User | undefined> {
     try {
-      return await apiGet<User>(`/admin/users/${userId}`);
+      const data = await apiGet<User>(`/admin/users/${userId}`);
+      return toFrontendUser(data);
     } catch {
       return undefined;
     }

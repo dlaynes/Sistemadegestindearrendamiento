@@ -2,7 +2,6 @@ import { useParams } from 'react-router';
 import { toast } from 'sonner';
 import {
   DollarSign,
-  ArrowLeft,
   Calendar,
   CheckCircle,
   AlertCircle,
@@ -15,6 +14,8 @@ import {
 } from 'lucide-react';
 import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { usePayment } from '../../contexts/payment-context';
+import { BackButton } from '../shared/ui/back-button';
+import { EmptyState } from '../shared/ui/empty-state';
 
 export function InquilinoPaymentDetail() {
   const { getPaymentById } = usePayment();
@@ -25,16 +26,17 @@ export function InquilinoPaymentDetail() {
 
   if (!payment) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <DollarSign className="w-16 h-16 text-muted-foreground" />
-        <h2 className="text-2xl font-semibold text-foreground">Pago no encontrado</h2>
-        <button
-          onClick={() => navigate('/pagos')}
-          className="flex items-center gap-2 text-primary hover:text-primary-muted-foreground"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Volver
-        </button>
+      <div className="space-y-6">
+        <BackButton onClick={() => navigate('/pagos')} label="Volver a pagos" />
+        <EmptyState
+          icon={DollarSign}
+          title="Pago no encontrado"
+          description="El pago que buscas no existe o fue eliminado."
+          action={{
+            label: 'Volver a Pagos',
+            onClick: () => navigate('/pagos'),
+          }}
+        />
       </div>
     );
   }
@@ -104,16 +106,10 @@ export function InquilinoPaymentDetail() {
   return (
     <div className="space-y-6">
       {/* Back Button */}
-      <button
-        onClick={() => navigate('/pagos')}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-medium">Volver a pagos</span>
-      </button>
+      <BackButton onClick={() => navigate('/pagos')} label="Volver a pagos" />
 
       {/* Header */}
-      <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+      <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
             <div
@@ -174,7 +170,7 @@ export function InquilinoPaymentDetail() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Payment Details */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">
               Detalles del Pago
             </h2>
@@ -229,7 +225,7 @@ export function InquilinoPaymentDetail() {
 
           {/* Breakdown */}
           {payment.breakdown && payment.breakdown.length > 0 && (
-            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+            <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Desglose
               </h2>
@@ -257,7 +253,7 @@ export function InquilinoPaymentDetail() {
 
           {/* Payment History */}
           {payment.relatedPayments && payment.relatedPayments.length > 0 && (
-            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+            <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Historial de Pagos Relacionados
               </h2>
@@ -311,7 +307,7 @@ export function InquilinoPaymentDetail() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Summary */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">
               Resumen
             </h2>
@@ -350,7 +346,7 @@ export function InquilinoPaymentDetail() {
           </div>
 
           {/* Actions */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Acciones</h2>
             <div className="space-y-2">
               {payment.status === 'pagado' ? (
@@ -397,7 +393,7 @@ export function InquilinoPaymentDetail() {
           </div>
 
           {/* Payment Stats */}
-          <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+          <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">
               Estadísticas
             </h2>
@@ -428,7 +424,7 @@ export function InquilinoPaymentDetail() {
 
           {/* Documents */}
           {payment.status === 'pagado' && (
-            <div className="bg-card rounded-xl border border-border-subtle bg-card shadow-elev-xs p-6">
+            <div className="bg-card rounded-xl border border-border-subtle shadow-elev-xs p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Documentos
               </h2>

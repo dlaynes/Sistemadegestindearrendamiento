@@ -30,19 +30,26 @@ function applyTheme(theme: Theme): 'light' | 'dark' {
 }
 
 /**
- * Force the document into light mode for the current subtree, without
- * disturbing the user's stored preference. Used by the public pages
- * (welcome / login / invitation) which are light-only by design.
+ * Pin the document to light mode for the current subtree — UNLESS the
+ * user has explicitly chosen 'dark' (i.e. their stored preference is not
+ * 'system' or 'light'). Public pages (welcome / login / invitation) want
+ * a light-by-default look, but should not fight a user who has actively
+ * toggled the site into dark mode.
  *
  * Cleans up on unmount by re-applying whatever the global theme provider
  * last stored — so returning to the app restores the user's preference.
  */
 function ForceLightTheme({ children }: { children: ReactNode }) {
   useEffect(() => {
-    const previous = ROOT.classList.contains('dark') ? 'dark' : 'light';
+    const stored = (localStorage.getItem(STORAGE_KEY) as Theme) || 'system';
+    if (stored === 'dark') {
+      // User has explicitly chosen dark. Leave the subtree alone.
+      return;
+    }
+    const previousWasDark = ROOT.classList.contains('dark');
     ROOT.classList.remove('dark');
     return () => {
-      if (previous === 'dark') ROOT.classList.add('dark');
+      if (previousWasDark) ROOT.classList.add('dark');
     };
   }, []);
   return <>{children}</>;
