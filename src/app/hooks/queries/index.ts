@@ -1,4 +1,4 @@
-export {
+﻿export {
   usePayments,
   usePayment,
   useCreatePayment,
@@ -28,6 +28,8 @@ export {
   useConversations,
   useMessages,
   useSendMessage,
+  useSendMessageWithAttachment,
   useMarkAsRead,
   useStartConversation,
 } from './use-messages-query';
+

@@ -1,6 +1,6 @@
-import type { User, UserRole, AuthResponse } from '../types/user';
+﻿import type { User, UserRole, AuthResponse } from '../types/user';
 import { toFrontendUser } from './user-mapper';
-import { apiPost, apiGet, apiPut, setToken, clearToken, apiFetch } from './api-client';
+import { apiPost, apiGet, apiPut, clearToken, apiFetch } from './api-client';
 
 export interface AuthService {
   getAllUsers(): Promise<User[]>;
@@ -62,7 +62,8 @@ export class ApiAuthService implements AuthService {
 
   async login(email: string, password: string): Promise<User> {
     const response = await apiPost<AuthResponse>('/auth/login', { email, password });
-    setToken(response.token);
+    // Token managed via httpOnly cookie; do not store in localStorage
+    // setToken(response.token);
     const user: User = {
       id: response.id,
       name: response.name,
@@ -76,6 +77,11 @@ export class ApiAuthService implements AuthService {
   }
 
   async logout(): Promise<void> {
+    try {
+      await apiFetch('/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore errors on logout
+    }
     clearToken();
     localStorage.removeItem(USER_STORAGE_KEY);
   }
@@ -115,3 +121,4 @@ export class ApiAuthService implements AuthService {
     return (await res.json()) as AuthResponse;
   }
 }
+

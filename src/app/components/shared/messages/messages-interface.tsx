@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Send, MessageSquare } from 'lucide-react';
+import { Send, MessageSquare, Paperclip, X } from 'lucide-react';
 import { cn } from '../../ui/utils';
 import { Button } from '../../ui/button';
 import { Spinner } from '../ui/spinner';
@@ -10,6 +10,7 @@ import {
   useConversations,
   useMessages,
   useSendMessage,
+  useSendMessageWithAttachment,
   useMarkAsRead,
   useStartConversation,
 } from '../../../hooks/queries/use-messages-query';
@@ -57,13 +58,22 @@ function formatDay(iso?: string): string {
   return d.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
 }
 
+function formatFileSize(bytes?: number): string {
+  if (bytes == null) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function MessagesInterface({ className, availableContacts = [] }: MessagesInterfaceProps) {
   const { user } = useAuth();
 
   const [activeId, setActiveId] = useState<string | number | null>(null);
   const [composer, setComposer] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const composerRef = useRef<HTMLTextAreaElement | null>(null);
   const threadRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   // Track which conversations we've already marked as read in this session
   // so we don't fire markAsRead on every refetch of the conversation list.
   const markedReadRef = useRef<Set<string>>(new Set());
@@ -71,6 +81,7 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
   const conversationsQuery = useConversations();
   const messagesQuery = useMessages(activeId);
   const sendMessage = useSendMessage();
+  const sendAttachment = useSendMessageWithAttachment();
   const markAsRead = useMarkAsRead();
   const startConversation = useStartConversation();
 
@@ -79,7 +90,7 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
     [conversationsQuery.data],
   );
   const activeConversation = useMemo(
-    () => conversations.find((c) => String(c.id) === String(activeId)) ?? null,
+    () => conversations.find((c: Conversation) => String(c.id) === String(activeId)) ?? null,
     [conversations, activeId],
   );
 
@@ -91,7 +102,7 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
   }, [conversations, activeId]);
 
   // Mark the active conversation as read, but only once per activeId transition.
-  // We intentionally do NOT include `activeConversation` in deps — its object identity
+  // We intentionally do NOT include `activeConversation` in deps - its object identity
   // changes on every conversation-list refetch, and we don't want each refetch to
   // re-fire the mutation (which would invalidate the list and refetch it again).
   useEffect(() => {
@@ -127,7 +138,20 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     const content = composer.trim();
-    if (!content || activeId === null) return;
+    if (activeId === null) return;
+
+    if (selectedFile) {
+      setComposer('');
+      setSelectedFile(null);
+      try {
+        await sendAttachment.mutateAsync({ conversationId: activeId, content, file: selectedFile });
+      } catch {
+        setComposer(content);
+      }
+      return;
+    }
+
+    if (!content) return;
     setComposer('');
     try {
       await sendMessage.mutateAsync({ conversationId: activeId, content });
@@ -144,8 +168,20 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert('El archivo excede el limite de 4MB');
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
   const meId = user?.id != null ? String(user.id) : null;
   const showSkeleton = conversationsQuery.isLoading || conversationsQuery.isPending;
+  const isSending = sendMessage.isPending || sendAttachment.isPending;
 
   return (
     <div
@@ -172,7 +208,7 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
             </div>
           ) : conversations.length === 0 ? (
             <p className="p-6 text-center text-sm text-muted-foreground">
-              Aún no tienes conversaciones.
+              Aun no tienes conversaciones.
             </p>
           ) : (
             <ul className="divide-y divide-border-subtle">
@@ -284,7 +320,7 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
                     <p className="text-xs text-muted-foreground">
                       Última actividad: {formatDay(activeConversation.timestamp)}
                     </p>
-                  )}                
+                  )}
                 </div>
 
               </div>
@@ -305,6 +341,7 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
               ) : (
                 (messagesQuery.data ?? []).map((m) => {
                   const mine = meId !== null && String(m.sender) === 'me';
+                  const isImage = m.attachmentType?.startsWith('image/');
                   return (
                     <div
                       key={m.id}
@@ -318,7 +355,38 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
                             : 'bg-card text-foreground ring-1 ring-inset ring-border-subtle',
                         )}
                       >
-                        <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                        {isImage && m.attachmentUrl && (
+                          <div className="mb-2">
+                            <img
+                              src={m.attachmentUrl}
+                              alt={m.attachmentName || 'Adjunto'}
+                              className="max-h-48 max-w-full rounded-lg object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
+                        {m.attachmentUrl && !isImage && (
+                          <a
+                            href={m.attachmentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(
+                              'mb-1 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition-colors',
+                              mine
+                                ? 'border-primary-foreground/30 bg-primary-foreground/10 hover:bg-primary-foreground/20'
+                                : 'border-border-subtle bg-surface hover:bg-background',
+                            )}
+                          >
+                            <Paperclip className="h-3.5 w-3.5 shrink-0" />
+                            <span className="min-w-0 flex-1 truncate">{m.attachmentName}</span>
+                            {m.attachmentSize && (
+                              <span className="shrink-0 text-[10px] opacity-70">{formatFileSize(m.attachmentSize)}</span>
+                            )}
+                          </a>
+                        )}
+                        {m.content && m.content.length > 0 && (
+                          <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                        )}
                         <p
                           className={cn(
                             'mt-1 text-right text-[10px]',
@@ -336,34 +404,67 @@ export function MessagesInterface({ className, availableContacts = [] }: Message
 
             <form
               onSubmit={handleSend}
-              className="flex items-end gap-2 border-t border-border-subtle p-3"
+              className="flex flex-col gap-2 border-t border-border-subtle p-3"
             >
-              <label htmlFor="message-composer" className="sr-only">
-                Mensaje
-              </label>
-              <textarea
-                id="message-composer"
-                ref={composerRef}
-                value={composer}
-                onChange={(e) => setComposer(e.target.value)}
-                onKeyDown={handleKeyDown}
-                rows={1}
-                placeholder="Escribe un mensaje…"
-                aria-label="Mensaje"
-                className="min-h-[40px] flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={!composer.trim() || sendMessage.isPending}
-                aria-label="Enviar mensaje"
-              >
-                {sendMessage.isPending ? (
-                  <Spinner size="sm" label="Enviando" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
+              {selectedFile && (
+                <div className="flex items-center gap-2 rounded-lg bg-surface px-3 py-1.5 text-xs text-foreground">
+                  <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <span className="min-w-0 flex-1 truncate">{selectedFile.name}</span>
+                  <span className="shrink-0 text-[10px] text-muted-foreground">{formatFileSize(selectedFile.size)}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFile(null)}
+                    className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-foreground"
+                    aria-label="Quitar archivo"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
+              <div className="flex items-end gap-2">
+                <label htmlFor="message-composer" className="sr-only">
+                  Mensaje
+                </label>
+                <textarea
+                  id="message-composer"
+                  ref={composerRef}
+                  value={composer}
+                  onChange={(e) => setComposer(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  rows={1}
+                  placeholder="Escribe un mensaje..."
+                  aria-label="Mensaje"
+                  className="min-h-[40px] flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+                />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*,application/pdf,text/plain"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label="Adjuntar archivo"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={(!composer.trim() && !selectedFile) || isSending}
+                  aria-label="Enviar mensaje"
+                >
+                  {isSending ? (
+                    <Spinner size="sm" label="Enviando" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </form>
           </>
         )}

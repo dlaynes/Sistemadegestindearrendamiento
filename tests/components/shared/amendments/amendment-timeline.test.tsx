@@ -7,7 +7,7 @@ import { http, HttpResponse } from 'msw'
 import { AmendmentTimeline } from '@/app/components/shared/amendments/amendment-timeline'
 import type { ContractAmendment } from '@/app/types/contract-amendment'
 
-const API_BASE = 'http://localhost:8080/api'
+const API_BASE = '/api'
 
 function setUser(user: { id: number; role: string; name: string }) {
   localStorage.setItem('rentmanager_user', JSON.stringify(user))

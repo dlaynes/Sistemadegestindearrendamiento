@@ -28,7 +28,7 @@ describe('AuthService Integration', () => {
 
   it('handles API errors gracefully', async () => {
     server.use(
-      http.get('http://localhost:8080/api/admin/users', () => {
+      http.get('/api/admin/users', () => {
         return new HttpResponse(null, { status: 500 })
       })
     )

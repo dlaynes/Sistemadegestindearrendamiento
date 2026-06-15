@@ -37,7 +37,7 @@ describe('PropertyService', () => {
   it('getById returns undefined on 404', async () => {
     setRole('arrendador')
     server.use(
-      http.get('http://localhost:8080/api/landlord/properties/:id', () => {
+      http.get('/api/landlord/properties/:id', () => {
         return new HttpResponse(null, { status: 404 })
       })
     )

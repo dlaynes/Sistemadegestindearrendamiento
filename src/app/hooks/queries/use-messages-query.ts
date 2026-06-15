@@ -46,6 +46,20 @@ export function useSendMessage() {
   });
 }
 
+export function useSendMessageWithAttachment() {
+  const { message } = useServices();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ conversationId, content, file }: { conversationId: string | number; content: string; file: File }) =>
+      message.sendMessageWithAttachment(conversationId, content, file),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['messages', variables.conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
+
 export function useMarkAsRead() {
   const { message } = useServices();
   const queryClient = useQueryClient();

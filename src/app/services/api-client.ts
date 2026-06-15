@@ -1,4 +1,4 @@
-import type { UserRole } from '../types/user';
+﻿import type { UserRole } from '../types/user';
 
 const USER_STORAGE_KEY = 'rentmanager_user';
 
@@ -23,7 +23,7 @@ export function getStoredUserId(): string | number | null {
 }
 
 // Backend API base URL - configure via VITE_API_BASE_URL in .env
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export function getToken(): string | null {
   return localStorage.getItem('token');
@@ -56,6 +56,7 @@ export async function apiFetch(
   const response = await fetch(url, {
     ...options,
     headers,
+    credentials: 'include',
   });
 
   if (response.status === 401 || response.status === 403) {
@@ -83,6 +84,40 @@ export async function apiGet<T>(path: string): Promise<T> {
   return res.json();
 }
 
+export async function apiPostMultipart<T>(path: string, formData: FormData): Promise<T> {
+  const url = `${API_BASE}${path}`;
+  const token = getToken();
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: formData,
+    credentials: 'include',
+  });
+
+  if (response.status === 401 || response.status === 403) {
+    const currentPath = window.location.pathname;
+    const isPublicPage = currentPath === '/login' || currentPath === '/';
+    const isAuthEndpoint = path.startsWith('/auth/') || path.startsWith('/tenant/accept-invitation');
+    if (!isAuthEndpoint && !isPublicPage) {
+      clearToken();
+      localStorage.removeItem(USER_STORAGE_KEY);
+      window.location.href = '/login';
+    }
+  }
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => 'Error');
+    throw new Error(text || `HTTP ${response.status}`);
+  }
+
+  return response.json();
+}
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const res = await apiFetch(path, {
     method: 'POST',
@@ -102,3 +137,4 @@ export async function apiPut<T>(path: string, body: unknown): Promise<T> {
 export async function apiDelete(path: string): Promise<void> {
   await apiFetch(path, { method: 'DELETE' });
 }
+
