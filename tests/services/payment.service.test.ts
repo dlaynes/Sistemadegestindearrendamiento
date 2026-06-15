@@ -43,7 +43,7 @@ describe('PaymentService', () => {
   it('getPending returns only pending payments', async () => {
     setRole('arrendador')
     server.use(
-      http.get('http://localhost:8080/api/landlord/payments', () => {
+      http.get('/api/landlord/payments', () => {
         return HttpResponse.json([
           { id: 1, status: 'pendiente', amount: '1000', contractId: 1, method: 'transferencia', dueDate: '2026-05-01' },
           { id: 2, status: 'pagado', amount: '1500', contractId: 1, method: 'transferencia', dueDate: '2026-05-01' },

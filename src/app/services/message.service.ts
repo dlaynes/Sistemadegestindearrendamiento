@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiPut, getStoredUserId } from './api-client';
+import { apiGet, apiPost, apiPostMultipart, apiPut, getStoredUserId } from './api-client';
 
 export interface Conversation {
   id: string | number;
@@ -16,6 +16,10 @@ export interface Message {
   content: string;
   timestamp: string;
   seen: boolean;
+  attachmentUrl?: string;
+  attachmentType?: string;
+  attachmentName?: string;
+  attachmentSize?: number;
 }
 
 export interface MessageService {
@@ -23,6 +27,7 @@ export interface MessageService {
   startConversation(otherUserId: string | number): Promise<Conversation>;
   getMessages(conversationId: string | number): Promise<Message[]>;
   sendMessage(conversationId: string | number, content: string): Promise<Message>;
+  sendMessageWithAttachment(conversationId: string | number, content: string, file: File): Promise<Message>;
   markAsRead(conversationId: string | number): Promise<void>;
 }
 
@@ -80,6 +85,10 @@ export class ApiMessageService implements MessageService {
       content: string;
       timestamp: string;
       seen: boolean;
+      attachmentUrl?: string;
+      attachmentType?: string;
+      attachmentName?: string;
+      attachmentSize?: number;
     }>>(`/conversations/${conversationId}/messages`);
 
     return data.map((m) => ({
@@ -88,6 +97,10 @@ export class ApiMessageService implements MessageService {
       content: m.content,
       timestamp: m.timestamp,
       seen: m.seen,
+      attachmentUrl: m.attachmentUrl,
+      attachmentType: m.attachmentType,
+      attachmentName: m.attachmentName,
+      attachmentSize: m.attachmentSize,
     }));
   }
 
@@ -100,6 +113,10 @@ export class ApiMessageService implements MessageService {
       content: string;
       timestamp: string;
       seen: boolean;
+      attachmentUrl?: string;
+      attachmentType?: string;
+      attachmentName?: string;
+      attachmentSize?: number;
     }>(`/conversations/${conversationId}/messages`, { content });
 
     return {
@@ -108,6 +125,42 @@ export class ApiMessageService implements MessageService {
       content: m.content,
       timestamp: m.timestamp,
       seen: m.seen,
+      attachmentUrl: m.attachmentUrl,
+      attachmentType: m.attachmentType,
+      attachmentName: m.attachmentName,
+      attachmentSize: m.attachmentSize,
+    };
+  }
+
+  async sendMessageWithAttachment(conversationId: string | number, content: string, file: File): Promise<Message> {
+    const currentUserId = getStoredUserId();
+    const formData = new FormData();
+    formData.append('file', file);
+    if (content) formData.append('content', content);
+
+    const m = await apiPostMultipart<{
+      id: number;
+      senderId: number;
+      senderName: string;
+      content: string;
+      timestamp: string;
+      seen: boolean;
+      attachmentUrl?: string;
+      attachmentType?: string;
+      attachmentName?: string;
+      attachmentSize?: number;
+    }>(`/conversations/${conversationId}/messages/attachment`, formData);
+
+    return {
+      id: m.id,
+      sender: String(m.senderId) === String(currentUserId) ? 'me' : 'other',
+      content: m.content,
+      timestamp: m.timestamp,
+      seen: m.seen,
+      attachmentUrl: m.attachmentUrl,
+      attachmentType: m.attachmentType,
+      attachmentName: m.attachmentName,
+      attachmentSize: m.attachmentSize,
     };
   }
 
