@@ -173,6 +173,121 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
       body: JSON.stringify(Object.values(mockUsers)),
     })
   })
+
+  // Contract amendments (BDD amendments scenario).
+  // GET is stateful: once a POST has succeeded, the next GET returns the
+  // pending amendment so react-query's invalidation actually shows it on
+  // the timeline.
+  let proposedAmendment: Record<string, unknown> | null = null
+  await page.route(`**/api${prefix}/contracts/*/amendments`, async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(proposedAmendment ? [proposedAmendment] : []),
+      })
+      return
+    }
+    if (route.request().method() === 'POST') {
+      const body = JSON.parse(route.request().postData() || '{}')
+      proposedAmendment = {
+        id: 99,
+        contractId: 1,
+        // A different user (the tenant, id 3) is the proposer in this scenario
+        // so the landlord (currentUserId=2) is the counterparty and can decide.
+        proposedByUserId: 3,
+        proposedByRole: 'inquilino',
+        status: 'pending_landlord',
+        proposedChanges: body.proposedChanges ?? { monthlyRent: '1700' },
+        reason: body.reason ?? null,
+        createdAt: new Date().toISOString(),
+        decidedAt: null,
+        decidedByUserId: null,
+        deciderRole: null,
+        decisionNote: null,
+        expiresAt: new Date(Date.now() + 14 * 86400_000).toISOString(),
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(proposedAmendment),
+      })
+      return
+    }
+    await route.fallback()
+  })
+
+  // Withdraw endpoint — global fallback for any spec that exercises the
+  // proposer-withdraw path. Each spec may also register its own override.
+  await page.route(`**/api${prefix}/contracts/*/amendments/*/withdraw`, async (route) => {
+    if (route.request().method() === 'POST') {
+      if (proposedAmendment) {
+        proposedAmendment = {
+          ...proposedAmendment,
+          status: 'withdrawn',
+          decidedAt: new Date().toISOString(),
+          decidedByUserId: user.id,
+          deciderRole: role,
+        }
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 99,
+          contractId: 1,
+          proposedByUserId: 3,
+          proposedByRole: 'inquilino',
+          status: 'withdrawn',
+          proposedChanges: { monthlyRent: '1700' },
+          reason: 'Ajuste anual',
+          createdAt: new Date().toISOString(),
+          decidedAt: new Date().toISOString(),
+          decidedByUserId: user.id,
+          deciderRole: role,
+          decisionNote: null,
+          expiresAt: new Date(Date.now() + 14 * 86400_000).toISOString(),
+        }),
+      })
+      return
+    }
+    await route.fallback()
+  })
+
+  await page.route(`**/api${prefix}/contracts/*/amendments/*/decision`, async (route) => {
+    const body = JSON.parse(route.request().postData() || '{}')
+    const decidedStatus = body.decision === 'APPROVED' ? 'approved' : 'rejected'
+    // Update the stateful amendment so the next GET returns the decided state.
+    if (proposedAmendment) {
+      proposedAmendment = {
+        ...proposedAmendment,
+        status: decidedStatus,
+        decidedAt: new Date().toISOString(),
+        decidedByUserId: user.id,
+        deciderRole: role,
+        decisionNote: body.decisionNote ?? null,
+      }
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        id: 99,
+        contractId: 1,
+        proposedByUserId: 3,
+        proposedByRole: 'inquilino',
+        status: decidedStatus,
+        proposedChanges: { monthlyRent: '1700' },
+        reason: 'Ajuste anual',
+        createdAt: new Date().toISOString(),
+        decidedAt: new Date().toISOString(),
+        decidedByUserId: user.id,
+        deciderRole: role,
+        decisionNote: body.decisionNote ?? null,
+        expiresAt: new Date(Date.now() + 14 * 86400_000).toISOString(),
+      }),
+    })
+  })
 }
 
 /**

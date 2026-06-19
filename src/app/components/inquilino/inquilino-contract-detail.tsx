@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { AmendmentTimeline, AmendmentDecisionDialog, ProposeAmendmentDialog } from '../shared/amendments';
+import {
+  AmendmentTimeline,
+  AmendmentDecisionDialog,
+  ProposeAmendmentDialog,
+  WithdrawAmendmentDialog,
+} from '../shared/amendments';
 import { Button } from '../ui/button';
 import { useAuth } from '../../contexts/auth-context';
 import type { ContractAmendment } from '../../types/contract-amendment';
@@ -26,6 +31,7 @@ export function InquilinoContractDetail() {
   const [proposeOpen, setProposeOpen] = useState(false);
   const [decisionTarget, setDecisionTarget] = useState<ContractAmendment | null>(null);
   const [decisionKind, setDecisionKind] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
+  const [withdrawTarget, setWithdrawTarget] = useState<ContractAmendment | null>(null);
   const { user } = useAuth();
   const [documents, setDocuments] = useState<Doc[]>([]);
 
@@ -232,6 +238,7 @@ export function InquilinoContractDetail() {
               setDecisionTarget(a);
               setDecisionKind('REJECTED');
             }}
+            onWithdraw={(a) => setWithdrawTarget(a)}
           />
         </section>
       </div>
@@ -241,6 +248,12 @@ export function InquilinoContractDetail() {
         decision={decisionKind}
         open={decisionTarget != null}
         onOpenChange={(o) => !o && setDecisionTarget(null)}
+      />
+      <WithdrawAmendmentDialog
+        contractId={contract.id}
+        amendment={withdrawTarget}
+        open={withdrawTarget != null}
+        onOpenChange={(o) => !o && setWithdrawTarget(null)}
       />
       <ProposeAmendmentDialog
         contractId={contract.id}
