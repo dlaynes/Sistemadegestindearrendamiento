@@ -10,7 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../ui/alert-dialog';
-import { ProposeAmendmentDialog, AmendmentTimeline, AmendmentDecisionDialog } from '../shared/amendments';
+import {
+  ProposeAmendmentDialog,
+  AmendmentTimeline,
+  AmendmentDecisionDialog,
+  WithdrawAmendmentDialog,
+} from '../shared/amendments';
 import { Button } from '../ui/button';
 import { useAuth } from '../../contexts/auth-context';
 import type { ContractAmendment } from '../../types/contract-amendment';
@@ -77,6 +82,7 @@ export function ArrendadorContractDetail() {
   const [proposeOpen, setProposeOpen] = useState(false);
   const [decisionTarget, setDecisionTarget] = useState<ContractAmendment | null>(null);
   const [decisionKind, setDecisionKind] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
+  const [withdrawTarget, setWithdrawTarget] = useState<ContractAmendment | null>(null);
   const { user } = useAuth();
   const [documents, setDocuments] = useState<Doc[]>([]);
 
@@ -259,6 +265,7 @@ export function ArrendadorContractDetail() {
               setDecisionTarget(a);
               setDecisionKind('REJECTED');
             }}
+            onWithdraw={(a) => setWithdrawTarget(a)}
           />
         </section>
           <InfoCard
@@ -403,6 +410,12 @@ export function ArrendadorContractDetail() {
         decision={decisionKind}
         open={decisionTarget != null}
         onOpenChange={(o) => !o && setDecisionTarget(null)}
+      />
+      <WithdrawAmendmentDialog
+        contractId={contract.id}
+        amendment={withdrawTarget}
+        open={withdrawTarget != null}
+        onOpenChange={(o) => !o && setWithdrawTarget(null)}
       />
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialogContent>

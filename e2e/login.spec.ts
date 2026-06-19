@@ -1,22 +1,29 @@
-import { test, expect, loginAs } from './fixtures'
+import { test, expect, loginAs } from './features/_shared/fixtures'
 
 test.describe('Login Flow', () => {
   test('admin can log in and reach dashboard', async ({ page }) => {
     await loginAs(page, 'administrador')
     await expect(page).toHaveURL('/administrador/dashboard')
-    await expect(page.getByText('Admin User')).toBeVisible()
+    // Layout renders two sidebars (mobile + desktop); scope to the desktop one.
+    await expect(
+      page.getByRole('complementary').getByText('Admin User'),
+    ).toBeVisible()
   })
 
   test('landlord can log in and reach dashboard', async ({ page }) => {
     await loginAs(page, 'arrendador')
     await expect(page).toHaveURL('/arrendador/dashboard')
-    await expect(page.getByText('Landlord User')).toBeVisible()
+    await expect(
+      page.getByRole('complementary').getByText('Landlord User'),
+    ).toBeVisible()
   })
 
   test('tenant can log in and reach dashboard', async ({ page }) => {
     await loginAs(page, 'inquilino')
     await expect(page).toHaveURL('/inquilino/dashboard')
-    await expect(page.getByText('Tenant User')).toBeVisible()
+    await expect(
+      page.getByRole('complementary').getByText('Tenant User'),
+    ).toBeVisible()
   })
 
   test('shows error on invalid credentials', async ({ page }) => {
