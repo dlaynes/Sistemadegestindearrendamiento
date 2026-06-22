@@ -1,5 +1,5 @@
 import { Home, FileText, DollarSign, Calendar, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import { StatTile, PageHeader, StatusBadge, DashboardSkeleton } from '../shared';
+import { StatTile, ActivityFeedCard, PageHeader, StatusBadge, DashboardSkeleton } from '../shared';
 import { useDashboardData } from '../../hooks/queries';
 
 export function InquilinoDashboard() {
@@ -56,6 +56,8 @@ export function InquilinoDashboard() {
           />
         ))}
       </div>
+
+      <ActivityFeedCard limit={6} />
 
       <section className="rounded-xl border border-border-subtle bg-card shadow-elev-xs">
         <header className="border-b border-border-subtle px-6 py-4">

@@ -2,6 +2,7 @@ import React from 'react'
 import { render, renderHook } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ServicesProvider } from '@/app/services/service-context'
+import { AuthProvider } from '@/app/contexts/auth-context'
 import type { RenderOptions, RenderHookOptions } from '@testing-library/react'
 
 function createTestQueryClient() {
@@ -25,7 +26,9 @@ export function createWrapper() {
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
-        <ServicesProvider>{children}</ServicesProvider>
+        <ServicesProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ServicesProvider>
       </QueryClientProvider>
     )
   }

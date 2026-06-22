@@ -7,7 +7,6 @@ import { http, HttpResponse } from 'msw'
 import { AmendmentTimeline } from '@/app/components/shared/amendments/amendment-timeline'
 import type { ContractAmendment } from '@/app/types/contract-amendment'
 
-const API_BASE = '/api'
 
 function setUser(user: { id: number; role: string; name: string }) {
   localStorage.setItem('rentmanager_user', JSON.stringify(user))
@@ -34,7 +33,7 @@ describe('AmendmentTimeline', () => {
 
   it('shows the empty state when the contract has no amendments', async () => {
     server.use(
-      http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () => HttpResponse.json([])),
+      http.get(`**/api/landlord/contracts/:id/amendments`, () => HttpResponse.json([])),
     )
     renderWithProviders(<AmendmentTimeline contractId={1} />)
     await waitFor(() =>
@@ -44,7 +43,7 @@ describe('AmendmentTimeline', () => {
 
   it('renders one card per amendment returned by the API', async () => {
     server.use(
-      http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () =>
+      http.get(`**/api/landlord/contracts/:id/amendments`, () =>
         HttpResponse.json([
           makeAmendment({ id: 1, proposedChanges: { monthlyRent: '1700' } }),
           makeAmendment({ id: 2, proposedChanges: { status: 'cancelado' } }),
@@ -59,7 +58,7 @@ describe('AmendmentTimeline', () => {
 
   it('renders a mix of value-amendment and closure cards', async () => {
     server.use(
-      http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () =>
+      http.get(`**/api/landlord/contracts/:id/amendments`, () =>
         HttpResponse.json([
           makeAmendment({ id: 10, proposedChanges: { monthlyRent: '1800' } }),
           makeAmendment({ id: 11, proposedChanges: { status: 'cancelado' } }),
@@ -77,7 +76,7 @@ describe('AmendmentTimeline', () => {
     const user = userEvent.setup()
     const onApprove = vi.fn()
     server.use(
-      http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () =>
+      http.get(`**/api/landlord/contracts/:id/amendments`, () =>
         HttpResponse.json([
           makeAmendment({ id: 1, proposedByUserId: 99, status: 'pending_tenant' }),
         ]),
@@ -101,7 +100,7 @@ describe('AmendmentTimeline', () => {
 
   it('does not show decide buttons for the proposer', async () => {
     server.use(
-      http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () =>
+      http.get(`**/api/landlord/contracts/:id/amendments`, () =>
         HttpResponse.json([
           makeAmendment({ id: 1, proposedByUserId: 1, status: 'pending_tenant' }),
         ]),
@@ -122,7 +121,7 @@ describe('AmendmentTimeline', () => {
 
   it('does not show decide buttons for already-decided amendments', async () => {
     server.use(
-      http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () =>
+      http.get(`**/api/landlord/contracts/:id/amendments`, () =>
         HttpResponse.json([
           makeAmendment({ id: 1, proposedByUserId: 99, status: 'approved' }),
         ]),

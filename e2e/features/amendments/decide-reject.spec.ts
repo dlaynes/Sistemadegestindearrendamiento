@@ -44,7 +44,7 @@ test.describe('Feature: Contract amendments - rejection', () => {
         const decidedStatus = body.decision === 'APPROVED' ? 'approved' : 'rejected'
         proposedAmendment = {
           ...proposedAmendment,
-          status: decidedStatus as 'approved' | 'rejected',
+          status: decidedStatus as any,
           decidedAt: new Date().toISOString(),
           decidedByUserId: 2,
           deciderRole: 'arrendador',

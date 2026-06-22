@@ -13,7 +13,6 @@ import {
 import { server } from '../mocks/server'
 import { http, HttpResponse } from 'msw'
 
-const API_BASE = '/api'
 
 beforeEach(() => {
   localStorage.clear()
@@ -62,7 +61,7 @@ describe('storage helpers', () => {
 describe('apiFetch helpers (HTTP layer)', () => {
   it('apiGet hits GET and parses JSON', async () => {
     server.use(
-      http.get(`${API_BASE}/echo`, () => HttpResponse.json({ ok: true, method: 'GET' })),
+      http.get(`**/api/echo`, () => HttpResponse.json({ ok: true, method: 'GET' })),
     )
     const data = await apiGet<{ ok: boolean; method: string }>('/echo')
     expect(data).toEqual({ ok: true, method: 'GET' })
@@ -72,7 +71,7 @@ describe('apiFetch helpers (HTTP layer)', () => {
     let receivedBody: unknown = null
     let receivedMethod = ''
     server.use(
-      http.post(`${API_BASE}/echo`, async ({ request }) => {
+      http.post(`**/api/echo`, async ({ request }) => {
         receivedMethod = request.method
         receivedBody = await request.json()
         return HttpResponse.json({ ok: true })
@@ -88,7 +87,7 @@ describe('apiFetch helpers (HTTP layer)', () => {
     let receivedMethod = ''
     let receivedBody: unknown = null
     server.use(
-      http.put(`${API_BASE}/echo`, async ({ request }) => {
+      http.put(`**/api/echo`, async ({ request }) => {
         receivedMethod = request.method
         receivedBody = await request.json()
         return HttpResponse.json({ ok: true })
@@ -102,7 +101,7 @@ describe('apiFetch helpers (HTTP layer)', () => {
   it('apiDelete hits DELETE and returns void on 2xx', async () => {
     let receivedMethod = ''
     server.use(
-      http.delete(`${API_BASE}/echo`, () => {
+      http.delete(`**/api/echo`, () => {
         receivedMethod = 'DELETE'
         return new HttpResponse(null, { status: 204 })
       }),
@@ -115,7 +114,7 @@ describe('apiFetch helpers (HTTP layer)', () => {
     setToken('jwt-xyz')
     let receivedAuth: string | null = null
     server.use(
-      http.get(`${API_BASE}/whoami`, ({ request }) => {
+      http.get(`**/api/whoami`, ({ request }) => {
         receivedAuth = request.headers.get('Authorization')
         return HttpResponse.json({ ok: true })
       }),
@@ -126,7 +125,7 @@ describe('apiFetch helpers (HTTP layer)', () => {
 
   it('throws on non-2xx responses with the response text in the error', async () => {
     server.use(
-      http.get(`${API_BASE}/nope`, () =>
+      http.get(`**/api/nope`, () =>
         new HttpResponse('custom-error-text', { status: 500 }),
       ),
     )
@@ -144,7 +143,7 @@ describe('trailing-slash invariant (AGENTS.md)', () => {
   it('passes the path through verbatim (caller must not append a trailing slash)', async () => {
     let receivedUrl = ''
     server.use(
-      http.get(`${API_BASE}/items`, ({ request }) => {
+      http.get(`**/api/items`, ({ request }) => {
         receivedUrl = new URL(request.url).pathname
         return HttpResponse.json([])
       }),
@@ -159,7 +158,7 @@ describe('trailing-slash invariant (AGENTS.md)', () => {
     // to the slashed path. Tests in the rest of the suite always use no trailing slash.
     let receivedUrl = ''
     server.use(
-      http.get(`${API_BASE}/items`, ({ request }) => {
+      http.get(`**/api/items`, ({ request }) => {
         receivedUrl = new URL(request.url).pathname
         return HttpResponse.json([])
       }),

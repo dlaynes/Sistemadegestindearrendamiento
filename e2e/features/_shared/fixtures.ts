@@ -165,6 +165,87 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
+  // Dashboard activity feed. Each role sees a seeded fixture so the
+  // dashboard renders realistic events out of the box.
+  const feedByRole: Record<UserRole, unknown[]> = {
+    administrador: [
+      {
+        id: 1,
+        type: 'payment_received',
+        description: 'Pago de $1,500 recibido de Tenant User.',
+        severity: 'success',
+        occurredAt: new Date().toISOString(),
+        sourceType: 'PAYMENT',
+        sourceId: 1,
+      },
+      {
+        id: 2,
+        type: 'amendment_proposed',
+        description: 'Enmienda propuesta en CNT-001.',
+        severity: 'info',
+        occurredAt: new Date(Date.now() - 3600_000).toISOString(),
+        sourceType: 'AMENDMENT',
+        sourceId: 7,
+      },
+    ],
+    arrendador: [
+      {
+        id: 11,
+        type: 'payment_received',
+        description: 'Pago de $1,500 recibido de Tenant User.',
+        severity: 'success',
+        occurredAt: new Date().toISOString(),
+        sourceType: 'PAYMENT',
+        sourceId: 1,
+      },
+      {
+        id: 12,
+        type: 'amendment_approved',
+        description: 'Enmienda en CNT-001 aprobada.',
+        severity: 'success',
+        occurredAt: new Date(Date.now() - 3600_000).toISOString(),
+        sourceType: 'AMENDMENT',
+        sourceId: 9,
+      },
+      {
+        id: 13,
+        type: 'contract_expiring',
+        description: 'Contrato CNT-001 vence en 30 días.',
+        severity: 'warning',
+        occurredAt: new Date(Date.now() - 86400_000).toISOString(),
+        sourceType: 'CONTRACT',
+        sourceId: 1,
+      },
+    ],
+    inquilino: [
+      {
+        id: 21,
+        type: 'payment_received',
+        description: 'Tu pago de $1,500 fue confirmado.',
+        severity: 'success',
+        occurredAt: new Date().toISOString(),
+        sourceType: 'PAYMENT',
+        sourceId: 1,
+      },
+      {
+        id: 22,
+        type: 'amendment_rejected',
+        description: 'Enmienda en CNT-001 rechazada por el arrendador.',
+        severity: 'warning',
+        occurredAt: new Date(Date.now() - 7200_000).toISOString(),
+        sourceType: 'AMENDMENT',
+        sourceId: 8,
+      },
+    ],
+  }
+  await page.route(`**/api${prefix}/dashboard/activity`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(feedByRole[role] ?? []),
+    })
+  })
+
   // Users (admin only)
   await page.route('**/api/admin/users', async (route) => {
     await route.fulfill({
