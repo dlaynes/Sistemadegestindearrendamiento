@@ -5,10 +5,9 @@ Característica: Edición de usuario
 
   Escenario: El administrador cambia el rol de un usuario de arrendador a inquilino
     Dado que he iniciado sesión como administrador
-    Cuando navego al detalle de un usuario
-    Y hago clic en "Editar usuario"
-    Y cambio el rol a "inquilino"
+    Cuando abro el detalle de un usuario arrendador
+    Y edito su información
+    Y cambio su rol a inquilino
     Y guardo los cambios
-    Entonces el endpoint PUT /api/admin/users/:id fue llamado con el nuevo rol
+    Entonces el usuario queda con el rol de inquilino
     Y vuelvo al listado de usuarios
-    Y el usuario actualizado aparece con el rol "inquilino"

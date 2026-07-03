@@ -5,9 +5,8 @@ Característica: Mensajería
 
   Escenario: El arrendador envía un mensaje al inquilino
     Dado que he iniciado sesión como arrendador
-    Cuando navego a "Mensajes"
-    Y abro la conversación con "Tenant User"
+    Cuando abro la conversación con mi inquilino
     Y escribo un mensaje
     Y envío el mensaje
-    Entonces el endpoint POST /api/conversations/:id/messages fue llamado con el contenido correcto
-    Y el mensaje aparece en la conversación
+    Entonces el mensaje aparece en la conversación
+    Y mi inquilino puede leerlo
