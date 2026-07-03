@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { useRoleNavigation } from '../../hooks/use-role-navigation';
 import { useForm } from 'react-hook-form';
 import { useContract } from '../../contexts/contract-context';
 import { useServices } from '../../services';
@@ -37,6 +38,7 @@ type Attachment = {
 export function InquilinoPaymentForm() {
   const { contractId } = useParams();
   const navigate = useNavigate();
+  const navigateWithRole = useRoleNavigation();
   const { payment: paymentService } = useServices();
 
   const { getContractById } = useContract();
@@ -114,7 +116,7 @@ export function InquilinoPaymentForm() {
       };
 
       const created = await paymentService.create(paymentData as Payment);
-      navigate(`/pagos/${created.id}`);
+      navigateWithRole(`/pagos/${created.id}`);
     } catch (err) {
       console.error('Error registrando pago:', err);
       alert('Ocurrió un error al registrar el pago. Inténtalo de nuevo.');
