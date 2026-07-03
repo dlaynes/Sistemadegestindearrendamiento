@@ -39,6 +39,43 @@ export interface DashboardData {
   myPayments: Payment[];
 }
 
+/**
+ * Wire-shape from the BE /api/{role}/dashboard/activity endpoint.
+ * The mapper below turns each row into the FE-friendly ActivityItem.
+ */
+export interface ActivityEventDto {
+  id: number;
+  type: string;            // e.g. "payment_received", "amendment_proposed"
+  description: string;
+  severity: 'success' | 'info' | 'warning' | 'error';
+  occurredAt: string;      // ISO 8601
+  sourceType?: string;
+  sourceId?: number;
+}
+
+/** Map a BE row into the FE ActivityItem shape (compatible with ActivityItem.tsx). */
+export function toActivityItem(dto: ActivityEventDto): ActivityItem {
+  const severityMap: Record<string, ActivityItem['status']> = {
+    success: 'success',
+    info: 'info',
+    warning: 'warning',
+    error: 'error',
+  };
+  const status = severityMap[dto.severity] ?? 'info';
+  let time: string = dto.occurredAt;
+  try {
+    time = new Date(dto.occurredAt).toLocaleString('es');
+  } catch {
+    /* keep the ISO string if toLocaleString fails */
+  }
+  return {
+    type: dto.type,
+    description: dto.description,
+    time,
+    status,
+  };
+}
+
 export interface DashboardService {
   getDashboardData(user: User): Promise<DashboardData>;
   getStats(user: User): Promise<DashboardStats>;
@@ -96,7 +133,8 @@ export class ApiDashboardService implements DashboardService {
   }
 
   async getRecentActivity(_user: User): Promise<ActivityItem[]> {
-    return [];
+    const rows = await apiGet<ActivityEventDto[]>(`${getPrefix()}/dashboard/activity`);
+    return rows.map(toActivityItem);
   }
 
   async getUpcomingPayments(_user: User): Promise<UpcomingPayment[]> {

@@ -1,5 +1,5 @@
 import { Building2, FileText, DollarSign, Users, Calendar, MapPin } from 'lucide-react';
-import { StatTile, PageHeader, StatusBadge, DashboardSkeleton } from '../shared';
+import { StatTile, ActivityFeedCard, PageHeader, StatusBadge, DashboardSkeleton } from '../shared';
 import { useDashboardData } from '../../hooks/queries';
 
 export function ArrendadorDashboard() {
@@ -39,6 +39,8 @@ export function ArrendadorDashboard() {
           />
         ))}
       </div>
+
+      <ActivityFeedCard limit={6} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Pagos Pendientes */}

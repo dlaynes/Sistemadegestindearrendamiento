@@ -22,7 +22,7 @@ export {
   useDeleteContract,
 } from './use-contracts-query';
 
-export { useDashboardData } from './use-dashboard-query';
+export { useDashboardData, useRecentActivity } from './use-dashboard-query';
 
 export {
   useConversations,

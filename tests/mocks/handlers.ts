@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw'
 
-const API_BASE = '/api'
 
 const mockProperty = {
   id: 1,
@@ -80,7 +79,7 @@ const mockMessage = {
 
 export const handlers = [
   // Auth
-  http.post(`${API_BASE}/auth/login`, async () => {
+  http.post(`**/api/auth/login`, async () => {
     return HttpResponse.json({
       token: 'test-token',
       id: 1,
@@ -90,7 +89,7 @@ export const handlers = [
     })
   }),
 
-  http.get(`${API_BASE}/auth/session`, () => {
+  http.get(`**/api/auth/session`, () => {
     return HttpResponse.json({
       id: 1,
       name: 'Test Admin',
@@ -101,7 +100,7 @@ export const handlers = [
   }),
 
   // Users
-  http.get(`${API_BASE}/admin/users`, () => {
+  http.get(`**/api/admin/users`, () => {
     return HttpResponse.json([
       { id: 1, name: 'Admin', email: 'admin@test.com', role: 'administrador', status: 'activo', propertyIds: [] },
       { id: 2, name: 'Landlord', email: 'landlord@test.com', role: 'arrendador', status: 'activo', propertyIds: [1] },
@@ -109,146 +108,224 @@ export const handlers = [
   }),
 
   // Properties (all role prefixes)
-  http.get(`${API_BASE}/admin/properties`, () => {
+  http.get(`**/api/admin/properties`, () => {
     return HttpResponse.json([mockProperty])
   }),
-  http.get(`${API_BASE}/landlord/properties`, () => {
+  http.get(`**/api/landlord/properties`, () => {
     return HttpResponse.json([mockProperty])
   }),
-  http.get(`${API_BASE}/tenant/properties`, () => {
+  http.get(`**/api/tenant/properties`, () => {
     return HttpResponse.json([mockProperty])
   }),
-  http.get(`${API_BASE}/admin/properties/:id`, ({ params }) => {
+  http.get(`**/api/admin/properties/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockProperty, id: Number(params.id) })
   }),
-  http.get(`${API_BASE}/landlord/properties/:id`, ({ params }) => {
+  http.get(`**/api/landlord/properties/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockProperty, id: Number(params.id) })
   }),
-  http.get(`${API_BASE}/tenant/properties/:id`, ({ params }) => {
+  http.get(`**/api/tenant/properties/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockProperty, id: Number(params.id) })
   }),
-  http.post(`${API_BASE}/admin/properties`, async () => {
+  http.post(`**/api/admin/properties`, async () => {
     return HttpResponse.json(mockProperty)
   }),
-  http.post(`${API_BASE}/landlord/properties`, async () => {
+  http.post(`**/api/landlord/properties`, async () => {
     return HttpResponse.json(mockProperty)
   }),
-  http.put(`${API_BASE}/admin/properties/:id`, async () => {
+  http.put(`**/api/admin/properties/:id`, async () => {
     return HttpResponse.json(mockProperty)
   }),
-  http.put(`${API_BASE}/landlord/properties/:id`, async () => {
+  http.put(`**/api/landlord/properties/:id`, async () => {
     return HttpResponse.json(mockProperty)
   }),
-  http.delete(`${API_BASE}/admin/properties/:id`, () => {
+  http.delete(`**/api/admin/properties/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
-  http.delete(`${API_BASE}/landlord/properties/:id`, () => {
+  http.delete(`**/api/landlord/properties/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
 
   // Contracts (all role prefixes)
-  http.get(`${API_BASE}/admin/contracts`, () => {
+  http.get(`**/api/admin/contracts`, () => {
     return HttpResponse.json([mockContract])
   }),
-  http.get(`${API_BASE}/landlord/contracts`, () => {
+  http.get(`**/api/landlord/contracts`, () => {
     return HttpResponse.json([mockContract])
   }),
-  http.get(`${API_BASE}/tenant/contracts`, () => {
+  http.get(`**/api/tenant/contracts`, () => {
     return HttpResponse.json([mockContract])
   }),
-  http.get(`${API_BASE}/admin/contracts/:id`, ({ params }) => {
+  http.get(`**/api/admin/contracts/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockContract, id: Number(params.id) })
   }),
-  http.get(`${API_BASE}/landlord/contracts/:id`, ({ params }) => {
+  http.get(`**/api/landlord/contracts/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockContract, id: Number(params.id) })
   }),
-  http.get(`${API_BASE}/tenant/contracts/:id`, ({ params }) => {
+  http.get(`**/api/tenant/contracts/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockContract, id: Number(params.id) })
   }),
-  http.get(`${API_BASE}/admin/contracts/property/:id`, ({ params }) => {
+  http.get(`**/api/admin/contracts/property/:id`, ({ params }) => {
     return HttpResponse.json([{ ...mockContract, propertyId: Number(params.id) }])
   }),
-  http.post(`${API_BASE}/admin/contracts`, async () => {
+  http.post(`**/api/admin/contracts`, async () => {
     return HttpResponse.json(mockContract)
   }),
-  http.post(`${API_BASE}/landlord/contracts`, async () => {
+  http.post(`**/api/landlord/contracts`, async () => {
     return HttpResponse.json(mockContract)
   }),
-  http.put(`${API_BASE}/admin/contracts/:id`, async () => {
+  http.put(`**/api/admin/contracts/:id`, async () => {
     return HttpResponse.json(mockContract)
   }),
-  http.put(`${API_BASE}/landlord/contracts/:id`, async () => {
+  http.put(`**/api/landlord/contracts/:id`, async () => {
     return HttpResponse.json(mockContract)
   }),
-  http.delete(`${API_BASE}/admin/contracts/:id`, () => {
+  http.delete(`**/api/admin/contracts/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
-  http.delete(`${API_BASE}/landlord/contracts/:id`, () => {
+  http.delete(`**/api/landlord/contracts/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
 
   // Payments (all role prefixes)
-  http.get(`${API_BASE}/admin/payments`, () => {
+  http.get(`**/api/admin/payments`, () => {
     return HttpResponse.json([mockPayment])
   }),
-  http.get(`${API_BASE}/landlord/payments`, () => {
+  http.get(`**/api/landlord/payments`, () => {
     return HttpResponse.json([mockPayment])
   }),
-  http.get(`${API_BASE}/tenant/payments`, () => {
+  http.get(`**/api/tenant/payments`, () => {
     return HttpResponse.json([mockPayment])
   }),
-  http.get(`${API_BASE}/admin/payments/:id`, ({ params }) => {
+  http.get(`**/api/admin/payments/:id`, ({ params }) => {
     return HttpResponse.json({ ...mockPayment, id: Number(params.id) })
   }),
-  http.post(`${API_BASE}/admin/payments`, async () => {
+  http.post(`**/api/admin/payments`, async () => {
     return HttpResponse.json(mockPayment)
   }),
-  http.post(`${API_BASE}/landlord/payments`, async () => {
+  http.post(`**/api/landlord/payments`, async () => {
     return HttpResponse.json(mockPayment)
   }),
-  http.put(`${API_BASE}/admin/payments/:id`, async () => {
+  http.put(`**/api/admin/payments/:id`, async () => {
     return HttpResponse.json(mockPayment)
   }),
-  http.put(`${API_BASE}/landlord/payments/:id`, async () => {
+  http.put(`**/api/landlord/payments/:id`, async () => {
     return HttpResponse.json(mockPayment)
   }),
-  http.delete(`${API_BASE}/admin/payments/:id`, () => {
+  http.delete(`**/api/admin/payments/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
-  http.delete(`${API_BASE}/landlord/payments/:id`, () => {
+  http.delete(`**/api/landlord/payments/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
 
   // Dashboard stats (all role prefixes)
-  http.get(`${API_BASE}/admin/dashboard/stats`, () => {
+  http.get(`**/api/admin/dashboard/stats`, () => {
     return HttpResponse.json(mockDashboardStats)
   }),
-  http.get(`${API_BASE}/landlord/dashboard/stats`, () => {
+  http.get(`**/api/landlord/dashboard/stats`, () => {
     return HttpResponse.json(mockDashboardStats)
   }),
-  http.get(`${API_BASE}/tenant/stats`, () => {
+  http.get(`**/api/tenant/stats`, () => {
     return HttpResponse.json(mockDashboardStats)
   }),
 
+  // Dashboard activity (per role). Default: a small fixture so the admin
+  // dashboard's "Actividad Reciente" section renders two items out of the box.
+  http.get(`**/api/admin/dashboard/activity`, () => {
+    return HttpResponse.json([
+      {
+        id: 1,
+        type: 'payment_received',
+        description: 'Pago de $1,500 recibido de Tenant User.',
+        severity: 'success',
+        occurredAt: new Date().toISOString(),
+        sourceType: 'PAYMENT',
+        sourceId: 1,
+      },
+      {
+        id: 2,
+        type: 'amendment_proposed',
+        description: 'Enmienda propuesta en CNT-001.',
+        severity: 'info',
+        occurredAt: new Date(Date.now() - 3600_000).toISOString(),
+        sourceType: 'AMENDMENT',
+        sourceId: 7,
+      },
+    ])
+  }),
+  http.get(`**/api/landlord/dashboard/activity`, () => {
+    return HttpResponse.json([
+      {
+        id: 11,
+        type: 'payment_received',
+        description: 'Pago de $1,500 recibido de Tenant User.',
+        severity: 'success',
+        occurredAt: new Date().toISOString(),
+        sourceType: 'PAYMENT',
+        sourceId: 1,
+      },
+      {
+        id: 12,
+        type: 'amendment_approved',
+        description: 'Enmienda en CNT-001 aprobada.',
+        severity: 'success',
+        occurredAt: new Date(Date.now() - 3600_000).toISOString(),
+        sourceType: 'AMENDMENT',
+        sourceId: 9,
+      },
+      {
+        id: 13,
+        type: 'contract_expiring',
+        description: 'Contrato CNT-001 vence en 30 días.',
+        severity: 'warning',
+        occurredAt: new Date(Date.now() - 86400_000).toISOString(),
+        sourceType: 'CONTRACT',
+        sourceId: 1,
+      },
+    ])
+  }),
+  http.get(`**/api/tenant/dashboard/activity`, () => {
+    return HttpResponse.json([
+      {
+        id: 21,
+        type: 'payment_received',
+        description: 'Tu pago de $1,500 fue confirmado.',
+        severity: 'success',
+        occurredAt: new Date().toISOString(),
+        sourceType: 'PAYMENT',
+        sourceId: 1,
+      },
+      {
+        id: 22,
+        type: 'amendment_rejected',
+        description: 'Enmienda en CNT-001 rechazada por el arrendador.',
+        severity: 'warning',
+        occurredAt: new Date(Date.now() - 7200_000).toISOString(),
+        sourceType: 'AMENDMENT',
+        sourceId: 8,
+      },
+    ])
+  }),
+
   // Conversations
-  http.get(`${API_BASE}/conversations`, () => {
+  http.get(`**/api/conversations`, () => {
     return HttpResponse.json([mockConversation])
   }),
-  http.post(`${API_BASE}/conversations`, async () => {
+  http.post(`**/api/conversations`, async () => {
     return HttpResponse.json(mockConversation)
   }),
-  http.get(`${API_BASE}/conversations/:id/messages`, () => {
+  http.get(`**/api/conversations/:id/messages`, () => {
     return HttpResponse.json([mockMessage])
   }),
-  http.post(`${API_BASE}/conversations/:id/messages`, async () => {
+  http.post(`**/api/conversations/:id/messages`, async () => {
     return HttpResponse.json(mockMessage)
   }),
-  http.put(`${API_BASE}/conversations/:id/read`, () => {
+  http.put(`**/api/conversations/:id/read`, () => {
     return HttpResponse.json({})
   }),
 
   // Documents
-  http.post(`${API_BASE}/documents/upload`, async () => {
+  http.post(`**/api/documents/upload`, async () => {
     return HttpResponse.json({
       id: 1,
       originalName: 'contract.pdf',
@@ -258,7 +335,7 @@ export const handlers = [
       createdAt: '2026-05-01T10:00:00',
     })
   }),
-  http.get(`${API_BASE}/documents`, () => {
+  http.get(`**/api/documents`, () => {
     return HttpResponse.json([{
       id: 1,
       originalName: 'contract.pdf',
@@ -268,18 +345,18 @@ export const handlers = [
       createdAt: '2026-05-01T10:00:00',
     }])
   }),
-  http.get(`${API_BASE}/documents/:id/download`, () => {
+  http.get(`**/api/documents/:id/download`, () => {
     return new HttpResponse(new Blob(['fake-pdf']), {
       status: 200,
       headers: { 'Content-Type': 'application/pdf' },
     })
   }),
-  http.delete(`${API_BASE}/documents/:id`, () => {
+  http.delete(`**/api/documents/:id`, () => {
     return new HttpResponse(null, { status: 204 })
   }),
 
   // Reports
-  http.get(`${API_BASE}/admin/reports/summary`, () => {
+  http.get(`**/api/admin/reports/summary`, () => {
     return HttpResponse.json({
       properties: 5,
       contracts: 3,
@@ -289,7 +366,7 @@ export const handlers = [
       calendar: 6,
     })
   }),
-  http.get(`${API_BASE}/admin/reports/:type/download`, () => {
+  http.get(`**/api/admin/reports/:type/download`, () => {
     return new HttpResponse(new Blob(['fake-excel']), {
       status: 200,
       headers: { 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
@@ -297,7 +374,7 @@ export const handlers = [
   }),
 
   // Alerts
-  http.get(`${API_BASE}/alerts/mine`, () => {
+  http.get(`**/api/alerts/mine`, () => {
     return HttpResponse.json({
       items: [
         {
@@ -332,19 +409,19 @@ export const handlers = [
       unreadCount: 2,
     })
   }),
-  http.post(`${API_BASE}/alerts/:id/seen`, () => {
+  http.post(`**/api/alerts/:id/seen`, () => {
     return HttpResponse.json({ id: 1, seen: true })
   }),
-  http.post(`${API_BASE}/alerts/seen-all`, () => {
+  http.post(`**/api/alerts/seen-all`, () => {
     return HttpResponse.json({ updated: 2 })
   }),
-  http.post(`${API_BASE}/alerts/:id/dismiss`, () => {
+  http.post(`**/api/alerts/:id/dismiss`, () => {
     return HttpResponse.json({ id: 1, dismissed: true })
   }),
 
 
   // Contract amendments
-  http.get(`${API_BASE}/landlord/contracts/:id/amendments`, () => {
+  http.get(`**/api/landlord/contracts/:id/amendments`, () => {
     return HttpResponse.json([
       {
         id: 1,
@@ -378,7 +455,7 @@ export const handlers = [
       },
     ])
   }),
-  http.post(`${API_BASE}/landlord/contracts/:id/amendments`, async () => {
+  http.post(`**/api/landlord/contracts/:id/amendments`, async () => {
     return HttpResponse.json({
       id: 99,
       contractId: 1,
@@ -395,7 +472,7 @@ export const handlers = [
       expiresAt: new Date(Date.now() + 14 * 86400_000).toISOString(),
     })
   }),
-  http.post(`${API_BASE}/landlord/contracts/:id/amendments/:amendmentId/decision`, async () => {
+  http.post(`**/api/landlord/contracts/:id/amendments/:amendmentId/decision`, async () => {
     return HttpResponse.json({
       id: 1,
       contractId: 1,
@@ -412,7 +489,7 @@ export const handlers = [
       expiresAt: '2026-06-15T10:00:00',
     })
   }),
-  http.post(`${API_BASE}/landlord/contracts/:id/amendments/:amendmentId/withdraw`, async () => {
+  http.post(`**/api/landlord/contracts/:id/amendments/:amendmentId/withdraw`, async () => {
     return HttpResponse.json({
       id: 1, contractId: 1, proposedByUserId: 1, proposedByRole: 'arrendador',
       status: 'withdrawn', proposedChanges: { monthlyRent: '1700' },
@@ -422,14 +499,14 @@ export const handlers = [
     })
   }),
   // Admin read-only
-  http.get(`${API_BASE}/admin/contracts/:id/amendments`, () => {
+  http.get(`**/api/admin/contracts/:id/amendments`, () => {
     return HttpResponse.json([])
   }),
   // Tenant paths (used by inquilino role)
-  http.get(`${API_BASE}/tenant/contracts/:id/amendments`, () => {
+  http.get(`**/api/tenant/contracts/:id/amendments`, () => {
     return HttpResponse.json([])
   }),
-  http.post(`${API_BASE}/tenant/contracts/:id/amendments`, async () => {
+  http.post(`**/api/tenant/contracts/:id/amendments`, async () => {
     return HttpResponse.json({
       id: 100, contractId: 1, proposedByUserId: 2, proposedByRole: 'inquilino',
       status: 'pending_landlord', proposedChanges: { status: 'cancelado' },

@@ -1,13 +1,12 @@
 import { Users, Building2, FileText, DollarSign } from 'lucide-react';
 import { AlertType } from '../../types/alert-type';
 import { AlertBox } from '../shared/alert-box';
-import { StatTile, ActivityItem, PageHeader, DashboardSkeleton } from '../shared';
+import { StatTile, ActivityFeedCard, PageHeader, DashboardSkeleton } from '../shared';
 import { useDashboardData } from '../../hooks/queries';
 
 export function AdminDashboard() {
   const { data, isLoading } = useDashboardData();
   const stats = data?.stats;
-  const recentActivity = data?.recentActivity ?? [];
 
   const dashboardStats = [
     {
@@ -66,28 +65,7 @@ export function AdminDashboard() {
         ))}
       </div>
 
-      <section className="rounded-xl border border-border-subtle bg-card shadow-elev-xs">
-        <header className="flex items-center justify-between border-b border-border-subtle px-6 py-4">
-          <h2 className="text-h2 font-semibold text-foreground">Actividad Reciente</h2>
-        </header>
-        <div className="divide-y divide-border-subtle">
-          {recentActivity.length > 0 ? (
-            recentActivity.map((activity, index) => (
-              <ActivityItem
-                key={index}
-                type={activity.type}
-                description={activity.description}
-                time={activity.time}
-                status={activity.status}
-              />
-            ))
-          ) : (
-            <p className="px-6 py-12 text-center text-sm text-muted-foreground">
-              Sin actividad reciente.
-            </p>
-          )}
-        </div>
-      </section>
+      <ActivityFeedCard />
     </div>
   );
 }
