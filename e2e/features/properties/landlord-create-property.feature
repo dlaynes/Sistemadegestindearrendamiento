@@ -1,12 +1,12 @@
 Característica: Creación de propiedad
   Como arrendador
-  Quiero crear una nueva propiedad desde el formulario
-  Para publicarla en mi portafolio
+  Quiero registrar una nueva propiedad en mi portafolio
+  Para publicarla y poder asociarle contratos
 
   Escenario: El arrendador crea una propiedad nueva
     Dado que he iniciado sesión como arrendador
-    Cuando navego a "Nueva Propiedad"
-    Y completo el formulario con datos válidos
-    Y envío el formulario
-    Entonces la propiedad se guarda y vuelvo al listado
-    Y el endpoint POST /api/landlord/properties fue llamado con el body correcto
+    Cuando abro el formulario de nueva propiedad
+    Y completo los datos de la propiedad
+    Y guardo el formulario
+    Entonces la propiedad queda registrada
+    Y vuelvo al listado de mis propiedades

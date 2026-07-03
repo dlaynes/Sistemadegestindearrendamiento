@@ -5,8 +5,8 @@ Característica: Registro de pago
 
   Escenario: El inquilino registra un nuevo pago
     Dado que he iniciado sesión como inquilino
-    Cuando navego al formulario de pago de mi contrato
+    Cuando abro el formulario de pago de mi contrato
     Y completo los datos del pago
     Y envío el formulario
-    Entonces el endpoint POST /api/tenant/payments fue llamado con el body correcto
-    Y soy redirigido al detalle del pago recién creado
+    Entonces el pago queda registrado
+    Y soy llevado al detalle del pago recién creado
