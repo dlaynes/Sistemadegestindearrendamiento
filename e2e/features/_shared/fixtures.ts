@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+﻿import { test, expect } from '@playwright/test'
 
 export type UserRole = 'administrador' | 'arrendador' | 'inquilino'
 
@@ -247,6 +247,38 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
   })
 
   // Users (admin only)
+
+  // Alerts (alert bell in the layout fires on mount for every role).
+  // Return an empty list so unmocked /api/alerts/** calls during tests do
+  // not fall through to the Vite dev proxy and hit a real backend.
+  await page.route('**/api/alerts/**', async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      })
+      return
+    }
+    await route.fallback()
+  })
+
+  // Defensive catch-all: any other /api/** call the app makes on mount
+  // (e.g. messages preview, reports) returns 200 + empty body. Explicit
+  // mocks registered above still take precedence because Playwright
+  // resolves the most recently registered matching route.
+  await page.route('**/api/**', async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      })
+      return
+    }
+    await route.fallback()
+  })
+
   await page.route('**/api/admin/users', async (route) => {
     await route.fulfill({
       status: 200,
