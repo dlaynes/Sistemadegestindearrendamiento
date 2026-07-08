@@ -1,4 +1,4 @@
-﻿import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 
 export type UserRole = 'administrador' | 'arrendador' | 'inquilino'
 
@@ -75,12 +75,53 @@ const mockDashboardStats = {
 
 /**
  * Set up API mocks for a page so tests run without a backend.
+ *
+ * Playwright resolves routes in reverse registration order (last registered
+ * wins). Therefore the generic catch-all must be registered FIRST, and every
+ * specific mock must be registered AFTER it so the specific mock takes
+ * precedence.
  */
 export async function mockApi(page: import('@playwright/test').Page, role: UserRole) {
   const user = mockUsers[role]
   const prefix = role === 'administrador' ? '/admin' : role === 'arrendador' ? '/landlord' : '/tenant'
 
-  // Auth
+  // -------------------------------------------------------------------------
+  // 1. Generic fallback (must be registered first).
+  // -------------------------------------------------------------------------
+  // Alerts (alert bell in the layout fires on mount for every role).
+  // Return an empty list so unmocked /api/alerts/** calls during tests do
+  // not fall through to the Vite dev proxy and hit a real backend.
+  await page.route('**/api/alerts/**', async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      })
+      return
+    }
+    await route.fallback()
+  })
+
+  // Defensive catch-all: any other /api/** call the app makes on mount
+  // (e.g. messages preview, reports) returns 200 + empty body. Because this
+  // handler is registered before the specific mocks below, the specific
+  // handlers always win when a request matches both patterns.
+  await page.route('**/api/**', async (route) => {
+    if (route.request().method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      })
+      return
+    }
+    await route.fallback()
+  })
+
+  // -------------------------------------------------------------------------
+  // 2. Auth
+  // -------------------------------------------------------------------------
   await page.route('**/api/auth/login', async (route) => {
     await route.fulfill({
       status: 200,
@@ -97,6 +138,9 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
+  // -------------------------------------------------------------------------
+  // 3. Domain mocks
+  // -------------------------------------------------------------------------
   // Properties
   await page.route(`**/api${prefix}/properties`, async (route) => {
     await route.fulfill({
@@ -247,38 +291,6 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
   })
 
   // Users (admin only)
-
-  // Alerts (alert bell in the layout fires on mount for every role).
-  // Return an empty list so unmocked /api/alerts/** calls during tests do
-  // not fall through to the Vite dev proxy and hit a real backend.
-  await page.route('**/api/alerts/**', async (route) => {
-    if (route.request().method() === 'GET') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([]),
-      })
-      return
-    }
-    await route.fallback()
-  })
-
-  // Defensive catch-all: any other /api/** call the app makes on mount
-  // (e.g. messages preview, reports) returns 200 + empty body. Explicit
-  // mocks registered above still take precedence because Playwright
-  // resolves the most recently registered matching route.
-  await page.route('**/api/**', async (route) => {
-    if (route.request().method() === 'GET') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([]),
-      })
-      return
-    }
-    await route.fallback()
-  })
-
   await page.route('**/api/admin/users', async (route) => {
     await route.fulfill({
       status: 200,
@@ -287,6 +299,40 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
+  await page.route('**/api/admin/users/*', async (route) => {
+    // Try to return a matching mock user by id; default to landlord.
+    const url = route.request().url()
+    const match = url.match(/\/admin\/users\/(\d+)$/)
+    const id = match ? Number(match[1]) : 2
+    const target = Object.values(mockUsers).find((u) => u.id === id) ?? mockUsers.arrendador
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(target),
+    })
+  })
+
+  // Reports (admin only) — return a minimal xlsx-like blob so the download
+  // starts without hitting the real backend.
+  await page.route('**/api/admin/reports/*/download', async (route) => {
+    if (route.request().method() === 'GET') {
+      const body = "PK\x03\x04fake-xlsx-content"
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers: {
+          'Content-Disposition': 'attachment; filename="reporte.xlsx"',
+        },
+        body,
+      })
+      return
+    }
+    await route.fallback()
+  })
+
+  // -------------------------------------------------------------------------
+  // 4. Stateful amendments mocks
+  // -------------------------------------------------------------------------
   // Contract amendments (BDD amendments scenario).
   // GET is stateful: once a POST has succeeded, the next GET returns the
   // pending amendment so react-query's invalidation actually shows it on

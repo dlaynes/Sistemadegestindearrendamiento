@@ -2,6 +2,11 @@ import { test, expect, loginAs } from '../_shared/fixtures'
 
 test.describe('Característica: Mensajería', () => {
   test('Escenario: El arrendador envía un mensaje al inquilino', async ({ page }) => {
+    // Given: I am logged in as a landlord
+    // (loginAs registers the shared catch-all first; the specific routes
+    // below must be registered afterwards so they take precedence.)
+    await loginAs(page, 'arrendador');
+
     // Capture the POST body so we can assert the request shape.
     let postedBody: Record<string, unknown> | null = null;
     let postHappened = false;
@@ -77,9 +82,6 @@ test.describe('Característica: Mensajería', () => {
       }
       await route.fallback();
     });
-
-    // Given: I am logged in as a landlord
-    await loginAs(page, 'arrendador');
 
     // When: I navigate to "Mensajes"
     await page.getByRole('link', { name: 'Mensajes' }).click();

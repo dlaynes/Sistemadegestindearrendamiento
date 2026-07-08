@@ -2,6 +2,11 @@ import { test, expect, loginAs } from '../_shared/fixtures'
 
 test.describe('Característica: Edición de usuario', () => {
   test('Escenario: El administrador cambia el rol de un usuario de arrendador a inquilino', async ({ page }) => {
+    // Given: I am logged in as an administrator
+    // (loginAs registers the shared catch-all first; the specific route
+    // below must be registered afterwards so it takes precedence.)
+    await loginAs(page, 'administrador');
+
     // Capture the PUT body so we can assert the form sent the right shape.
     let putBody: Record<string, unknown> | null = null;
     let putHappened = false;
@@ -44,9 +49,6 @@ test.describe('Característica: Edición de usuario', () => {
       // Default: just return a 200 so the page renders without error.
       await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
     });
-
-    // Given: I am logged in as an administrator
-    await loginAs(page, 'administrador');
 
     // When: I navigate to the user detail page
     await page.goto('/administrador/usuarios/2');
