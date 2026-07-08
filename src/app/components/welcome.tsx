@@ -117,6 +117,7 @@ const roleContent = {
       },
     ],
   },
+  /*
   administrador: {
     label: 'Administrador',
     headline: 'Visión global y herramientas de control',
@@ -138,6 +139,7 @@ const roleContent = {
       },
     ],
   },
+  */
 } as const;
 
 type RoleKey = keyof typeof roleContent;

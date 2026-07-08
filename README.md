@@ -85,10 +85,10 @@ La aplicación se ejecutará por defecto en `http://localhost:5173`.
 
 El proyecto incluye usuarios de prueba para facilitar el desarrollo:
 
-| Rol           | Correo                     | Contraseña      |
-|---------------|----------------------------|-----------------|
-| Administrador | `admin@rentmanager.com`    | `admin123`      |
-| Arrendador    | `carlos@rentmanager.com`   | `arrendador123` |
-| Inquilino     | `juan@email.com`           | `inquilino123`  |
+| Rol           | Correo                   | Contraseña  |
+|---------------|--------------------------|-------------|
+| Administrador | `admin@example.com`      | `admin123`  |
+| Arrendador    | `arrendador@example.com` | `landlord123` |
+| Inquilino     | `inquilino@example.com`  | `tenant123` |
 
 El diseño original de la interfaz está disponible en [Figma](https://www.figma.com/design/wXfXTt0GKhUPYHV9mApGrr/Sistema-de-gesti%C3%B3n-de-arrendamiento).

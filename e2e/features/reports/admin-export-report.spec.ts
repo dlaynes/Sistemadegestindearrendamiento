@@ -2,6 +2,11 @@ import { test, expect, loginAs } from '../_shared/fixtures'
 
 test.describe('Característica: Exportación de reportes', () => {
   test('Escenario: El administrador descarga el reporte de contratos', async ({ page }) => {
+    // Given: I am logged in as an administrator
+    // (loginAs must happen before the route override because the shared
+    // catch-all is registered first and would otherwise win.)
+    await loginAs(page, 'administrador');
+
     // Capture the GET that triggers the download so we can assert the URL
     // and the response shape (xlsx blob with the right content-type).
     let downloadRequested = false;
@@ -26,9 +31,6 @@ test.describe('Característica: Exportación de reportes', () => {
     // Wire up Playwright's download listener so we can verify the browser
     // actually received a file (not just an HTTP 200).
     const downloadPromise = page.waitForEvent('download', { timeout: 10000 });
-
-    // Given: I am logged in as an administrator
-    await loginAs(page, 'administrador');
 
     // When: I navigate to "Reportes"
     await page.goto('/administrador/reportes');
