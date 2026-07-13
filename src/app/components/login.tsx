@@ -99,7 +99,7 @@ export function Login() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            <form onSubmit={(f) => { handleSubmit(f); return false; } } className="mt-6 space-y-5">
               <div>
                 <label
                   htmlFor="email"

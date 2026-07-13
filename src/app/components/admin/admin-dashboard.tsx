@@ -1,6 +1,5 @@
 import { Users, Building2, FileText, DollarSign } from 'lucide-react';
-import { AlertType } from '../../types/alert-type';
-import { AlertBox } from '../shared/alert-box';
+import { AdminAlerts } from './admin-alerts';
 import { StatTile, ActivityFeedCard, PageHeader, DashboardSkeleton } from '../shared';
 import { useDashboardData } from '../../hooks/queries';
 
@@ -31,10 +30,6 @@ export function AdminDashboard() {
     },
   ];
 
-  const alerts: { message: string; type: AlertType }[] = [
-    { message: '4 arrendatarios nuevos agregados al sistema en la última semana', type: 'success' },
-  ];
-
   if (isLoading) {
     return <DashboardSkeleton />;
   }
@@ -46,13 +41,7 @@ export function AdminDashboard() {
         subtitle="Vista general del sistema de gestión"
       />
 
-      {alerts.length > 0 && (
-        <div className="space-y-3">
-          {alerts.map((alert, index) => (
-            <AlertBox key={index} {...alert} />
-          ))}
-        </div>
-      )}
+      <AdminAlerts />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {dashboardStats.map((stat) => (

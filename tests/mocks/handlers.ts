@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw'
+﻿import { http, HttpResponse } from 'msw'
 
 
 const mockProperty = {
@@ -221,6 +221,30 @@ export const handlers = [
   // Dashboard stats (all role prefixes)
   http.get(`**/api/admin/dashboard/stats`, () => {
     return HttpResponse.json(mockDashboardStats)
+  }),
+  http.get(`**/api/admin/dashboard/alerts`, () => {
+    return HttpResponse.json([
+      {
+        id: 'users',
+        title: '2 usuarios nuevos esta semana',
+        body: 'Se agregaron 2 usuarios en los últimos 7 días',
+        category: 'system',
+        severity: 'info',
+        metric: 'users',
+        change: 2,
+        changePercent: 100,
+      },
+      {
+        id: 'overduePayments',
+        title: '1 pagos vencidos',
+        body: 'Hay 1 pagos vencidos que requieren atención',
+        category: 'system',
+        severity: 'warning',
+        metric: 'overduePayments',
+        change: 1,
+        changePercent: 0,
+      },
+    ])
   }),
   http.get(`**/api/landlord/dashboard/stats`, () => {
     return HttpResponse.json(mockDashboardStats)
@@ -517,3 +541,6 @@ export const handlers = [
   }),
 
 ]
+
+
+
