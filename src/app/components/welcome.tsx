@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Building2,
@@ -13,7 +13,6 @@ import {
   KeyRound,
   CreditCard,
   ListChecks,
-  BarChart3,
   MessagesSquare,
 } from 'lucide-react';
 import { Button } from './ui/button';
@@ -507,3 +506,4 @@ function Welcome() {
 }
 
 export default Welcome;
+

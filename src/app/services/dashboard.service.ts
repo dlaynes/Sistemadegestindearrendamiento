@@ -1,4 +1,5 @@
 import type { User } from '../types/user';
+import type { AdminAlert, DashboardPeriodComparison } from '../types';
 import type { Property } from '../types/property';
 import type { Contract } from '../types/contract';
 import type { Payment } from '../types/payment';
@@ -13,6 +14,8 @@ export interface DashboardStats {
   activeContracts: number;
   availableProperties: number;
   overduePayments: number;
+  periodComparison?: Record<string, DashboardPeriodComparison>;
+  alerts?: AdminAlert[];
 }
 
 export interface ActivityItem {
@@ -81,6 +84,7 @@ export interface DashboardService {
   getStats(user: User): Promise<DashboardStats>;
   getRecentActivity(user: User): Promise<ActivityItem[]>;
   getUpcomingPayments(user: User): Promise<UpcomingPayment[]>;
+  getAdminAlerts(): Promise<AdminAlert[]>;
 }
 
 function getPrefix(): string {
@@ -148,6 +152,10 @@ export class ApiDashboardService implements DashboardService {
         dueDate: p.dueDate,
         status: p.status,
       }));
+  }
+
+  async getAdminAlerts(): Promise<AdminAlert[]> {
+    return apiGet<AdminAlert[]>('/admin/dashboard/alerts');
   }
 
   private async fetchMyProperties(): Promise<Property[]> {
