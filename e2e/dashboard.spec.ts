@@ -6,6 +6,8 @@ test.describe('Dashboard', () => {
     await expect(page.getByText('Total Propiedades')).toBeVisible()
     await expect(page.getByText('Total Contratos')).toBeVisible()
     await expect(page.getByText('Total Usuarios')).toBeVisible()
+    // Dynamic admin alerts derived from dashboard stats are rendered
+    await expect(page.getByText('2 usuarios nuevos esta semana')).toBeVisible()
   })
 
   test('landlord dashboard renders properties and contracts', async ({ page }) => {
