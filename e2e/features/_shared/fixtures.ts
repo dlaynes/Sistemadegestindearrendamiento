@@ -283,7 +283,7 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
       {
         id: 13,
         type: 'contract_expiring',
-        description: 'Contrato CNT-001 vence en 30 dÃƒÂ­as.',
+        description: 'Contrato CNT-001 vence en 30 días.',
         severity: 'warning',
         occurredAt: new Date(Date.now() - 86400_000).toISOString(),
         sourceType: 'CONTRACT',
@@ -349,7 +349,7 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
-  // Reports (admin only) Ã¢â‚¬â€ return a minimal xlsx-like blob so the download
+  // Reports (admin only) - return a minimal xlsx-like blob so the download
   // starts without hitting the real backend.
   await page.route('**/api/admin/reports/*/download', async (route) => {
     if (route.request().method() === 'GET') {
@@ -413,7 +413,7 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     await route.fallback()
   })
 
-  // Withdraw endpoint Ã¢â‚¬â€ global fallback for any spec that exercises the
+  // Withdraw endpoint - global fallback for any spec that exercises the
   // proposer-withdraw path. Each spec may also register its own override.
   await page.route(`**/api${prefix}/contracts/*/amendments/*/withdraw`, async (route) => {
     if (route.request().method() === 'POST') {
