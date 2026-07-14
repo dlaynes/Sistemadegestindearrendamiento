@@ -29,10 +29,10 @@ import type { User as UserType } from '../../types/user';
 const STEPS = [
   { id: 1, name: 'Propiedad', icon: Building2 },
   { id: 2, name: 'Inquilino', icon: User },
-  { id: 3, name: 'Términos', icon: Calendar },
+  { id: 3, name: 'TÃ©rminos', icon: Calendar },
   { id: 4, name: 'Condiciones', icon: FileCheck },
   { id: 5, name: 'Documentos', icon: Upload },
-  { id: 6, name: 'Revisión', icon: CheckCircle },
+  { id: 6, name: 'RevisiÃ³n', icon: CheckCircle },
 ];
 
 export function AdminContractWizard() {
@@ -122,7 +122,18 @@ export function AdminContractWizard() {
   const watchedData = watch();
   const selectedProperty = availableProperties.find((p) => p.id === Number(watchedData.propertyId));
 
-  // Calcular fecha de fin basada en duración
+  const selectedTenant = watchedData.tenantId
+    ? tenants.find((t) => String(t.id) === String(watchedData.tenantId))
+    : null;
+
+  const clearSelectedTenant = () => {
+    setValue('invitedTenantName', '', { shouldValidate: true });
+    setValue('invitedTenantEmail', '', { shouldValidate: true });
+    setValue('tenantId', undefined, { shouldValidate: true });
+    setTenantQuery('');
+  };
+
+  // Calcular fecha de fin basada en duraciÃ³n
   const handleDurationChange = (duration: number) => {
     setValue('duration', duration);
     if (watchedData.startDate) {
@@ -221,7 +232,9 @@ export function AdminContractWizard() {
       case 1:
         return watchedData.propertyId;
       case 2:
-        return watchedData.invitedTenantName && watchedData.invitedTenantEmail && watchedData.invitedTenantPhone;
+        return selectedTenant
+        ? true
+        : (watchedData.invitedTenantName && watchedData.invitedTenantEmail && watchedData.invitedTenantPhone);
       case 3:
         return watchedData.startDate && watchedData.endDate && watchedData.monthlyRent && watchedData.deposit;
       case 4:
@@ -407,7 +420,7 @@ export function AdminContractWizard() {
                                 {property.name}
                               </div>
                               <div className="text-sm text-muted-foreground truncate">
-                                {property.address} · ${property.rent}/mes
+                                {property.address} - ${property.rent}/mes
                               </div>
                             </div>
                           </button>
@@ -450,26 +463,35 @@ export function AdminContractWizard() {
                   Información del Inquilino
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  Ingresa los datos personales del inquilino
+                  Busca un inquilino existente o ingresa los datos manualmente para enviar una invitación.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2 relative">
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Nombre completo *
+                      Inquilino
                     </label>
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <input
                         type="text"
                         value={tenantQuery}
+                        disabled={!!selectedTenant}
                         onChange={(e) => {
-                          setTenantQuery(e.target.value);
+                          const value = e.target.value;
+                          setTenantQuery(value);
                           setTenantDropdownOpen(true);
                           setTenantHighlighted(0);
+                          setValue('invitedTenantName', value, { shouldValidate: true });
+                          if (value.trim() === '') {
+                            setValue('tenantId', undefined, { shouldValidate: true });
+                          }
                         }}
-                        onFocus={() => setTenantDropdownOpen(true)}
+                        onFocus={() => {
+                          if (!selectedTenant) setTenantDropdownOpen(true);
+                        }}
                         onKeyDown={(e) => {
+                          if (selectedTenant) return;
                           if (e.key === 'ArrowDown') {
                             e.preventDefault();
                             setTenantHighlighted((prev) =>
@@ -492,19 +514,21 @@ export function AdminContractWizard() {
                             setTenantDropdownOpen(false);
                           }
                         }}
-                        placeholder="Buscar inquilino por nombre o correo..."
-                        className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder={selectedTenant ? 'Inquilino seleccionado' : 'Buscar inquilino por nombre o correo...'}
+                        className="w-full pl-10 pr-10 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-muted disabled:text-muted-foreground"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setTenantDropdownOpen((open) => !open)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-muted-foreground"
-                      >
-                        <ChevronDown className="w-5 h-5" />
-                      </button>
+                      {!selectedTenant && (
+                        <button
+                          type="button"
+                          onClick={() => setTenantDropdownOpen((open) => !open)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-muted-foreground"
+                        >
+                          <ChevronDown className="w-5 h-5" />
+                        </button>
+                      )}
                     </div>
 
-                    {tenantDropdownOpen && (
+                    {tenantDropdownOpen && !selectedTenant && (
                       <div
                         ref={tenantListRef}
                         className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-60 overflow-auto"
@@ -543,6 +567,22 @@ export function AdminContractWizard() {
                       </div>
                     )}
 
+                    {selectedTenant && (
+                      <div className="mt-2 flex items-center gap-2 text-sm">
+                        <span className="text-muted-foreground">
+                          Inquilino vinculado: {selectedTenant.name} ({selectedTenant.email})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={clearSelectedTenant}
+                          className="ml-2 inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-destructive bg-destructive-muted rounded hover:bg-destructive-muted/80"
+                        >
+                          <X className="w-3 h-3" />
+                          Cambiar inquilino
+                        </button>
+                      </div>
+                    )}
+
                     <input
                       type="hidden"
                       {...register('invitedTenantName', { required: 'El nombre es requerido' })}
@@ -558,6 +598,7 @@ export function AdminContractWizard() {
                     </label>
                     <input
                       type="email"
+                      disabled={!!selectedTenant}
                       {...register('invitedTenantEmail', {
                         required: 'El correo es requerido',
                         pattern: {
@@ -565,7 +606,7 @@ export function AdminContractWizard() {
                           message: 'Correo inválido',
                         },
                       })}
-                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-muted disabled:text-muted-foreground"
                       placeholder="juan.perez@email.com"
                     />
                     {errors.invitedTenantEmail && (
@@ -579,8 +620,9 @@ export function AdminContractWizard() {
                     </label>
                     <input
                       type="tel"
+                      disabled={!!selectedTenant}
                       {...register('invitedTenantPhone', { required: 'El teléfono es requerido' })}
-                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-muted disabled:text-muted-foreground"
                       placeholder="+1234567890"
                     />
                     {errors.invitedTenantPhone && (
@@ -593,7 +635,6 @@ export function AdminContractWizard() {
               </div>
             </div>
           )}
-
           {/* Step 3: Términos del Contrato */}
           {currentStep === 3 && (
             <div className="space-y-6">

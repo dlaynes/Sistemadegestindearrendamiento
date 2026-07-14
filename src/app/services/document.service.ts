@@ -1,4 +1,4 @@
-import { apiGet, apiDelete, apiFetch } from './api-client';
+import { apiGet, apiDelete, apiFetch, apiPostMultipart } from './api-client';
 
 export interface DocumentItem {
   id: string | number;
@@ -23,20 +23,14 @@ export class ApiDocumentService implements DocumentService {
     formData.append('type', type);
     formData.append('entityId', String(entityId));
 
-    const res = await apiFetch('/documents/upload', {
-      method: 'POST',
-      body: formData,
-      headers: {}, // Let browser set Content-Type with boundary
-    });
-
-    const data = (await res.json()) as {
+    const data = await apiPostMultipart<{
       id: number;
       originalName: string;
       fileSize: number;
       contentType: string;
       uploadedByName?: string;
       createdAt?: string;
-    };
+    }>('/documents/upload', formData);
 
     return {
       id: data.id,

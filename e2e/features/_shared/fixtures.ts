@@ -209,6 +209,35 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
+  // Dashboard alerts (admin only)
+  await page.route(`**/api${prefix}/dashboard/alerts`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(role === 'administrador' ? [
+        {
+          id: 'users',
+          title: '2 usuarios nuevos esta semana',
+          body: 'Se agregaron 2 usuarios en los últimos 7 días',
+          category: 'system',
+          severity: 'info',
+          metric: 'users',
+          change: 2,
+          changePercent: 100,
+        },
+        {
+          id: 'overduePayments',
+          title: '1 pagos vencidos',
+          body: 'Hay 1 pagos vencidos que requieren atención',
+          category: 'system',
+          severity: 'warning',
+          metric: 'overduePayments',
+          change: 1,
+          changePercent: 0,
+        },
+      ] : []),
+    })
+  })
   // Dashboard activity feed. Each role sees a seeded fixture so the
   // dashboard renders realistic events out of the box.
   const feedByRole: Record<UserRole, unknown[]> = {
@@ -254,7 +283,7 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
       {
         id: 13,
         type: 'contract_expiring',
-        description: 'Contrato CNT-001 vence en 30 días.',
+        description: 'Contrato CNT-001 vence en 30 dÃƒÂ­as.',
         severity: 'warning',
         occurredAt: new Date(Date.now() - 86400_000).toISOString(),
         sourceType: 'CONTRACT',
@@ -290,6 +319,14 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
+  // Tenants (landlord only)
+  await page.route('**/api/landlord/tenants/tenants', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([mockUsers.inquilino]),
+    })
+  })
   // Users (admin only)
   await page.route('**/api/admin/users', async (route) => {
     await route.fulfill({
@@ -312,7 +349,7 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     })
   })
 
-  // Reports (admin only) — return a minimal xlsx-like blob so the download
+  // Reports (admin only) Ã¢â‚¬â€ return a minimal xlsx-like blob so the download
   // starts without hitting the real backend.
   await page.route('**/api/admin/reports/*/download', async (route) => {
     if (route.request().method() === 'GET') {
@@ -376,7 +413,7 @@ export async function mockApi(page: import('@playwright/test').Page, role: UserR
     await route.fallback()
   })
 
-  // Withdraw endpoint — global fallback for any spec that exercises the
+  // Withdraw endpoint Ã¢â‚¬â€ global fallback for any spec that exercises the
   // proposer-withdraw path. Each spec may also register its own override.
   await page.route(`**/api${prefix}/contracts/*/amendments/*/withdraw`, async (route) => {
     if (route.request().method() === 'POST') {
