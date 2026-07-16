@@ -349,7 +349,7 @@ function FaqSection() {
     <section
       id="faq"
       aria-labelledby="faq-title"
-      className="mx-auto mt-24 max-w-3xl scroll-mt-20 px-6"
+      className="mx-auto mt-24 max-w-4xl scroll-mt-20 px-6"
     >
       <div className="text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-elev-xs">
@@ -433,7 +433,7 @@ function Welcome() {
           <section className="flex flex-col items-center justify-center pt-20 text-center">
             <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-border-subtle bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-elev-xs">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Plataforma integral
+              Plataforma integral para gestión de alquileres
             </span>
             <h1 className="text-display font-bold tracking-tight text-foreground sm:text-[2.75rem]">
               Sistema de Gestión de Arrendamientos

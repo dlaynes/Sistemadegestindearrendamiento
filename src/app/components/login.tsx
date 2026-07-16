@@ -42,7 +42,7 @@ export function Login() {
         >
           <div className="absolute inset-0 bg-[radial-gradient(50%_50%_at_30%_20%,theme(colors.primary.DEFAULT/.25),transparent_60%),radial-gradient(60%_60%_at_80%_80%,theme(colors.primary.muted.foreground/.35),transparent_60%)]" />
           <div className="relative z-10 flex flex-col justify-between p-12">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-elev-md">
                 <Building2 className="h-6 w-6" />
               </div>
